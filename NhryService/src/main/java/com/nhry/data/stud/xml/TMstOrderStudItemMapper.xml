@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stud.dao.TMstOrderStudItemMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMstOrderStudItem" >
+    <id column="MID" property="mid" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="ORDER_ID" property="orderId" jdbcType="VARCHAR" />
+    <result column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
+    <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR" />
+    <result column="CLASS_CODE" property="classCode" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="QTY" property="qty" jdbcType="INTEGER" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="CLASS_NAME" property="className" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR" />
+    <result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
+    <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="findLossSumBySelective" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), '0') s
+  		from t_mst_order_stud_loss a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where b.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and b.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  <select id="findLossSumBySelectiveUnpack" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), '0') s
+  		from t_mst_order_stud_loss_unpack a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where b.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and b.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  <select id="findLossSumBySelectiveFill" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), '0') s
+  		from t_mst_order_stud_loss_fill a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where b.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and b.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  <select id="selectByMid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    MID, ORDER_DATE, ORDER_ID, SCHOOL_CODE, ORDER_TYPE, CLASS_CODE, MATNR, QTY, SALES_ORG
+    from t_mst_order_stud_item
+    where MID = #{mid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findSumBySelectiveUnpack" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), '0') s
+  		from t_mst_order_stud_item_unpack a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where a.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		and a.ORDER_TYPE=#{orderType}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and a.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  <select id="findSumBySelectiveFill" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), '0') s
+  		from t_mst_order_stud_item_fill a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where a.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		and a.ORDER_TYPE=#{orderType}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and a.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  <select id="findSumBySelective" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), '0') s
+  		from t_mst_order_stud_item a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where a.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		and a.ORDER_TYPE=#{orderType}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and a.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  
+  <select id="findClassOrderItemByOrderStud" parameterType="com.nhry.data.stud.domain.TMstOrderStud" resultType="com.nhry.data.stud.domain.TMstOrderStud">
+  	select 
+  	a.class_code classCode, a.class_name className, b.QTY qty
+  	from t_md_class a
+  	left join t_mst_order_stud_item b on a.CLASS_CODE=b.CLASS_CODE
+  	left join t_mst_order_stud c on b.order_id=b.order_id
+  	where c.SCHOOL_CODE=#{schoolCode}
+  	and c.ORDER_DATE=#{orderDateStr}
+  	and c.SALES_ORG=#{salesOrg}
+  	and c.order_status='10'
+  	and b.MATNR=#{matnr}
+  	order by a.CLASS_CODE ASC
+  </select>
+  
+  <select id="findOrderItemByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+  	DISTINCT
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,
+	class.CLASS_NAME, 
+	(CASE WHEN(mara.SHORT_TXT IS NULL OR mara.SHORT_TXT='')THEN mara.MATNR_TXT ELSE mara.SHORT_TXT  END) MATNR_TXT
+	, mara.ZBOT_CODE,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_mst_order_stud_item OI
+    left join t_md_class CLASS on oi.CLASS_CODE=class.CLASS_CODE
+    left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
+    where oi.ORDER_ID=#{orderId}
+    and oi.ORDER_TYPE=#{orderType}
+    and mara.STATUS='Y'
+    and oi.SALES_ORG=#{salesOrg}
+    and mara.SALES_ORG=#{salesOrg}
+    order by oi.CLASS_CODE ASC
+  </select>
+  
+  <select id="findOrderItemByMapUnpack" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+  	DISTINCT
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,
+	(CASE WHEN(mara.SHORT_TXT IS NULL OR mara.SHORT_TXT='')THEN mara.MATNR_TXT ELSE mara.SHORT_TXT  END) MATNR_TXT
+	, mara.ZBOT_CODE,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_mst_order_stud_item_unpack OI
+    left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
+    where oi.ORDER_ID=#{orderId}
+    and oi.ORDER_TYPE=#{orderType}
+    and mara.STATUS='Y'
+    and oi.SALES_ORG=#{salesOrg}
+    and mara.SALES_ORG=#{salesOrg}
+    order by oi.CLASS_CODE ASC
+  </select>
+  
+  <select id="findOrderItemByMapFill" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+  	DISTINCT
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,
+	(CASE WHEN(mara.SHORT_TXT IS NULL OR mara.SHORT_TXT='')THEN mara.MATNR_TXT ELSE mara.SHORT_TXT  END) MATNR_TXT
+	, mara.ZBOT_CODE, mara.BASE_UNIT,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_mst_order_stud_item_fill OI
+    left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
+    where oi.ORDER_ID=#{orderId}
+    and oi.ORDER_TYPE=#{orderType}
+    and mara.STATUS='Y'
+    and oi.SALES_ORG=#{salesOrg}
+    and mara.SALES_ORG=#{salesOrg}
+  </select>
+  
+  <select id="findOrderItemByMapWithBatch" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+  	DISTINCT
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG
+    from t_mst_order_stud_item OI
+    left join t_mst_order_stud b on oi.order_id=b.order_id
+    where oi.ORDER_DATE=#{getOrderDateStr}
+    and oi.SCHOOL_CODE=#{schoolCode}
+    and oi.SALES_ORG=#{salesOrg}
+    and b.order_status='10'
+    and b.SALES_ORG=#{salesOrg}
+    order by oi.CLASS_CODE ASC
+  </select>
+  
+  <select id="findOrderItemUnpackByMapWithBatch" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG
+    from t_mst_order_stud_item_unpack OI
+    left join t_mst_order_stud b on oi.order_id=b.order_id
+    where oi.ORDER_DATE=#{getOrderDateStr}
+    and oi.SCHOOL_CODE=#{schoolCode}
+    and oi.SALES_ORG=#{salesOrg}
+    and b.order_status='10'
+  </select>
+  
+  
+  <select id="findOrderItemByOrderId" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, 
+    oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,mara.ZBOT_CODE,mara.SPEC_UNIT,mara.BASE_UNIT,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_mst_order_stud_item oi
+    left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
+    where oi.ORDER_ID=#{orderId} and mara.SALES_ORG = #{salesOrg} 
+    order by oi.CLASS_CODE ASC
+  </select>
+  
+  
+  <select id="findOrderItemByOrderIdUnpack" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,
+	class.CLASS_NAME, mara.MATNR_TXT, mara.ZBOT_CODE,mara.SPEC_UNIT,mara.BASE_UNIT,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_mst_order_stud_item_unpack OI
+    left join t_md_class CLASS on oi.CLASS_CODE=class.CLASS_CODE
+    left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
+   	where oi.ORDER_ID=#{orderId} and mara.SALES_ORG = #{salesOrg} 
+  </select>
+  
+  
+  
+  <!-- <update id="deleteOrderAndItem" parameterType="java.util.Map">
+  	update t_mst_order_stud
+  	set ORDER_STATUS='20'
+  	where ORDER_DATE=#{orderDateStr}
+  	and SCHOOL_CODE=#{schoolCode}
+  	and SALES_ORG=#{salesOrg}
+  	and ORDER_STATUS='10'
+  </update> -->
+  
+  <update id="deleteOrderWithBatch" parameterType="java.util.Map">
+  	update t_mst_order_stud
+  	set ORDER_STATUS='20'
+  	where ORDER_DATE=#{orderDateStr}
+  	and SALES_ORG=#{salesOrg}
+  	and ORDER_STATUS='10'
+  	AND (ERP_ORDER_STATUS != '10' OR ERP_ORDER_STATUS IS NULL) 
+  	AND (ERP_ORDER_FREE_STATUS != '10' OR ERP_ORDER_FREE_STATUS IS NULL) 
+  	AND (ERP_ORDER_FILL_STATUS != '10' OR ERP_ORDER_FILL_STATUS IS NULL) 
+	AND IS_BATCH = '10'
+  </update>
+  
+  
+  
+  
+  <insert id="insertSdutOrderItem" parameterType="com.nhry.data.stud.domain.TMstOrderStudItem" >
+    insert into t_mst_order_stud_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        MID,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="orderId != null" >
+        ORDER_ID,
+      </if>
+      <if test="schoolCode != null" >
+        SCHOOL_CODE,
+      </if>
+      <if test="orderType != null" >
+        ORDER_TYPE,
+      </if>
+      <if test="classCode != null" >
+        CLASS_CODE,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="qty != null" >
+        QTY,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="classCode != null" >
+        #{classCode,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="insertSdutOrderItemUnpack" parameterType="com.nhry.data.stud.domain.TMstOrderStudItem" >
+    insert into t_mst_order_stud_item_unpack
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        MID,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="orderId != null" >
+        ORDER_ID,
+      </if>
+      <if test="schoolCode != null" >
+        SCHOOL_CODE,
+      </if>
+      <if test="orderType != null" >
+        ORDER_TYPE,
+      </if>
+      <if test="classCode != null" >
+        CLASS_CODE,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="qty != null" >
+        QTY,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="classCode != null" >
+        #{classCode,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="insertSdutOrderItemFill" parameterType="com.nhry.data.stud.domain.TMstOrderStudItem" >
+    insert into t_mst_order_stud_item_fill
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        MID,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="orderId != null" >
+        ORDER_ID,
+      </if>
+      <if test="schoolCode != null" >
+        SCHOOL_CODE,
+      </if>
+      <if test="orderType != null" >
+        ORDER_TYPE,
+      </if>
+      <if test="classCode != null" >
+        CLASS_CODE,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="qty != null" >
+        QTY,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="classCode != null" >
+        #{classCode,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <delete id="deleteOrderItemByOrderIdUnpack" parameterType="java.lang.String">
+  	delete from t_mst_order_stud_item_unpack
+  	where order_id=#{orderId}
+  </delete>
+  <delete id="deleteOrderItemByOrderIdFill" parameterType="java.lang.String">
+  	delete from t_mst_order_stud_item_fill
+  	where order_id=#{orderId}
+  </delete>
+  <delete id="deleteOrderItemByOrderId" parameterType="java.lang.String">
+  	delete from t_mst_order_stud_item
+  	where order_id=#{orderId}
+  </delete>
+  <select id="findMatnrCountByMap" parameterType="java.util.Map" resultType="java.lang.Integer">
+ 		select SUM(b.QTY) c
+ 		from t_mst_order_stud a
+  		left join ${sourceType} b on a.order_id=b.order_id
+	  	where a.ORDER_DATE&gt;=#{startOrderDateStr}
+	  	and b.ORDER_DATE&lt;=#{endOrderDateStr}
+	  	and a.SCHOOL_CODE=#{schoolCode}
+	  	and a.SALES_ORG=#{salesOrg}
+	  	and a.ORDER_STATUS='10'
+	  	and b.MATNR=#{matnr}
+  </select>
+</mapper>

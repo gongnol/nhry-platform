@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.bill.dao.TMdEmpSalMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.bill.domain.TMdEmpSal" >
+        <result column="EMP_SAL_LSH" property="empSalLsh" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="DISP_NUM" property="dispNum" jdbcType="INTEGER" />
+        <result column="TOTAL_SAL" property="totalSal" jdbcType="DECIMAL" />
+        <result column="SET_DATE" property="setDate" jdbcType="DATE" />
+
+        <result column="COMP_RATE" property="compRate" jdbcType="DECIMAL" />
+        <result column="COMP_SAL" property="compSal" jdbcType="DECIMAL" />
+        <result column="DISP_SAL" property="dispSal" jdbcType="DECIMAL" />
+        <result column="IN_DISP_SAL" property="inDispSal" jdbcType="DECIMAL" />
+        <result column="SEND_DISP_SAL" property="sendDispSal" jdbcType="DECIMAL" />
+
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="SALARY_MET" property="salaryMet" jdbcType="VARCHAR" />
+        <result column="BASE_SALARY" property="baseSalary" jdbcType="INTEGER" />
+
+        <result column="SET_YEAR_MONTH" property="setYearMonth" jdbcType="VARCHAR" />
+        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        EMP_SAL_LSH,EMP_NO,DISP_NUM,TOTAL_SAL,SET_DATE,COMP_RATE ,COMP_SAL,
+        DISP_SAL,IN_DISP_SAL,SEND_DISP_SAL,SET_YEAR_MONTH
+    </sql>
+
+
+    <select id="searchEmpSalaryRep" resultMap="BaseResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
+        SELECT
+        e.EMP_NO,e.EMP_NAME,e.BRANCH_NO,b.BRANCH_NAME,e.SALARY_MET,s.SET_DATE,s.EMP_SAL_LSH,s.IN_DISP_SAL,s.SEND_DISP_SAL,
+        e.BASE_SALARY,s.SET_YEAR_MONTH,s.DISP_SAL
+        FROM t_md_emp_sal s LEFT  JOIN t_md_branch_emp e on e.EMP_NO = s.EMP_NO
+        LEFT JOIN  t_md_branch b on e.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_emp_role r on( e.EMP_NO = r.EMP_NO  and r.ROLE_ID = <include refid="mybaties.constant.milkman"/>)
+        WHERE 1=1
+        <if test="salesOrg!=null and ''!=salesOrg">
+          and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+
+        <if test="dealerNo!=null and ''!=dealerNo">
+            AND b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  s.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="yearMonth!=null and ''!=yearMonth">
+            and s.SET_YEAR_MONTH = #{yearMonth,jdbcType=VARCHAR}
+        </if>
+       <!-- <if test="startDate!=null and ''!=startDate">
+            AND  s.SET_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            AND  s.SET_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>-->
+        ORDER  BY  s.SET_DATE DESC
+    </select>
+
+
+    <select id="getEmpSalByEmpNoAndDate" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List" />
+         FROM t_md_emp_sal
+        WHERE 1=1
+        and EMP_NO = #{empNo}
+        and SET_YEAR_MONTH = #{setYearMonth}
+    </select>
+
+    <insert id="addEmpSal" parameterType="com.nhry.data.bill.domain.TMdEmpSal">
+        insert into t_md_emp_sal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="empSalLsh != null">
+                EMP_SAL_LSH,
+            </if>
+            <if test="empNo != null">
+                EMP_NO,
+            </if>
+            <if test="dispNum != null">
+                DISP_NUM,
+            </if>
+            <if test="totalSal != null">
+                TOTAL_SAL,
+            </if>
+            <if test="setDate != null">
+                SET_DATE,
+            </if>
+            <if test="dispSal != null">
+                DISP_SAL,
+            </if>
+            <if test="sendDispSal != null">
+                SEND_DISP_SAL,
+            </if>
+            <if test="inDispSal != null">
+                 IN_DISP_SAL,
+            </if>
+            <if test="compRate != null">
+                COMP_RATE,
+            </if>
+            <if test="compSal != null">
+                COMP_SAL,
+            </if>
+            <if test="setYearMonth != null">
+                SET_YEAR_MONTH,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="empSalLsh != null">
+                #{empSalLsh,jdbcType=VARCHAR},
+            </if>
+            <if test="empNo != null">
+                #{empNo,jdbcType=VARCHAR},
+            </if>
+            <if test="dispNum != null">
+                #{dispNum,jdbcType=INTEGER},
+            </if>
+            <if test="totalSal != null">
+                #{totalSal,jdbcType=DECIMAL},
+            </if>
+            <if test="setDate != null">
+                #{setDate,jdbcType=DATE},
+            </if>
+            <if test="dispSal != null">
+                #{dispSal,jdbcType=DECIMAL},
+            </if>
+            <if test="sendDispSal != null">
+                #{sendDispSal,jdbcType=DECIMAL},
+            </if>
+            <if test="inDispSal != null">
+                #{inDispSal,jdbcType=DECIMAL},
+            </if>
+            <if test="compRate != null">
+                #{compRate,jdbcType=DECIMAL},
+            </if>
+            <if test="compSal != null">
+                #{compSal,jdbcType=DECIMAL},
+            </if>
+            <if test="setYearMonth != null">
+                #{setYearMonth,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+
+        </trim>
+
+    </insert>
+
+    <select id="getEmpSalByEmpSalLsh" resultMap="BaseResultMap" parameterType="String">
+      SELECT
+        s.EMP_NO,e.EMP_NAME,e.BRANCH_NO,b.BRANCH_NAME,e.SALARY_MET,s.SET_DATE,s.EMP_SAL_LSH,s.IN_DISP_SAL,s.SEND_DISP_SAL,s.DISP_SAL,
+        e.BASE_SALARY,s.DISP_NUM,s.TOTAL_SAL,s.SET_YEAR_MONTH
+        FROM t_md_emp_sal s LEFT  JOIN t_md_branch_emp  e   on e.EMP_NO = s.EMP_NO
+        LEFT JOIN  t_md_branch b on e.BRANCH_NO = b.BRANCH_NO
+        WHERE 1=1
+        and EMP_SAL_LSH = #{empSalLsh,jdbcType=VARCHAR}
+    </select>
+
+
+    <delete id="delEmpSalByEmpNoAndDate" parameterType="java.util.Map">
+        DELETE
+        FROM t_md_emp_sal
+        WHERE 1=1
+        and EMP_NO = #{empNo}
+        and SET_YEAR_MONTH = #{setYearMonth}
+    </delete>
+
+</mapper>

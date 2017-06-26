@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milk.dao.TDispOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.milk.domain.TDispOrder" >
+    <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <id column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="DISP_LINE_NO" property="dispLineNo" jdbcType="VARCHAR" />
+    <result column="MST_CUST_NO" property="mstCustNo" jdbcType="VARCHAR" />
+    <result column="AMT" property="amt" jdbcType="DECIMAL" />
+    <result column="CONFIRM_AMT" property="confirmAmt" jdbcType="DECIMAL" />
+    <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
+    <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
+    <result column="DISP_ORDER" property="dispOrder" jdbcType="INTEGER" />
+    <result column="DISP_EMP_NO" property="dispEmpNo" jdbcType="VARCHAR" />
+    <result column="HZ_ORDER_NO" property="hzOrderNo" jdbcType="VARCHAR" />
+    <result column="DAY_ACCT_FLAG" property="dayAcctFlag" jdbcType="CHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="PAYMENT_ORDER_NO" property="paymentOrderNo" jdbcType="VARCHAR" />
+    <result column="SUBSCRIBE_ORDER_NO" property="subscribeOrderNo" jdbcType="VARCHAR" />
+    <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" /> 
+    <result column="BRANCH_NAME" property="branchName" jdbcType="INTEGER" />
+    <result column="DISP_EMP_NAME" property="dispEmpName" jdbcType="INTEGER" />
+    <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ORDER_NO, ORDER_DATE, DISP_DATE, BRANCH_NO, DISP_LINE_NO, MST_CUST_NO, AMT, CONFIRM_AMT, 
+    REACH_TIME_TYPE, PAYMENT_TYPE, STATUS, MEMO_TXT, DISP_ORDER, DISP_EMP_NO, HZ_ORDER_NO, 
+    DAY_ACCT_FLAG, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+    LAST_MODIFIED_BY_TXT, PAYMENT_ORDER_NO, SUBSCRIBE_ORDER_NO,TOTAL_QTY,TYPE
+  </sql>
+  <select id="selectTodayDispOrderByBranchNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order 
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and ORDER_DATE = #{branchName,jdbcType=DATE}
+  </select>
+
+  <select id="selectDispOrderByBranchNoAndDay" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and DISP_DATE = #{dispDate,jdbcType=DATE}
+  </select>
+
+  <select id="selectConfirmDispOrderByBranchNoAndDay" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where 1=1
+    AND STATUS = '20'
+    AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and ORDER_DATE = #{branchName,jdbcType=DATE}
+  </select>
+
+
+  <select id="selectDispOrderByOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
+    select 
+    o.ORDER_NO, o.ORDER_DATE, o.DISP_DATE, o.BRANCH_NO, o.DISP_LINE_NO, o.MST_CUST_NO, AMT, o.CONFIRM_AMT, 
+    o.REACH_TIME_TYPE, o.PAYMENT_TYPE, o.STATUS, o.MEMO_TXT, o.DISP_ORDER, o.DISP_EMP_NO, o.HZ_ORDER_NO, 
+    o.DAY_ACCT_FLAG, o.CREATE_AT, o.CREATE_BY, o.CREATE_BY_TXT, o.LAST_MODIFIED, o.LAST_MODIFIED_BY, 
+    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY,b.BRANCH_NAME BRANCH_NAME,e.EMP_NAME DISP_EMP_NAME,
+    d.DEALER_NAME DEALER_NO
+    from t_mst_disp_order o
+    left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+    left join t_md_branch_emp e on e.EMP_NO = o.DISP_EMP_NO
+    left join t_md_dealer d on d.DEALER_NO = b.DEALER_NO
+    where 1 = 1
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDate != null and orderDate !=''">
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </if>  
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
+    delete from t_mst_disp_order
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </delete>
+  <select id="searchRoutePlansByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.milk.RouteOrderSearchModel" >
+     select 
+    o.ORDER_NO, o.ORDER_DATE, o.DISP_DATE, o.BRANCH_NO, o.MST_CUST_NO, o.AMT, o.CONFIRM_AMT, 
+    o.REACH_TIME_TYPE, o.PAYMENT_TYPE, o.STATUS, o.MEMO_TXT, o.DISP_ORDER, e.EMP_NAME DISP_EMP_NO, o.HZ_ORDER_NO, 
+    o.DAY_ACCT_FLAG, o.CREATE_AT, o.CREATE_BY, o.CREATE_BY_TXT, o.LAST_MODIFIED, o.LAST_MODIFIED_BY, 
+    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY,o.TYPE
+    from t_mst_disp_order o , t_md_branch_emp e , t_md_branch b
+    where o.DISP_EMP_NO = e.EMP_NO and o.BRANCH_NO = b.BRANCH_NO
+    	<if test="branchNo1 != null and branchNo1 !=''">
+     		AND o.BRANCH_NO = #{branchNo1,jdbcType=VARCHAR}
+      </if>
+      <if test="salesOrg != null and salesOrg !=''">
+     		AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
+    <if test="emp != null and emp !=''">
+     		AND o.DISP_EMP_NO = #{emp,jdbcType=VARCHAR}
+    </if>
+    <if test="branchNo != null and branchNo !=''">
+     		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="deliverTime != null and deliverTime !=''">
+     		AND o.REACH_TIME_TYPE = #{deliverTime,jdbcType=VARCHAR}
+    </if>
+    <if test="deliverDate != null and deliverDate !=''">
+     		AND o.DISP_DATE = #{deliverDate,jdbcType=VARCHAR}
+    </if>
+<!--     <if test="orderNo != null and orderNo !=''">
+     		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if> -->
+    <if test="status != null and status !=''">
+     		AND o.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    order by o.ORDER_DATE desc, o.REACH_TIME_TYPE asc
+  </select>
+  <insert id="addNewDispOrder" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    insert into t_mst_disp_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="dispDate != null" >
+        DISP_DATE,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="dispLineNo != null" >
+        DISP_LINE_NO,
+      </if>
+      <if test="mstCustNo != null" >
+        MST_CUST_NO,
+      </if>
+      <if test="amt != null" >
+        AMT,
+      </if>
+      <if test="confirmAmt != null" >
+        CONFIRM_AMT,
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE,
+      </if>
+      <if test="paymentType != null" >
+        PAYMENT_TYPE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT,
+      </if>
+      <if test="dispOrder != null" >
+        DISP_ORDER,
+      </if>
+      <if test="dispEmpNo != null" >
+        DISP_EMP_NO,
+      </if>
+      <if test="hzOrderNo != null" >
+        HZ_ORDER_NO,
+      </if>
+      <if test="dayAcctFlag != null" >
+        DAY_ACCT_FLAG,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="paymentOrderNo != null" >
+        PAYMENT_ORDER_NO,
+      </if>
+      <if test="subscribeOrderNo != null" >
+        SUBSCRIBE_ORDER_NO,
+      </if>
+      <if test="totalQty != null" >
+        TOTAL_QTY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="dispDate != null" >
+        #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispLineNo != null" >
+        #{dispLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mstCustNo != null" >
+        #{mstCustNo,jdbcType=VARCHAR},
+      </if>
+      <if test="amt != null" >
+        #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmAmt != null" >
+        #{confirmAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="reachTimeType != null" >
+        #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentType != null" >
+        #{paymentType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="memoTxt != null" >
+        #{memoTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="dispOrder != null" >
+        #{dispOrder,jdbcType=INTEGER},
+      </if>
+      <if test="dispEmpNo != null" >
+        #{dispEmpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="hzOrderNo != null" >
+        #{hzOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dayAcctFlag != null" >
+        #{dayAcctFlag,jdbcType=CHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentOrderNo != null" >
+        #{paymentOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="subscribeOrderNo != null" >
+        #{subscribeOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="totalQty != null" >
+        #{totalQty,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateDispOrder" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    update t_mst_disp_order
+    <set >
+      <if test="dispDate != null" >
+        DISP_DATE = #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispLineNo != null" >
+        DISP_LINE_NO = #{dispLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mstCustNo != null" >
+        MST_CUST_NO = #{mstCustNo,jdbcType=VARCHAR},
+      </if>
+      <if test="amt != null" >
+        AMT = #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmAmt != null" >
+        CONFIRM_AMT = #{confirmAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentType != null" >
+        PAYMENT_TYPE = #{paymentType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="dispOrder != null" >
+        DISP_ORDER = #{dispOrder,jdbcType=INTEGER},
+      </if>
+      <if test="dispEmpNo != null" >
+        DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="hzOrderNo != null" >
+        HZ_ORDER_NO = #{hzOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dayAcctFlag != null" >
+        DAY_ACCT_FLAG = #{dayAcctFlag,jdbcType=CHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentOrderNo != null" >
+        PAYMENT_ORDER_NO = #{paymentOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="subscribeOrderNo != null" >
+        SUBSCRIBE_ORDER_NO = #{subscribeOrderNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDate != null" >
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    update t_mst_disp_order
+    set DISP_DATE = #{dispDate,jdbcType=DATE},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      DISP_LINE_NO = #{dispLineNo,jdbcType=VARCHAR},
+      MST_CUST_NO = #{mstCustNo,jdbcType=VARCHAR},
+      AMT = #{amt,jdbcType=DECIMAL},
+      CONFIRM_AMT = #{confirmAmt,jdbcType=DECIMAL},
+      REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      PAYMENT_TYPE = #{paymentType,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
+      DISP_ORDER = #{dispOrder,jdbcType=INTEGER},
+      DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR},
+      HZ_ORDER_NO = #{hzOrderNo,jdbcType=VARCHAR},
+      DAY_ACCT_FLAG = #{dayAcctFlag,jdbcType=CHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      PAYMENT_ORDER_NO = #{paymentOrderNo,jdbcType=VARCHAR},
+      SUBSCRIBE_ORDER_NO = #{subscribeOrderNo,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </update>
+
+  <select id="creatRecBot" resultType="DECIMAL" parameterType="com.nhry.model.milktrans.CreateEmpReturnboxModel" >
+    select
+    SUM(i.QTY) RECEIVE_NUM
+    from t_mst_disp_order_item i,t_mst_disp_order o
+    WHERE i.ORDER_NO = o.ORDER_NO
+    and o.DISP_DATE = #{retDate,jdbcType=DATE}
+    and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+    and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getDispOrderByNo" resultMap="BaseResultMap" parameterType="String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectYestodayDispOrderByEmp" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where 
+    DISP_DATE = #{branchName,jdbcType=DATE}
+    and DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+    and REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
+    and STATUS = '20'
+  </select>
+  
+  <select id="selectYestodayDispOrderByEmpType10" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where 
+    DISP_DATE = #{branchName,jdbcType=DATE}
+    and DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+    and REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
+    and STATUS = '20'
+    and TYPE='10'
+  </select>
+
+    <update id="updateDispOrderEmp" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+	    update t_mst_disp_order
+	    set DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}  
+	    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  	 </update>
+
+	<select id="selectConfirmedDispOrderByDate" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_mst_disp_order
+    WHERE BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    AND DISP_DATE = #{branchName,jdbcType=DATE}
+  </select>
+  
+  <delete id="deleteDispOrderByOrderNo" >
+    delete from t_mst_disp_order
+    where ORDER_NO in 
+    <foreach item="codeStr" collection="list" separator="," open="(" close=")" index="">  
+      	#{codeStr}  
+    </foreach>  
+  </delete>
+  <select id="getBranchEmpAmt" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+   SELECT
+      t2.DISP_DATE,
+      t.DISP_EMP_NO,
+      t2.BRANCH_NO,
+      SUM(t.AMT) AMT
+  FROM
+      t_mst_disp_order_item t
+  JOIN t_mst_disp_order t2 ON t2.ORDER_NO = t.ORDER_NO
+  JOIN t_preorder o on o.ORDER_NO = t.ORG_ORDER_NO
+  WHERE
+       t2.`STATUS` = '20'
+    AND (o.PREORDER_SOURCE = '20' or o.PREORDER_SOURCE='30' or o.PREORDER_SOURCE='50' or o.PREORDER_SOURCE='60')
+    <if test="dispDate != null" >
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+  AND t2.BRANCH_NO= #{branchNo,jdbcType=VARCHAR}
+  GROUP BY
+      t2.DISP_DATE,
+      t.DISP_EMP_NO
+  ORDER BY
+      t.DISP_EMP_NO
+  </select>
+  <select id="getBranchEmpAmtByEmpNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    SELECT
+    t2.DISP_DATE,
+    t.DISP_EMP_NO,
+    t2.BRANCH_NO,
+    SUM(t.AMT) AMT
+    FROM
+    t_mst_disp_order_item t
+    JOIN t_mst_disp_order t2 ON t2.ORDER_NO = t.ORDER_NO
+    JOIN t_preorder o on o.ORDER_NO = t.ORG_ORDER_NO
+    WHERE
+    t2.`STATUS` = '20'
+    AND (o.PREORDER_SOURCE = '20' or o.PREORDER_SOURCE='30' or o.PREORDER_SOURCE='50' or o.PREORDER_SOURCE='60')
+    <if test="dispDate != null" >
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    AND t2.BRANCH_NO= #{branchNo,jdbcType=VARCHAR}
+    <if test="dispEmpNo != null" >
+      AND t.DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+    </if>
+    GROUP BY
+    t2.DISP_DATE,
+    t.DISP_EMP_NO
+    ORDER BY
+    t.DISP_EMP_NO
+  </select>
+</mapper>

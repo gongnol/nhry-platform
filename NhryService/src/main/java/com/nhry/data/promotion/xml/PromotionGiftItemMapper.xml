@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.promotion.dao.PromotionGiftItemMapper">
+  <resultMap id="BaseResultMap" type="com.nhry.data.promotion.domain.PromotionGiftItem">
+    <id column="PROM_NO" jdbcType="VARCHAR" property="promNo" />
+    <id column="ITEM_NO" jdbcType="VARCHAR" property="itemNo" />
+    <result column="GIFT_TYPE" jdbcType="VARCHAR" property="giftType" />
+    <result column="GIFT_NO" jdbcType="VARCHAR" property="giftNo" />
+    <result column="GIFT_NUM" jdbcType="DECIMAL" property="giftNum" />
+    <result column="GIFT_UNIT" jdbcType="VARCHAR" property="giftUnit" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    PROM_NO, ITEM_NO, GIFT_TYPE, GIFT_NO, GIFT_NUM, GIFT_UNIT
+  </sql>
+  <select id="selectGiftItem" parameterType="com.nhry.data.promotion.domain.PromotionGiftItemKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_gift_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteGiftItem" parameterType="com.nhry.data.promotion.domain.PromotionGiftItemKey">
+    delete from t_promotion_gift_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertGiftItem" parameterType="com.nhry.data.promotion.domain.PromotionGiftItem">
+    insert into t_promotion_gift_item (PROM_NO, ITEM_NO, GIFT_TYPE, 
+      GIFT_NO, GIFT_NUM, GIFT_UNIT
+      )
+    values (#{promNo,jdbcType=VARCHAR}, #{itemNo,jdbcType=VARCHAR}, #{giftType,jdbcType=VARCHAR}, 
+      #{giftNo,jdbcType=VARCHAR}, #{giftNum,jdbcType=DECIMAL}, #{giftUnit,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertGiftItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionGiftItem">
+    insert into t_promotion_gift_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="promNo != null">
+        PROM_NO,
+      </if>
+      <if test="itemNo != null">
+        ITEM_NO,
+      </if>
+      <if test="giftType != null">
+        GIFT_TYPE,
+      </if>
+      <if test="giftNo != null">
+        GIFT_NO,
+      </if>
+      <if test="giftNum != null">
+        GIFT_NUM,
+      </if>
+      <if test="giftUnit != null">
+        GIFT_UNIT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="promNo != null">
+        #{promNo,jdbcType=VARCHAR},
+      </if>
+      <if test="itemNo != null">
+        #{itemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="giftType != null">
+        #{giftType,jdbcType=VARCHAR},
+      </if>
+      <if test="giftNo != null">
+        #{giftNo,jdbcType=VARCHAR},
+      </if>
+      <if test="giftNum != null">
+        #{giftNum,jdbcType=DECIMAL},
+      </if>
+      <if test="giftUnit != null">
+        #{giftUnit,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateGiftItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionGiftItem">
+    update t_promotion_gift_item
+    <set>
+      <if test="giftType != null">
+        GIFT_TYPE = #{giftType,jdbcType=VARCHAR},
+      </if>
+      <if test="giftNo != null">
+        GIFT_NO = #{giftNo,jdbcType=VARCHAR},
+      </if>
+      <if test="giftNum != null">
+        GIFT_NUM = #{giftNum,jdbcType=DECIMAL},
+      </if>
+      <if test="giftUnit != null">
+        GIFT_UNIT = #{giftUnit,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateGiftItem" parameterType="com.nhry.data.promotion.domain.PromotionGiftItem">
+    update t_promotion_gift_item
+    set GIFT_TYPE = #{giftType,jdbcType=VARCHAR},
+      GIFT_NO = #{giftNo,jdbcType=VARCHAR},
+      GIFT_NUM = #{giftNum,jdbcType=DECIMAL},
+      GIFT_UNIT = #{giftUnit,jdbcType=VARCHAR}
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+  
+  
+    <delete id="delGiftPromByNo" parameterType="java.lang.String">
+    delete from t_promotion_gift_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+  </delete>
+</mapper>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stud.dao.TMdMaraStudMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdMaraStud" >
+    <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <id column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+    <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="FIRST_CAT" property="firstCat" jdbcType="VARCHAR" />
+    <result column="SEC_CATE" property="secCate" jdbcType="VARCHAR" />
+    <result column="SEC_CATE_NAME" property="secCateName" jdbcType="VARCHAR" />
+    <result column="BRAND" property="brand" jdbcType="VARCHAR" />
+    <result column="WEIGHT" property="weight" jdbcType="REAL" />
+    <result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR" />
+    <result column="IMPORTANT_PRD_FLAG" property="importantPrdFlag" jdbcType="VARCHAR" />
+    <result column="SPEC" property="spec" jdbcType="VARCHAR" />
+     <result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
+    <result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR" />
+    <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+    <result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR" />
+    <result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
+    <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MATNR, SALES_ORG, MATNR_TXT, BASE_UNIT, STATUS, LAST_MODIFIED, CREATE_AT, FIRST_CAT, 
+    SEC_CATE, BRAND, WEIGHT, WEIGHT_UNIT, IMPORTANT_PRD_FLAG, SPEC, SPEC_UNIT, BOT_SPEC, 
+    ZBOT_CODE, DEALER_NO,SHORT_TXT
+  </sql>
+  <select id="findAllListBySalesOrg" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    p.MATNR, p.SALES_ORG,p.SPEC_UNIT,(CASE WHEN(p.SHORT_TXT IS NULL OR p.SHORT_TXT='')THEN p.MATNR_TXT ELSE p.SHORT_TXT  END) MATNR_TXT, p.ZBOT_CODE, p.SHORT_TXT,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_md_mara_stud p
+    where p.STATUS='Y'
+    and p.SALES_ORG = #{salesOrg}
+  </select>
+  
+  <select id="selectProductByMap" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select <include refid="Base_Column_List" /> from t_md_mara_stud where SALES_ORG = #{salesOrg,jdbcType=VARCHAR} and MATNR = #{matnr,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectMaraByMap" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select 
+		MATNR, SALES_ORG, MATNR_TXT, BASE_UNIT, STATUS, FIRST_CAT, 
+	    SEC_CATE, BRAND, WEIGHT, WEIGHT_UNIT, IMPORTANT_PRD_FLAG, SPEC, SPEC_UNIT, BOT_SPEC, 
+	    ZBOT_CODE, DEALER_NO,SHORT_TXT
+		from t_md_mara_stud 
+		where SALES_ORG = #{salesOrg,jdbcType=VARCHAR} 
+		and MATNR = #{matnr,jdbcType=VARCHAR}
+		and status='Y'
+	</select>
+  
+  
+  <select id="findMaraStudAllPage" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		SELECT
+		p.MATNR,
+		p.MATNR_TXT,
+		p.SHORT_TXT,
+		p.BASE_UNIT,
+		p. STATUS,
+		p.LAST_MODIFIED MARA_LAST_MODIFIED,
+		p.CREATE_AT MARA_CREATE_AT,
+		p.FIRST_CAT,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
+		p.SEC_CATE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
+		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
+		p.WEIGHT,
+		p.WEIGHT_UNIT,
+		p.IMPORTANT_PRD_FLAG,
+		p.SPEC,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
+		p.SPEC_UNIT,
+		p.BOT_SPEC,
+		p.ZBOT_CODE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
+		p.SALES_ORG,
+		p.DEALER_NO
+			FROM
+		t_md_mara_stud   p
+	   	 where p.STATUS='Y' and p.SALES_ORG = #{salesOrg}
+	    <if test=" keyWord !=null and keyWord !='' " >
+	    	and   (p.MATNR like '%${keyWord}%' or p.MATNR_TXT like '%${keyWord}%' or p.SHORT_TXT like '%${keyWord}%') 
+	    </if>
+	    order by p.MATNR
+  </select>
+  
+  <!-- findAllListBySalesOrgNotIn -->
+  <select id="findAllListBySalesOrgNotIn" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    p.MATNR, p.SALES_ORG, 
+    (CASE WHEN(p.SHORT_TXT IS NULL OR p.SHORT_TXT='')THEN p.MATNR_TXT ELSE p.SHORT_TXT  END) MATNR_TXT
+    , p.ZBOT_CODE,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_md_mara_stud p
+    where p.STATUS='Y'
+    and p.SALES_ORG = #{salesOrg}
+    and p.MATNR NOT IN
+    <foreach collection="notInList" item="matnr" index="index" open="(" close=")" separator=",">
+   		#{matnr}
+   	</foreach>
+  </select>
+  
+  <update  id="updateInfo" parameterType="com.nhry.data.stud.domain.TMdMaraStud"  >
+  		update t_md_mara_stud set SHORT_TXT=#{shortTxt}  where MATNR=#{matnr} and SALES_ORG= #{salesOrg}
+  </update>
+  
+  
+  
+  
+  <update id="updateTMdMaraStud" parameterType="com.nhry.data.stud.domain.TMdMaraStud">
+		update t_md_mara_stud
+		<set>
+			<if test="matnrTxt != null">
+				MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="baseUnit != null">
+				BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModified != null">
+				LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createAt != null">
+				CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="firstCat != null">
+				FIRST_CAT = #{firstCat,jdbcType=VARCHAR},
+			</if>
+			<if test="secCate != null">
+				SEC_CATE = #{secCate,jdbcType=VARCHAR},
+			</if>
+			<if test="brand != null">
+				BRAND = #{brand,jdbcType=VARCHAR},
+			</if>
+			<if test="weight != null">
+				WEIGHT = #{weight,jdbcType=REAL},
+			</if>
+			<if test="weightUnit != null">
+				WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="importantPrdFlag != null">
+				IMPORTANT_PRD_FLAG = #{importantPrdFlag,jdbcType=CHAR},
+			</if>
+			<if test="spec != null">
+				SPEC = #{spec,jdbcType=VARCHAR},
+			</if>
+			<if test="specUnit != null">
+				SPEC_UNIT = #{specUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="botSpec != null">
+				BOT_SPEC = #{botSpec,jdbcType=VARCHAR},
+			</if>
+			<if test="zbotCode != null">
+				ZBOT_CODE = #{zbotCode,jdbcType=VARCHAR},
+			</if>
+			<if test="dealerNo != null">
+				DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where SALES_ORG=#{salesOrg} and MATNR = #{matnr,jdbcType=VARCHAR}
+	</update>
+  
+  	<insert id="saveProduct" parameterType="com.nhry.data.stud.domain.TMdMaraStud">
+		insert into t_md_mara_stud
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="matnr != null">
+				MATNR,
+			</if>
+			<if test="matnrTxt != null">
+				MATNR_TXT,
+			</if>
+			<if test="baseUnit != null">
+				BASE_UNIT,
+			</if>
+			<if test="status != null">
+				STATUS,
+			</if>
+			<if test="lastModified != null">
+				LAST_MODIFIED,
+			</if>
+			<if test="createAt != null">
+				CREATE_AT,
+			</if>
+			<if test="firstCat != null">
+				FIRST_CAT,
+			</if>
+			<if test="secCate != null">
+				SEC_CATE,
+			</if>
+			<if test="brand != null">
+				BRAND,
+			</if>
+			<if test="weight != null">
+				WEIGHT,
+			</if>
+			<if test="weightUnit != null">
+				WEIGHT_UNIT,
+			</if>
+			<if test="importantPrdFlag != null">
+				IMPORTANT_PRD_FLAG,
+			</if>
+			<if test="spec != null">
+				SPEC,
+			</if>
+			<if test="specUnit != null">
+				SPEC_UNIT,
+			</if>
+			<if test="botSpec != null">
+				BOT_SPEC,
+			</if>
+			<if test="zbotCode != null">
+				ZBOT_CODE,
+			</if>
+			<if test="salesOrg != null">
+				SALES_ORG,
+			</if>
+			<if test="dealerNo != null">
+				DEALER_NO,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="matnr != null">
+				#{matnr,jdbcType=VARCHAR},
+			</if>
+			<if test="matnrTxt != null">
+				#{matnrTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="baseUnit != null">
+				#{baseUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModified != null">
+				#{lastModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createAt != null">
+				#{createAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="firstCat != null">
+				#{firstCat,jdbcType=VARCHAR},
+			</if>
+			<if test="secCate != null">
+				#{secCate,jdbcType=VARCHAR},
+			</if>
+			<if test="brand != null">
+				#{brand,jdbcType=VARCHAR},
+			</if>
+			<if test="weight != null">
+				#{weight,jdbcType=REAL},
+			</if>
+			<if test="weightUnit != null">
+				#{weightUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="importantPrdFlag != null">
+				#{importantPrdFlag,jdbcType=CHAR},
+			</if>
+			<if test="spec != null">
+				#{spec,jdbcType=VARCHAR},
+			</if>
+			<if test="specUnit != null">
+				#{specUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="botSpec != null">
+				#{botSpec,jdbcType=VARCHAR},
+			</if>
+			<if test="zbotCode != null">
+				#{zbotCode,jdbcType=VARCHAR},
+			</if>
+			<if test="salesOrg != null">
+				#{salesOrg,jdbcType=VARCHAR},
+			</if>
+			<if test="dealerNo != null">
+				#{dealerNo,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+  
+</mapper>

@@ -1,0 +1,1707 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.order.dao.TOrderDaliyPlanItemMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <id column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <id column="PLAN_ITEM_NO" property="planItemNo" jdbcType="VARCHAR" />
+    <id column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
+    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+    <result column="REACH_TIME" property="reachTime" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR" property="confirmMatnr" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="QTY" property="qty" jdbcType="INTEGER" />
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+    <result column="AMT" property="amt" jdbcType="DECIMAL" />
+    <result column="REMAIN_AMT" property="remainAmt" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="GIFT_QTY" property="giftQty" jdbcType="INTEGER" />
+    <result column="PROMOTION_FLAG" property="promotionFlag" jdbcType="VARCHAR" />
+    <result column="WEEKLY" property="weekly" jdbcType="VARCHAR" />
+    <result column="BALANCE_AMT" property="balanceAmt" jdbcType="DECIMAL"/>
+    <result column="PRICE_DELIVER" property="priceDeliver" jdbcType="DECIMAL" />
+    <result column="PRICE_HOME" property="priceHome" jdbcType="DECIMAL" />
+    <result column="PRICE_NET_VALUE" property="priceNetValue" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <resultMap id="YearCardMap" type="com.nhry.data.order.domain.TMstYearCardCompOrder" >
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+    <result column="VIP_NAME" property="vipName" jdbcType="VARCHAR" />
+    <result column="CUST_ADDRESS" property="custAddress" jdbcType="VARCHAR" />
+    <result column="CUST_MP" property="custMp" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+    <result column="DALIY_QTY" property="daliyQty" jdbcType="DECIMAL" />
+    <result column="PRE_TOTAL" property="preTotal" jdbcType="INTEGER" />
+    <result column="REAL_TOTAL" property="realTotal" jdbcType="INTEGER" />
+    <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL" />
+    <result column="PRE_DISCOUNT" property="preDiscount" jdbcType="DECIMAL" />
+    <result column="REAL_DISCOUNT" property="realDiscount" jdbcType="DECIMAL" />
+    <result column="SH_REFUND" property="shRefund" jdbcType="DECIMAL" />
+    <result column="REAL_REFUND" property="realRefund" jdbcType="DECIMAL" />
+    <result column="DIFFERENCE" property="difference" jdbcType="DECIMAL" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ORDER_NO, ORDER_DATE, PLAN_ITEM_NO, ITEM_NO, DISP_DATE, REACH_TIME, REACH_TIME_TYPE, 
+    MATNR, UNIT, QTY, PRICE, AMT, REMAIN_AMT, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,GIFT_QTY,PROMOTION_FLAG,PRICE_DELIVER,PRICE_HOME,
+    PRICE_NET_VALUE
+  </sql>
+  <sql id="PREORDER_SOURCE_BRANCH">
+    AND (o.PREORDER_SOURCE = '10' OR o.PREORDER_SOURCE = '20' OR o.PREORDER_SOURCE = '30'
+    OR o.PREORDER_SOURCE = '50' OR o.PREORDER_SOURCE = '60')
+    AND o.ONLINE_SOURCE_TYPE is null
+  </sql>
+  <select id="searchDaliyOrdersByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
+    select 
+    d.ORDER_NO, d.ORDER_DATE, d.PLAN_ITEM_NO, d.ITEM_NO, d.DISP_DATE,(CASE dayofweek(d.DISP_DATE)
+		WHEN 1 THEN
+			'星期日'
+		WHEN 2 THEN
+			'星期一'
+		WHEN 3 THEN
+			'星期二'
+		WHEN 4 THEN
+			'星期三'
+		WHEN 5 THEN
+			'星期四'
+		WHEN 6 THEN
+			'星期五'
+		WHEN 7 THEN
+			'星期六'
+		END	) WEEKLY, d.REACH_TIME, d.REACH_TIME_TYPE,
+    d.MATNR, UNIT, d.QTY, d.PRICE, d.AMT, d.REMAIN_AMT, d.STATUS, d.CREATE_AT, d.CREATE_BY, d.CREATE_BY_TXT, 
+    d.LAST_MODIFIED, d.LAST_MODIFIED_BY, d.LAST_MODIFIED_BY_TXT, ex.SHORT_TXT MATNR_TXT,ex.SHORT_TXT
+    from t_mst_order_daliy_plan_item d , t_md_mara p ,t_preorder o,t_md_mara_ex ex
+    where d.MATNR = p.MATNR and o.ORDER_NO = d.ORDER_NO and o.SALES_ORG = p.SALES_ORG and ex.MATNR=d.MATNR and o.SALES_ORG =ex.SALES_ORG
+    and d.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    order by d.DISP_DATE,d.REMAIN_AMT desc
+  </select>
+  
+   <select id="findOrderSumByDate" resultType="java.util.HashMap" parameterType="com.nhry.model.milk.MilkQueryModel" >
+	SELECT SUM(i.qty) QTY,i.MATNR,ex.SHORT_TXT MATNR_TXT FROM t_preorder  pd 
+		INNER JOIN t_md_branch  b  on  b.BRANCH_NO= pd.BRANCH_NO
+		INNER JOIN t_mst_order_daliy_plan_item   i on  pd.ORDER_NO=i.ORDER_NO
+		INNER JOIN t_md_mara_ex ex  on  ex.MATNR=i.MATNR and ex.SALES_ORG=b.SALES_ORG
+		WHERE
+		 pd.SIGN='10' and i.status='10' and 
+		 pd.BRANCH_NO=#{branchNo}  and  pd.emp_no=#{loginName}  and  i.DISP_DATE=#{date}
+		GROUP BY i.MATNR,ex.SHORT_TXT ORDER BY QTY 
+  </select>
+  <select id="searchDaliyOrdersByData" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1=1
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDateStart!=null">
+      and DISP_DATE &gt;= #{orderDateStart,jdbcType=DATE}
+    </if>
+    <if test="orderDateEnd!=null">
+      and DISP_DATE &lt;= #{orderDateEnd,jdbcType=DATE}
+    </if>
+  </select>
+  <select id="searchDaliyOrdersByOrderNoAndFinalStop" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1=1
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDateStart!=null">
+       and DISP_DATE &gt;= #{orderDateStart,jdbcType=DATE}
+    </if>
+    <if test="orderDateEnd!=null">
+      and DISP_DATE &lt;= #{orderDateEnd,jdbcType=DATE}
+    </if>
+    and STATUS = '30'
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectDaliyPlansByEntryNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1 = 1 
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectDaliyPlansByOrderNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   		select
+    i.ORDER_NO, i.ORDER_DATE, i.PLAN_ITEM_NO, i.ITEM_NO, i.DISP_DATE, i.REACH_TIME, i.REACH_TIME_TYPE,
+    i.MATNR, ex.SHORT_TXT MATNR_TXT,i.UNIT, i.QTY, i.PRICE, i.AMT, i.REMAIN_AMT, i.STATUS, i.CREATE_AT, i.CREATE_BY, i.CREATE_BY_TXT,
+    i.LAST_MODIFIED, i.LAST_MODIFIED_BY, i.LAST_MODIFIED_BY_TXT,i.GIFT_QTY,i.PROMOTION_FLAG
+    from t_mst_order_daliy_plan_item i
+    left JOIN  t_preorder o on i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
+    where 1 = 1
+      and o.SALES_ORG = ex.SALES_ORG
+      and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
+     order by i.DISP_DATE desc  , i.REMAIN_AMT asc
+  </select>
+   <select id="searchDaliyPlansByStatus" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <choose>
+    	 <when test="status != null" >
+	     and (STATUS = '10'
+	     <if test="createBy != null" >
+				or STATUS = '20'
+        </if>
+        <if test="createByTxt != null" >
+	     	   or STATUS = '30'
+        </if>
+        )
+       </when>
+    	 <when test="createBy != null" >
+	     and (STATUS = '20'
+	     <if test="status != null" >
+				or STATUS = '10'
+        </if>
+        <if test="createByTxt != null" >
+	     	   or STATUS = '30'
+        </if>
+        )
+       </when>
+       <when test="createByTxt != null" >
+	     and (STATUS = '30'
+	     <if test="createBy != null" >
+				or STATUS = '20'
+        </if>
+        <if test="status != null" >
+	     	   or STATUS = '10'
+        </if>
+        )
+       </when>
+    </choose>
+    order by DISP_DATE asc  
+  </select>
+  <select id="selectDaliyPlansByOrderNoAsc" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1 = 1 
+      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    order by DISP_DATE asc  , REMAIN_AMT desc
+  </select>
+  <select id="selectDaliyPlansByEntryNoAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1 = 1 
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectMaxDaliyPlansNoByOrderNo" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select IFNULL(max(cast(PLAN_ITEM_NO as decimal(10,0))),0)
+    from t_mst_order_daliy_plan_item 
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectDaliyPlansRemainAmt" resultType="BigDecimal" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    select max(cast(REMAIN_AMT as decimal(10,2)))
+    from t_mst_order_daliy_plan_item 
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+     and DISP_DATE &gt;= #{itemNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectDaliyPlansByDispNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    select
+    d.ORDER_NO, d.ORDER_DATE, d.PLAN_ITEM_NO, d.ITEM_NO, d.DISP_DATE, d.REACH_TIME, d.REACH_TIME_TYPE, 
+    d.MATNR, d.UNIT, d.QTY, d.PRICE, d.AMT, d.REMAIN_AMT, d.STATUS, d.CREATE_AT, d.CREATE_BY, o.ADRESS_NO CREATE_BY_TXT, 
+    d.LAST_MODIFIED, d.LAST_MODIFIED_BY,o.emp_no LAST_MODIFIED_BY_TXT,d.GIFT_QTY
+	 from t_mst_order_daliy_plan_item d
+	 left join t_preorder o on o.order_no = d.order_no
+	 where d.disp_date = #{planItemNo,jdbcType=DATE}
+	 and o.emp_no = #{itemNo,jdbcType=VARCHAR}
+	 and o.branch_no = #{tmpBranch,jdbcType=VARCHAR}
+	 and d.reach_time_type = #{orderNo,jdbcType=VARCHAR}
+	 and d.status != "30" 
+	 and d.status != "20"
+	 <if test="orderNos!=null">
+       and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${order}</foreach>)>0
+     </if>
+  </select>
+
+  <select id="selectDaliyPlansByDispNo2" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    select
+    d.ORDER_NO, d.ORDER_DATE, d.PLAN_ITEM_NO, d.ITEM_NO, d.DISP_DATE, d.REACH_TIME, d.REACH_TIME_TYPE,
+    d.MATNR, d.UNIT, d.QTY, d.PRICE, d.AMT, d.REMAIN_AMT, d.STATUS, d.CREATE_AT, d.CREATE_BY, o.ADRESS_NO CREATE_BY_TXT,
+    d.LAST_MODIFIED, d.LAST_MODIFIED_BY,o.emp_no LAST_MODIFIED_BY_TXT,d.GIFT_QTY,d.PRICE_DELIVER,d.PRICE_HOME,d.PRICE_NET_VALUE
+    from t_mst_order_daliy_plan_item d
+    left join t_preorder o on o.order_no = d.order_no
+    where d.disp_date = #{planItemNo,jdbcType=DATE}
+    and o.emp_no = #{itemNo,jdbcType=VARCHAR}
+    and o.branch_no = #{tmpBranch,jdbcType=VARCHAR}
+    and d.reach_time_type = #{orderNo,jdbcType=VARCHAR}
+    and d.status ='10'
+    <if test="orderNos!=null">
+      and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${order}</foreach>)>0
+    </if>
+  </select>
+
+  <delete id="deleteFromDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="itemNo != null" >
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and STATUS != '20'
+    </if>
+    and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+  </delete>
+
+
+  <delete id="deleteFromDateToDateExceptProm" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="itemNo != null" >
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and STATUS != '20'
+    </if>
+    and (GIFT_QTY IS NULL OR GIFT_QTY = '')
+    and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+  </delete>
+  <delete id="deleteFromDateByStatus" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="itemNo != null" >
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+    and (GIFT_QTY is NULL OR GIFT_QTY = '')
+  </delete>
+
+
+  <delete id="deleteFromDateByStatusAndProm" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      <if test="itemNo != null" >
+        and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null">
+        and STATUS = #{status,jdbcType=VARCHAR}
+      </if>
+    and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+  </delete>
+
+
+  <delete id="deletePlansForLongEdit" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+	   and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+	   and STATUS != '20'
+      and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+      <if test="unit != null" >
+      and DISP_DATE &lt;= #{unit,jdbcType=DATE}
+      </if>
+  </delete>
+  <update id="updateFromDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item set STATUS = '10'
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      <if test="itemNo != null" >
+	      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      </if>
+      and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+  </update>
+  <update id="updateDaliyPlansToStopDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item set STATUS = '30'
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+	 and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+    <if test="reachTime != null" >
+    and DISP_DATE &lt;= #{reachTime,jdbcType=DATE}
+    </if>
+  </update>
+  <insert id="insert" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    insert into t_mst_order_daliy_plan_item (ORDER_NO, ORDER_DATE, PLAN_ITEM_NO, 
+      ITEM_NO, DISP_DATE, REACH_TIME, 
+      REACH_TIME_TYPE, MATNR, UNIT, 
+      QTY, PRICE, AMT, REMAIN_AMT, 
+      STATUS, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT)
+    values (#{orderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{planItemNo,jdbcType=VARCHAR}, 
+      #{itemNo,jdbcType=VARCHAR}, #{dispDate,jdbcType=DATE}, #{reachTime,jdbcType=VARCHAR}, 
+      #{reachTimeType,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
+      #{qty,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{amt,jdbcType=DECIMAL}, #{remainAmt,jdbcType=DECIMAL}, 
+      #{status,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertNewOrderDaliyPlanEntry" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    insert into t_mst_order_daliy_plan_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="planItemNo != null" >
+        PLAN_ITEM_NO,
+      </if>
+      <if test="itemNo != null" >
+        ITEM_NO,
+      </if>
+      <if test="dispDate != null" >
+        DISP_DATE,
+      </if>
+      <if test="reachTime != null" >
+        REACH_TIME,
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="unit != null" >
+        UNIT,
+      </if>
+      <if test="qty != null" >
+        QTY,
+      </if>
+      <if test="price != null" >
+        PRICE,
+      </if>
+      <if test="amt != null" >
+        AMT,
+      </if>
+      <if test="remainAmt != null" >
+        REMAIN_AMT,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="giftQty != null" >
+        GIFT_QTY,
+      </if>
+      <if test="promotionFlag != null" >
+        PROMOTION_FLAG,
+      </if>
+      <if test="balanceAmt != null">
+        BALANCE_AMT,
+      </if>
+      <if test="priceDeliver != null" >
+        PRICE_DELIVER,
+      </if>
+      <if test="priceHome != null" >
+        PRICE_HOME,
+      </if>
+      <if test="priceNetValue != null" >
+        PRICE_NET_VALUE
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="planItemNo != null" >
+        #{planItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="itemNo != null" >
+        #{itemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispDate != null" >
+        #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="reachTime != null" >
+        #{reachTime,jdbcType=VARCHAR},
+      </if>
+      <if test="reachTimeType != null" >
+        #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="amt != null" >
+        #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="remainAmt != null" >
+        #{remainAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="giftQty != null" >
+        #{giftQty,jdbcType=INTEGER},
+      </if>
+      <if test="promotionFlag != null" >
+        #{promotionFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="balanceAmt != null">
+        #{balanceAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="priceDeliver != null" >
+        #{priceDeliver,jdbcType=DECIMAL},
+      </if>
+      <if test="priceHome != null" >
+        #{priceHome,jdbcType=DECIMAL},
+      </if>
+      <if test="priceNetValue != null" >
+        #{priceNetValue,jdbcType=DECIMAL}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateDaliyPlanItemStatus" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    <set >
+      <if test="dispDate != null" >
+        DISP_DATE = #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="reachTime != null" >
+        REACH_TIME = #{reachTime,jdbcType=VARCHAR},
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        QTY = #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="amt != null" >
+        AMT = #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="remainAmt != null" >
+        REMAIN_AMT = #{remainAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="planItemNo != null" >
+        PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where 1=1
+    <if test="orderNo!=null">
+       and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate!=null">
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    <if test="itemNo!=null">
+      <!-- and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR} -->
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+  </update>
+  <update id="updateDaliyPlanItem" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    <set >
+    	<if test="dispDate != null" >
+        DISP_DATE = #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        QTY = #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="amt != null" >
+        AMT = #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="remainAmt != null" >
+        REMAIN_AMT = #{remainAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="planItemNo != null" >
+        PLAN_ITEM_NO = #{planItemNo,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateDaliyPlansToStop" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    update t_mst_order_daliy_plan_item
+    <set >
+        STATUS = "30"
+    </set>
+    where DISP_DATE &gt;= #{stopDateStartStr,jdbcType=DATE}
+    and STATUS = '10'
+   <!--  <if test="stopDateEnd != null and stopDateEnd !=''" >
+        and DISP_DATE &lt;= #{stopDateEndStr,jdbcType=DATE}
+    </if> -->
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateDaliyPlanItemRemainAmt" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    <set>
+        REMAIN_AMT = #{remainAmt,jdbcType=DECIMAL}
+    </set>
+    where DISP_DATE = #{dispDate,jdbcType=DATE}
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getDayOrderStat" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ReturnOrderModel" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where
+    ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and DISP_DATE = #{retReason,jdbcType=DATE}
+  </select>
+
+
+  <select id="selectDaliyPlansByBranchAndDay" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    select  i.DISP_DATE, i.MATNR,m.MATNR_TXT MATNR_TXT,SUM(i.QTY) QTY,m.BASE_UNIT UNIT
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_md_mara m on i.MATNR =  m.MATNR
+    LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR
+    where   1=1
+    and o.PREORDER_STAT !='30'
+    and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
+    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and i.QTY &gt; 0
+    and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+    and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    GROUP BY i.MATNR
+    ORDER BY i.DISP_DATE desc
+  </select>
+
+  <select id="getDailOrderPromOfDealerBranch" resultType="String" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    SELECT
+    /*IFNULL(i.PROMOTION_FLAG,'')*/
+    i.PROMOTION_FLAG
+    FROM t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+    where 1=1
+    and i.GIFT_QTY is not NULL
+    and o.PREORDER_STAT !='30'
+    and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
+    and (i.DISP_DATE = #{firstDay,jdbcType=DATE} or  i.DISP_DATE = #{secondDay,jdbcType=DATE})
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    GROUP BY i.PROMOTION_FLAG
+  </select>
+
+  <select id="selectProDayPlanOfDealerBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+  select i.MATNR,SUM(i.GIFT_QTY) QTY,PROMOTION_FLAG
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where   1=1
+
+    AND i.GIFT_QTY is not null
+    and i.GIFT_QTY >0
+    and o.PREORDER_STAT !='20'
+    and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+    GROUP BY i.PROMOTION_FLAG,i.MATNR
+    ORDER BY i.DISP_DATE desc
+  </select>
+
+  <select id="selectProDayPlanOfDealerBranch40" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    select i.MATNR,SUM(i.GIFT_QTY) QTY,PROMOTION_FLAG
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where   1=1
+    and o.PREORDER_SOURCE = '40'
+    AND i.GIFT_QTY is not null
+    and i.GIFT_QTY >0
+    and o.PREORDER_STAT !='20'
+    and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+    GROUP BY i.PROMOTION_FLAG,i.MATNR
+    ORDER BY i.DISP_DATE desc
+  </select>
+
+  <select id="selectNoProDayPlanOfDealerBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    SELECT  t1.MATNR,t1.QTY
+	from (
+		SELECT  t.MATNR,SUM(t.QTY) QTY
+		FROM
+		(
+                  SELECT
+                      a.MATNR MATNR, sum(a.QTY) QTY
+                  FROM
+                      (
+                          SELECT i.MATNR,i.QTY,p.PROM_SUB_TYPE
+                          FROM
+                              t_mst_order_daliy_plan_item i
+                          LEFT JOIN t_md_mara m ON i.MATNR = m.MATNR
+                          LEFT JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
+                          LEFT JOIN t_md_mara_ex e ON i.MATNR = e.MATNR
+                          AND e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+                          LEFT JOIN t_promotion p ON o.PROMOTION = p.PROM_NO
+                          WHERE
+                              1 = 1
+                              <include refid="PREORDER_SOURCE_BRANCH"/>
+                              AND o.PREORDER_STAT != '30'
+                              AND o.PREORDER_STAT != '40'
+                              AND i.`STATUS` != '30'
+                              AND i.GIFT_QTY IS NULL
+                          AND (
+                              (
+                                  e.PRE_DAYS = 2 AND i.DISP_DATE = #{secondDay,jdbcType=DATE}
+                              )
+                              OR (
+                                  e.PRE_DAYS = 1 AND i.DISP_DATE = #{firstDay,jdbcType=DATE}
+                              )
+                          )
+                          AND m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR} AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                      ) a
+                  WHERE
+                      a.PROM_SUB_TYPE IS NULL OR a.PROM_SUB_TYPE != 'Z017'
+                  GROUP BY a.MATNR
+		UNION ALL
+				  SELECT
+				  i.MATNR,SUM(i.INCRE_QTY) QTY
+				  FROM t_ssm_req_goods_order_item i
+				  LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
+				  where 1=1
+				  and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
+				  and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+				  GROUP BY i.MATNR
+		 UNION ALL
+					SELECT
+					i.MATNR,SUM(i.QTY) QTY
+					FROM t_ssm_req_goods_order_item i
+					LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
+					where 1=1
+					and i.FLAG = 2
+					and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
+					and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+					GROUP BY i.MATNR
+		)t
+		where 1=1
+		and t.MATNR IS NOT NULL
+		GROUP BY t.MATNR
+	)t1 WHERE t1.QTY >0
+
+  </select>
+
+  <select id="selectNoProDayPlanOfDealerBranch40" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    select i.MATNR,SUM(i.QTY) QTY,SUM(i.BALANCE_AMT) BALANCE_AMT,SUM( i.QTY * i.PRICE) REMAIN_AMT
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where  1=1
+    and o.PREORDER_SOURCE = '40'
+    and o.PREORDER_STAT !='30'
+    and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
+    AND i.GIFT_QTY is null
+    and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    GROUP BY i.MATNR
+  </select>
+
+  <select id="selectNoProDayPlanOfDealerBranch70" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+          i.MATNR matnr,SUM(i.QTY) qty,o.ONLINE_SOURCE_TYPE orgCode,sum((i.PRICE-i.PRICE_HOME-i.PRICE_DELIVER)*i.QTY) remainAmt
+      FROM
+          t_mst_order_daliy_plan_item i
+      LEFT JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
+      LEFT JOIN t_md_mara_ex e ON i.MATNR = e.MATNR
+      AND e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      WHERE
+          1 = 1
+      AND o.PREORDER_SOURCE = '70'
+      AND o.PREORDER_STAT != '30'
+      AND o.PREORDER_STAT != '40'
+      AND i.`STATUS` != '30'
+      AND (
+          (
+              e.PRE_DAYS = 2
+              AND i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+              AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+              GROUP BY
+                  o.ONLINE_SOURCE_TYPE,
+                  i.MATNR
+  </select>
+
+  <select id="getDailOrderPromOfSelfBranch" resultType="String" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    SELECT
+    i.PROMOTION_FLAG
+    FROM t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+    where 1=1
+    and i.GIFT_QTY is not NULL
+    and i.DISP_DATE = #{requiredDate,jdbcType=DATE}
+     AND  i.STATUS = '20'
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    GROUP BY i.PROMOTION_FLAG
+  </select>
+  <select id="selectProDayPlanOfSelfOrg" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+          SUM(di.CONFIRM_QTY) qty,
+          di.CONFIRM_MATNR matnr,
+          o.ONLINE_SOURCE_TYPE orgCode,sum((di.PRICE-di.PRICE_HOME-di.PRICE_DELIVER)*di.CONFIRM_QTY) remainAmt
+      FROM
+          t_mst_disp_order_item di
+      LEFT JOIN t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+      LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+      LEFT JOIN t_md_mara_ex e ON di.MATNR = e.MATNR
+      AND e.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+      WHERE
+          1 = 1
+      AND ti. STATUS = '20'
+      AND di.CONFIRM_QTY > 0
+      AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      AND o.PREORDER_SOURCE = '70'
+      AND e.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+      AND ti.DISP_DATE = #{orderDate,jdbcType=DATE}
+      GROUP BY
+          o.ONLINE_SOURCE_TYPE,
+          di.CONFIRM_MATNR
+  </select>
+  <select id="selectProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+         SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
+            from  t_mst_disp_order_item di
+            LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+            LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+            LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
+            LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            where   1=1
+            AND di.GIFT_FLAG is NOT null
+            AND ti.STATUS = '20'
+            and di.CONFIRM_QTY>0
+            and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            <if test="preorderSource != null and preorderSource == '40'">
+              and o.PREORDER_SOURCE = '40'
+            </if>
+            <if test="preorderSource != null and preorderSource != '40'">
+              <include refid="PREORDER_SOURCE_BRANCH"/>
+            </if>
+            and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
+            GROUP BY di.CONFIRM_MATNR,p.PROMOTION
+  </select>
+  <select id="selectNoProDayPlanOfSelfBranch40" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,SUM( di.CONFIRM_QTY * di.PRICE) REMAIN_AMT
+    from  t_mst_disp_order_item di
+    LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+    LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where   1=1
+    AND di.GIFT_FLAG is null
+    AND ti.STATUS = '20'
+    and di.CONFIRM_QTY>0
+    and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and o.PREORDER_SOURCE = '40'
+    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
+    GROUP BY di.CONFIRM_MATNR
+  </select>
+  <select id="selectNoProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+         SELECT  t.MATNR,SUM(t.QTY) QTY,  t.CONFIRM_MATNR
+          FROM
+          (
+              select
+              (select NULL from DUAL)  MATNR,SUM(di.CONFIRM_QTY) QTY, di.CONFIRM_MATNR
+              from t_mst_disp_order_item di
+              LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+              LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
+              where   1=1
+              and disp.`STATUS` = '20'
+              and di.CONFIRM_QTY>0
+              and di.MATNR=di.CONFIRM_MATNR
+              AND di.GIFT_FLAG is  null
+              and   disp.DISP_DATE = #{orderDate,jdbcType=DATE}
+              and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+              and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+              GROUP BY di.CONFIRM_MATNR
+
+          UNION ALL
+
+              select
+              di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+              from t_mst_disp_order_item di
+              LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+              LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
+              where   1=1
+              and disp.`STATUS` = '20'
+              and di.MATNR!=di.CONFIRM_MATNR
+              and di.REASON = '10'
+              and di.REPLACE_REASON = '10'
+              and di.CONFIRM_QTY>0
+              AND di.GIFT_FLAG  is  null
+              and   disp.DISP_DATE =#{orderDate,jdbcType=DATE}
+              and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+              and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+              GROUP BY di.MATNR,di.CONFIRM_MATNR
+
+          UNION ALL
+
+                SELECT
+                (select NULL from DUAL) MATNR ,SUM(i.INCRE_QTY) QTY,i.MATNR  CONFIRM_MATNR
+                FROM t_ssm_req_goods_order_item i
+                LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
+                where 1=1
+                and i.INCRE_QTY!=null
+                and i.INCRE_QTY!=0
+                and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+                and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+                 GROUP BY i.MATNR
+
+          UNION ALL
+                SELECT
+                (select NULL from DUAL) MATNR ,SUM(i.QTY) QTY, i.MATNR CONFIRM_MATNR
+                FROM t_ssm_req_goods_order_item i
+                LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
+                where 1=1
+                and i.FLAG = 2
+                and i.QTY>0
+                and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+                and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+                GROUP BY i.MATNR
+
+          UNION ALL
+              SELECT
+             (select NULL from DUAL)  MATNR,i.QTY,i.MATNR CONFIRM_MATNR
+              FROM t_mst_inside_sal_order_item i
+              LEFT JOIN t_mst_inside_sal_order o on i.INS_ORDER_NO = o.INS_ORDER_NO
+              LEFT JOIN t_mst_disp_order disp on o.DISP_ORDER_NO = disp.ORDER_NO
+              WHERE 1=1
+              and i.QTY>0
+              and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+              and disp.DISP_DATE = #{orderDate,jdbcType=DATE}
+              GROUP BY i.MATNR
+          )t
+          where 1=1
+          AND t.QTY>0
+          and t.CONFIRM_MATNR IS NOT NULL
+          GROUP BY t.CONFIRM_MATNR,t.MATNR
+  </select>
+
+  <select id="getProductItemsByOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map">
+      SELECT
+      i.MATNR,i.UNIT,SUM(i.GIFT_QTY) QTY,i.PRICE,a.MATNR_TXT
+      FROM t_mst_order_daliy_plan_item i   LEFT JOIN t_md_mara a on i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg}
+      where i.ORDER_NO =  #{orderNo}
+      and i.GIFT_QTY is not null
+      GROUP BY i.MATNR
+
+      UNION ALL
+
+      SELECT
+      i.MATNR,i.UNIT,SUM(i.QTY) QTY,i.PRICE,a.MATNR_TXT
+      FROM t_mst_order_daliy_plan_item i
+      LEFT JOIN t_md_mara a on i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg}
+      where 1=1
+      and i.STATUS !='30'
+      and a.SALES_ORG = #{salesOrg}
+      and i.ORDER_NO = #{orderNo}
+      and i.GIFT_QTY IS NULL
+      GROUP BY i.MATNR
+
+  </select>
+  <delete id="deletePlansByAmt" parameterType="java.lang.String" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and REMAIN_AMT &lt; 0
+  </delete>
+
+  <delete id="deletePlansByOrder" parameterType="java.lang.String" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deletePlansWithoutPromDayByOrder" parameterType="java.lang.String" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and (GIFT_QTY is  NULL  or GIFT_QTY='')
+  </delete>
+
+  <delete id="deletePromDayDayByOrder" parameterType="java.lang.String" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and (GIFT_QTY is  NOT NULL  or GIFT_QTY!='')
+  </delete>
+
+
+  <select id="reportOrderDaliyPlanByParams" resultType="com.nhry.model.order.OrderDaliyPlanReportEntityModel" parameterType="com.nhry.model.order.OrderDaliyPlanReportModel">
+    SELECT
+    t2.MP mp,
+    CONCAT(t5.RESIDENTIAL_AREA_TXT,t4.ADDRESS_TXT) addressTxt,
+    t2.VIP_NAME vipName,
+    t.DISP_DATE dispDate,
+    t3.SHORT_TXT matnrTxt,
+    t1.CUR_AMT curAmt,
+    t.QTY qty,
+    t.PRICE price,
+    t6.EMP_NAME empName,
+    t.ORDER_NO orderNo,
+    case t.`STATUS` when '10' then '生成' when '20' then '确认' when '30' then '已停订' when '40' then '已送达' END as status,
+    CASE t.REACH_TIME_TYPE WHEN '10' THEN '上午配送' WHEN '20' THEN '下午配送' END reachTimeType
+    FROM
+    t_mst_order_daliy_plan_item t
+    inner JOIN t_preorder t1 ON t1.ORDER_NO = t.ORDER_NO
+    <if test="branchNo!=null and branchNo!=''">
+      and t1.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="beginDate!=null and beginDate!=''">
+      and t.DISP_DATE >= #{beginDate,jdbcType=DATE}
+    </if>
+    <if test="endDate!=null and beginDate!=''">
+      and t.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+    </if>
+    <if test="empNos!=null and empNos.size>0">
+      and t1.EMP_NO in
+      <foreach collection="empNos" item="empNo" open="(" close=")" separator="," index="">
+        #{empNo}
+      </foreach>
+    </if>
+    inner JOIN t_vip_cust_info t2 ON t2.VIP_CUST_NO = t1.MILKMEMBER_NO
+    inner JOIN t_md_mara_ex t3 ON t3.MATNR = t.MATNR
+    inner join t_md_address t4 on t4.ADDRESS_ID = t1.ADRESS_NO
+    inner join t_md_residential_area t5 on t5.ID = t4.RESIDENTIAL_AREA
+    inner join t_md_branch_emp t6 on t6.EMP_NO = t1.EMP_NO
+    AND t2.SALES_ORG = t3.SALES_ORG
+    <if test="matnrs!=null and matnrs.size>0">
+      and t.MATNR in
+      <foreach collection="matnrs" item="matnr" open="(" close=")" separator="," index="">
+        #{matnr}
+      </foreach>
+    </if>
+    order by t.DISP_DATE,t5.RESIDENTIAL_AREA_TXT,t4.ADDRESS_TXT
+
+  </select>
+
+  <select id="getOrderOrderDailyFinishAmtByOrderNo" parameterType="java.lang.String" resultType="DECIMAL">
+    SELECT
+      IFNULL(SUM(cast(AMT as decimal(10,2))),0)
+      FROM t_mst_order_daliy_plan_item
+      WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and STATUS ='20'
+  </select>
+  <select id="selectDaliyPlanByOrderAndDispDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem"  resultMap="BaseResultMap">
+    SELECT
+    ORDER_NO,DISP_DATE,STATUS
+    FROM t_mst_order_daliy_plan_item
+    WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and DISP_DATE = #{dispDate,jdbcType=DATE}
+  </select>
+
+  <delete id="deleteDailyByStopDate" parameterType="com.nhry.model.order.OrderSearchModel">
+    DELETE FROM t_mst_order_daliy_plan_item where DISP_DATE  &gt;= #{backDate,jdbcType=DATE} and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="getSumDailyBackAmtByBackDate" resultType="BigDecimal" parameterType="com.nhry.model.order.OrderSearchModel">
+    SELECT IFNULL(sum(AMT),0) FROM t_mst_order_daliy_plan_item WHERE DISP_DATE &gt;= #{backDate,jdbcType=DATE} AND ORDER_NO = #{orderNo,jdbcType=VARCHAR} AND STATUS = '10'
+  </select>
+
+  <select id="selectFirstDispDateByOrder" resultType="DATE" parameterType="java.lang.String">
+    SELECT
+    MIN(DISP_DATE)
+    FROM t_mst_order_daliy_plan_item i
+    WHERE  i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and i.`STATUS` != '30'
+  </select>
+
+  <select id="selectEndDispDate" resultType="DATE" parameterType="java.lang.String">
+    SELECT
+    MAX(DISP_DATE)
+    FROM t_mst_order_daliy_plan_item i
+    WHERE i.ITEM_NO =#{itemNo,jdbcType=VARCHAR}
+    and i.`STATUS` != '30'
+  </select>
+
+  <select id="selectByDateAndItemNoAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+      SELECT
+       *
+      FROM t_mst_order_daliy_plan_item
+      WHERE 1=1
+      <if test="itemNo!=null">
+        and ITEM_NO =#{itemNo,jdbcType=VARCHAR}
+      </if>
+      <if test="orderNo!=null">
+        and ORDER_NO =#{orderNo,jdbcType=VARCHAR}
+      </if>
+      <if test="dispDate!=null">
+        and DISP_DATE =#{dispDate,jdbcType=VARCHAR}
+      </if>
+      <if test="planItemNo!=null">
+        and PLAN_ITEM_NO =#{planItemNo,jdbcType=VARCHAR}
+      </if>
+  </select>
+
+  <select id="selectByBeforeDayAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM t_mst_order_daliy_plan_item i
+    WHERE 1=1
+    and i.STATUS !='30'
+    <if test="orderNo!=null">
+     and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orderNo!=null">
+      and DISP_DATE &lt;#{dispDate,jdbcType=DATE}
+    </if>
+  </select>
+
+  <update id="updateDaliyPlanItemByItemNo" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    <set >
+      <if test="remainAmt != null" >
+        REMAIN_AMT = #{remainAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="planItemNo != null" >
+        PLAN_ITEM_NO = #{planItemNo,jdbcType=DECIMAL},
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where 1=1
+    <if test="orderNo!=null">
+      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="itemNo!=null">
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate!=null">
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    <if test="status!=null">
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+
+
+  </update>
+
+
+
+
+  <update id="updateDaliyReachTimeTypeItemNo" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    <set >
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where 1=1
+    <if test="orderNo!=null">
+      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="itemNo!=null">
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate!=null">
+      and DISP_DATE &gt;= #{dispDate,jdbcType=DATE}
+    </if>
+
+  </update>
+
+
+  <select id="selectDaliyByAfterDayAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    SELECT  * from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="itemNo != null" >
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDateStr!=null">
+       and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+    </if>
+  </select>
+
+
+  <select id="selectByDayAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    SELECT  * from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="status != null" >
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate!=null">
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+  </select>
+
+
+
+  <delete id="deleteFromDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="itemNo != null" >
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+  </delete>
+
+
+
+  <delete id="deleteOneDayItem" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    delete from t_mst_order_daliy_plan_item
+    where 1=1
+    <if test="orderNo != null" >
+      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate != null" >
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+  </delete>
+
+  <select id="selectByDayAndNoBetweenDays" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
+    SELECT  * from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="status != null" >
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="startDate!=null">
+      and DISP_DATE &gt;=#{startDate,jdbcType=DATE}
+    </if>
+    <if test="endDate!=null">
+      and DISP_DATE &lt;=#{endDate,jdbcType=DATE}
+    </if>
+  </select>
+
+  <update id="updateDaliyPlansToStopByStatus" parameterType="com.nhry.model.order.OrderSearchModel" >
+    update t_mst_order_daliy_plan_item
+    set STATUS = '30'
+    where
+    ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="startDate!=null">
+      and DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+    </if>
+    <if test="status!=null">
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="endDate!=null">
+      and DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+    </if>
+  </update>
+
+
+  <select id="selectDaliyPlansByOrderNo2" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    i.ORDER_NO, i.ORDER_DATE, i.PLAN_ITEM_NO, i.ITEM_NO, i.DISP_DATE, i.REACH_TIME, i.REACH_TIME_TYPE,
+    i.MATNR, ex.SHORT_TXT MATNR_TXT,i.UNIT, i.QTY, i.PRICE, i.AMT, i.REMAIN_AMT, i.STATUS, i.CREATE_AT, i.CREATE_BY, i.CREATE_BY_TXT,
+    i.LAST_MODIFIED, i.LAST_MODIFIED_BY, i.LAST_MODIFIED_BY_TXT,i.GIFT_QTY,i.PROMOTION_FLAG
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
+    where 1 = 1
+    and o.SALES_ORG = ex.SALES_ORG
+    and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
+    and (GIFT_QTY is NULL OR GIFT_QTY = '')
+    order by i.DISP_DATE asc,i.REMAIN_AMT desc
+  </select>
+
+  <select id="selectStatusDailyPlansCounts" resultType="INTEGER" parameterType="java.lang.String">
+    SELECT
+	COUNT(ORDER_NO)
+    FROM
+        t_mst_order_daliy_plan_item i
+    WHERE i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    AND i.`STATUS` = '20'
+  </select>
+
+
+  <select id="selectInitAmtDaysByNo" resultType="DECIMAL" parameterType="java.lang.String">
+    SELECT
+     SUM(i.AMT)
+    FROM
+    t_mst_order_daliy_plan_item i
+    WHERE i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    AND i.`STATUS` != '30'
+  </select>
+
+
+  <select id="selectCurAmtDaysByNo" resultType="DECIMAL" parameterType="java.lang.String">
+    SELECT
+    SUM(i.AMT)
+    FROM
+    t_mst_order_daliy_plan_item i
+    WHERE i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    AND i.`STATUS` = '10'
+  </select>
+
+  <select id="selectDaliyByDispItem" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1 = 1
+   <if test="orderNo!=null">
+     and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+   </if>
+    <if test="itemNo!=null">
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate!=null">
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    <if test="reachTimeType!=null">
+      and REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
+    </if>
+    <choose>
+        <when test="promotionFlag!=null">
+          and (GIFT_QTY is not null  OR GIFT_QTY!='')
+        </when>
+        <otherwise>
+          and (GIFT_QTY is  null  OR GIFT_QTY='')
+        </otherwise>
+    </choose>
+    order by DISP_DATE asc  , REMAIN_AMT desc
+  </select>
+
+
+  <update id="updateDaliyRemainAmtAfterRouteConfirmBeforDay" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    SET  REMAIN_AMT = REMAIN_AMT - #{amt,jdbcType=DECIMAL}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and DISP_DATE &lt; #{dispDate,jdbcType=DATE}
+    and (GIFT_QTY IS   NULL OR GIFT_QTY='')
+  </update>
+
+  <select id="selectPromDaliyBetweenDaysAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1 = 1
+    <if test="orderNo!=null">
+      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+     </if>
+    <if test="itemNo!=null">
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orderDate!=null">
+      and DISP_DATE &gt;=#{orderDate,jdbcType=DATE}
+      and DISP_DATE &lt;= #{dispDate,jdbcType=DATE}
+    </if>
+    and (GIFT_QTY IS NOT NULL OR GIFT_QTY!='')
+    order by DISP_DATE asc  , REMAIN_AMT desc
+  </select>
+
+
+  <update id="updateDaliyPlanItemStatusBatch" parameterType="java.util.HashMap" >
+    update t_mst_order_daliy_plan_item
+    <set >
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where 1=1
+    and DISP_DATE = #{dispDate,jdbcType=DATE}
+    <if test="itemNos!=null">
+      and LOCATE(ITEM_NO,<foreach item="item" collection="itemNos" separator="," open="'" close="'" index="">${item}</foreach>)>0
+    </if>
+  </update>
+
+
+
+  <select id="selectYearCardBackOrder" resultMap="YearCardMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+    SELECT
+    o.ORDER_NO,
+    o.DISCOUNT_AMT PRE_DISCOUNT,
+    o.INIT_AMT,
+    c.VIP_CUST_NO,
+    c.VIP_NAME,
+    c.MP CUST_MP,
+    count(i.QTY)/count(i.DISP_DATE) DALIY_QTY,
+    concat(IFNULL(r.RESIDENTIAL_AREA_TXT,''),IFNULL(a.ADDRESS_TXT,'')) CUST_ADDRESS,
+    (
+        SELECT
+        IFNULL(SUM(QTY),0)
+        FROM
+        t_mst_order_daliy_plan_item
+        WHERE
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        and DISP_DATE &lt;=#{dispDate,jdbcType=DATE}
+        and i.STATUS!='30'
+    ) REAL_TOTAL,
+    group_concat(DISTINCT e.SHORT_TXT) MATNR_TXT,
+    sum(i.QTY) PRE_TOTAL
+    FROM
+    t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_vip_cust_info c ON o.MILKMEMBER_NO = c.VIP_CUST_NO
+    LEFT JOIN t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
+    LEFT JOIN t_md_residential_area r on a.RESIDENTIAL_AREA = r.ID
+    LEFT JOIN t_md_mara_ex e ON i.MATNR = e.MATNR AND e.SALES_ORG = o.SALES_ORG
+    WHERE 1=1
+    and i.ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+    and i.STATUS!='30'
+  </select>
+
+  <update id="updateDaliyRemainAmtAfterAdvanceBack" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+      update t_mst_order_daliy_plan_item
+      set REMAIN_AMT = REMAIN_AMT - #{amt,jdbcType=DECIMAL}
+      WHERE  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and (GIFT_QTY IS  NULL OR GIFT_QTY='')
+  </update>
+
+
+
+  <select id="selectPromDaysByNo" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ReturnOrderModel" >
+    select
+    <include refid="Base_Column_List" />
+    FROM t_mst_order_daliy_plan_item
+    WHERE  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and (GIFT_QTY is not null OR GIFT_QTY!='')
+    GROUP BY DISP_DATE
+    HAVING count(DISP_DATE)>1
+  </select>
+  <select id="selectNoProDayPlanOfDealerBranchAndEmpNo" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+        o.EMP_NO empNo,i.MATNR matnr,sum(i.QTY) qty
+    FROM
+        t_mst_order_daliy_plan_item i
+    JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO AND o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    LEFT JOIN t_md_mara_ex e ON i.MATNR = e.MATNR
+    AND e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    LEFT JOIN t_promotion p ON o.PROMOTION = p.PROM_NO
+    WHERE 1 = 1
+    <include refid="PREORDER_SOURCE_BRANCH"/>
+    AND o.PREORDER_STAT != '30'
+    AND o.PREORDER_STAT != '40'
+    AND i.`STATUS` != '30'
+    AND i.GIFT_QTY IS NULL
+    AND (
+        (
+            e.PRE_DAYS = 2
+            AND i.DISP_DATE = #{secondDay,jdbcType=DATE}
+        )
+        OR (
+            e.PRE_DAYS = 1
+            AND i.DISP_DATE = #{firstDay,jdbcType=DATE}
+        )
+    )
+    AND (
+        p.PROM_SUB_TYPE IS NULL
+        OR p.PROM_SUB_TYPE != 'Z017'
+    )
+    GROUP BY
+        o.EMP_NO,
+        i.MATNR
+  </select>
+  <select id="selectNoProDayPlanOfSelfBranchAndEmpNo" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    SELECT t.EMP_NO empNo,t.MATNR matnr,t.CONFIRM_MATNR confirmMatnr,sum(t.QTY) qty FROM
+	(
+		SELECT
+			(SELECT NULL FROM DUAL) MATNR,
+			i.QTY,
+			i.MATNR CONFIRM_MATNR,
+			o.SAL_EMP_NO EMP_NO
+		FROM
+			t_mst_inside_sal_order_item i
+		LEFT JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+		LEFT JOIN t_mst_disp_order disp ON o.DISP_ORDER_NO = disp.ORDER_NO
+		WHERE
+			1 = 1
+		AND i.QTY > 0
+		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+		AND disp.DISP_DATE = #{orderDate,jdbcType=DATE}
+		GROUP BY
+			o.SAL_EMP_NO,
+			i.MATNR
+		UNION ALL
+			SELECT
+				(SELECT NULL FROM DUAL) MATNR,
+				SUM(di.CONFIRM_QTY) QTY,
+				di.CONFIRM_MATNR,
+				o.EMP_NO EMP_NO
+			FROM
+				t_mst_disp_order_item di
+			LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+			LEFT JOIN t_mst_disp_order disp ON di.ORDER_NO = disp.ORDER_NO
+			WHERE
+				1 = 1
+			AND disp.`STATUS` = '20'
+			AND di.CONFIRM_QTY > 0
+			AND di.MATNR = di.CONFIRM_MATNR
+			AND di.GIFT_FLAG IS NULL
+			AND disp.DISP_DATE = #{orderDate,jdbcType=DATE}
+			AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            <include refid="PREORDER_SOURCE_BRANCH"/>
+			AND (o.PROMOTION is NULL or o.PROMOTION = '')
+			GROUP BY
+				o.EMP_NO,
+				di.CONFIRM_MATNR
+			UNION ALL
+				SELECT
+					di.MATNR MATNR,
+					SUM(di.CONFIRM_QTY) QTY,
+					di.CONFIRM_MATNR,
+					o.EMP_NO EMP_NO
+				FROM
+					t_mst_disp_order_item di
+				LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+				LEFT JOIN t_mst_disp_order disp ON di.ORDER_NO = disp.ORDER_NO
+				WHERE
+					1 = 1
+				AND disp.`STATUS` = '20'
+				AND di.MATNR != di.CONFIRM_MATNR
+				AND di.REASON = '10'
+				AND di.REPLACE_REASON = '10'
+				AND di.CONFIRM_QTY > 0
+				AND di.GIFT_FLAG IS NULL
+				AND disp.DISP_DATE = #{orderDate,jdbcType=DATE}
+				AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                <include refid="PREORDER_SOURCE_BRANCH"/>
+			    AND (o.PROMOTION is NULL or o.PROMOTION = '')
+				GROUP BY
+					o.EMP_NO,
+					di.MATNR,
+					di.CONFIRM_MATNR
+	) t WHERE t.QTY > 0 AND t.CONFIRM_MATNR IS NOT NULL
+      GROUP BY t.EMP_NO,t.MATNR,t.CONFIRM_MATNR
+  </select>
+
+  <select id="sumFinishAmtByPlanOrderNo" parameterType="java.lang.String" resultType="DECIMAL">
+    SELECT
+    IFNULL(SUM(cast(AMT as decimal(10,2))),0)
+    FROM t_mst_order_daliy_plan_item
+    WHERE ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+    and (STATUS ='20' or STATUS = '10')
+  </select>
+
+  <select id="selectNoProDayPlanOfSelfBranch10" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+        o.ONLINE_SOURCE_TYPE onlinecode,
+        SUM(di.CONFIRM_QTY) qty,
+        di.CONFIRM_MATNR matnr,
+        di.PRICE price
+    FROM
+        t_mst_disp_order_item di
+    LEFT JOIN t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+    LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+    WHERE
+        1 = 1
+    AND di.GIFT_FLAG IS NULL
+    AND ti.STATUS = '20'
+    AND di.CONFIRM_QTY > 0
+    AND o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    AND o.PREORDER_SOURCE = '10'
+    AND o.ONLINE_SOURCE_TYPE != null
+    AND ti.DISP_DATE =  #{orderDate,jdbcType=DATE}
+    GROUP BY
+        o.ONLINE_SOURCE_TYPE,
+        di.CONFIRM_MATNR,
+        di.PRICE
+  </select>
+
+  <select id="selectProDayPlanOfSelfBranch10" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+        SUM(di.CONFIRM_QTY) qty,
+        di.CONFIRM_MATNR matnr,
+        p.PROMOTION promotion ,
+        o.ONLINE_SOURCE_TYPE onlinecode
+    FROM
+        t_mst_disp_order_item di
+    LEFT JOIN t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+    LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_mst_plan_order_item p ON di.ORG_ITEM_NO = p.ITEM_NO
+    WHERE
+        1 = 1
+    AND di.GIFT_FLAG IS NOT NULL
+    AND ti. STATUS = '20'
+    AND di.CONFIRM_QTY > 0
+    AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    AND o.PREORDER_SOURCE = '10'
+    AND o.ONLINE_SOURCE_TYPE != null
+    AND ti.DISP_DATE = #{orderDate,jdbcType=DATE}
+    GROUP BY
+        o.ONLINE_SOURCE_TYPE,
+        di.CONFIRM_MATNR,
+        p.PROMOTION
+  </select>
+
+  <select id="selectNoProDayPlanOfDealerBranch10" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    select
+    i.MATNR matnr,
+	SUM(i.QTY) qty,
+	SUM(i.BALANCE_AMT) amt,
+	o.ONLINE_SOURCE_TYPE onlinecode,
+	i.PRICE price
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where  1=1
+    AND o.PREORDER_SOURCE = '10'
+    AND o.ONLINE_SOURCE_TYPE != null
+    AND o.PREORDER_STAT !='30'
+    AND o.PREORDER_STAT !='40'
+    AND i.`STATUS` !='30'
+    AND o.ONLINE_SOURCE_TYPE != null
+    AND i.GIFT_QTY is null
+    AND  ((e.PRE_DAYS= 2 AND i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 AND i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+    AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    GROUP BY o.ONLINEORDER_NO,
+			i.MATNR,
+			i.PRICE
+  </select>
+
+  <select id="selectNoProDayPlanOfSelfBranch90" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+    from  t_mst_disp_order_item di
+    LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+    LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where   1=1
+    AND di.GIFT_FLAG is null
+    AND ti.STATUS = '20'
+    and di.CONFIRM_QTY>0
+    and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and o.PREORDER_SOURCE = '90'
+    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
+    GROUP BY di.CONFIRM_MATNR
+  </select>
+
+  <select id="selectNoProDayPlanOfDealerBranch90" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    select i.MATNR,SUM(i.QTY) QTY
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where  1=1
+    and o.PREORDER_SOURCE = '90'
+    and o.PREORDER_STAT !='30'
+    and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
+    AND i.GIFT_QTY is null
+    and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    GROUP BY i.MATNR
+  </select>
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.PIProductMapper" >
+  <!-- <cache type="org.mybatis.caches.redis.RedisCache" /> -->
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMara" >
+    <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="FIRST_CAT" property="firstCat" jdbcType="VARCHAR" />
+    <result column="SEC_CATE" property="secCate" jdbcType="VARCHAR" />
+    <result column="BRAND" property="brand" jdbcType="VARCHAR" />
+    <result column="WEIGHT" property="weight" jdbcType="REAL" />
+    <result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR" />
+    <result column="IMPORTANT_PRD_FLAG" property="importantPrdFlag" jdbcType="CHAR" />
+    <result column="SPEC" property="spec" jdbcType="VARCHAR" />
+    <result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR" />
+    <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+    <result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseAndExResultMap" type="com.nhry.service.basic.pojo.ProductInfoExModel" >
+    <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="FIRST_CAT" property="firstCat" jdbcType="VARCHAR" />
+    <result column="SEC_CATE" property="secCate" jdbcType="VARCHAR" />
+    <result column="BRAND" property="brand" jdbcType="VARCHAR" />
+    <result column="WEIGHT" property="weight" jdbcType="REAL" />
+    <result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR" />
+    <result column="IMPORTANT_PRD_FLAG" property="importantPrdFlag" jdbcType="CHAR" />
+    <result column="SPEC" property="spec" jdbcType="VARCHAR" />
+    <result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR" />
+    <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+    <result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR" />
+    <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+    <result column="PRE_DAYS" property="preDays" jdbcType="VARCHAR" />
+    <result column="BOT_TYPE" property="botType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MATNR, MATNR_TXT, BASE_UNIT, STATUS, LAST_MODIFIED, CREATE_AT, FIRST_CAT, SEC_CATE, 
+    BRAND, WEIGHT, WEIGHT_UNIT, IMPORTANT_PRD_FLAG, SPEC, SPEC_UNIT, BOT_SPEC, ZBOT_CODE
+  </sql>
+
+   <insert id="insertBatch" parameterType="ArrayList" >
+    insert into t_md_mara (MATNR, MATNR_TXT, BASE_UNIT, 
+      STATUS, LAST_MODIFIED, CREATE_AT, 
+      FIRST_CAT, SEC_CATE, BRAND, 
+      WEIGHT, WEIGHT_UNIT, IMPORTANT_PRD_FLAG, 
+      SPEC, SPEC_UNIT, BOT_SPEC, 
+      ZBOT_CODE)
+    values
+     <foreach collection="list" item="obj" index="index" separator="," >
+       (#{obj.matnr,jdbcType=VARCHAR}, #{obj.matnrTxt,jdbcType=VARCHAR}, #{obj.baseUnit,jdbcType=VARCHAR},
+       #{obj.status,jdbcType=VARCHAR}, #{obj.lastModified,jdbcType=TIMESTAMP}, #{obj.createAt,jdbcType=TIMESTAMP},
+       #{obj.firstCat,jdbcType=VARCHAR}, #{obj.secCate,jdbcType=VARCHAR}, #{obj.brand,jdbcType=VARCHAR},
+       #{obj.weight,jdbcType=REAL}, #{obj.weightUnit,jdbcType=VARCHAR}, #{obj.importantPrdFlag,jdbcType=CHAR},
+       #{obj.spec,jdbcType=VARCHAR}, #{obj.specUnit,jdbcType=VARCHAR}, #{obj.botSpec,jdbcType=VARCHAR},
+       #{obj.zbotCode,jdbcType=VARCHAR})
+     </foreach>
+
+  </insert>
+  <update id="update" parameterType="com.nhry.data.basic.domain.TMdMara" >
+    update t_md_mara
+    <set>
+      <if test="baseUnit != null" >
+        MATNR_TXT = #{baseUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="matnrTxt != null" >
+        MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        MATNR_TXT = #{lastModified,jdbcType=VARCHAR},
+      </if>
+      <if test="secCate != null" >
+        MATNR_TXT = #{lastModified,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null" >
+        MATNR_TXT = #{lastModified,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null" >
+        MATNR_TXT = #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="botSpec != null" >
+        MATNR_TXT = #{botSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="specUnit != null" >
+        MATNR_TXT = #{specUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="zbotCode != null" >
+        MATNR_TXT = #{zbotCode,jdbcType=VARCHAR},
+      </if>
+      <if test="importantPrdFlag != null" >
+        MATNR_TXT = #{importantPrdFlag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM
+      t_md_mara
+  </select>
+
+</mapper>

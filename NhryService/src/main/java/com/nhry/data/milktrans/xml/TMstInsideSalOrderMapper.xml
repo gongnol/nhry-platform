@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TMstInsideSalOrderMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TMstInsideSalOrder" >
+        <result column="INS_ORDER_NO" property="insOrderNo" jdbcType="VARCHAR" />
+        <result column="ORDER_DATE"   property="orderDate" jdbcType="DATE" />
+        <result column="DISP_ORDER_NO"      property="dispOrderNo" jdbcType="VARCHAR" />
+        <result column="SAL_EMP_NO"        property="salEmpNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO"       property="branchNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME"        property="empName" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME"       property="branchName" jdbcType="VARCHAR" />
+        <result column="CREATE_AT"        property="createAt" jdbcType="DATE" />
+        <result column="CREATE_BY"       property="createBy" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+       INS_ORDER_NO,ORDER_DATE,DISP_ORDER_NO,SAL_EMP_NO,BRANCH_NO
+    </sql>
+    <select id="getInSalOrderByDispOrderNo" resultMap="BaseResultMap" parameterType="String" >
+        SELECT
+        <include refid="Base_Column_List"/>
+          FROM  t_mst_inside_sal_order
+        WHERE  DISP_ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insertInsideSalOrder" parameterType="com.nhry.data.milktrans.domain.TMstInsideSalOrder">
+
+        insert into t_mst_inside_sal_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="insOrderNo != null">
+                INS_ORDER_NO,
+            </if>
+            <if test="orderDate != null">
+                ORDER_DATE,
+            </if>
+            <if test="dispOrderNo != null">
+                DISP_ORDER_NO,
+            </if>
+            <if test="salEmpNo != null">
+                SAL_EMP_NO,
+            </if>
+            <if test="branchNo != null">
+                BRANCH_NO,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="insOrderNo != null">
+                #{insOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderDate != null">
+                #{orderDate,jdbcType=DATE},
+            </if>
+            <if test="dispOrderNo != null">
+                #{dispOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="salEmpNo != null">
+                #{salEmpNo,jdbcType=VARCHAR},
+            </if>
+            <if test="branchNo != null">
+                #{branchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+               #{createAt,jdbcType=DATE},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <select id="getAuthAllInsideSalOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.InSideSalOrderSearchModel" >
+        SELECT
+        o.INS_ORDER_NO,o.ORDER_DATE,o.DISP_ORDER_NO,o.SAL_EMP_NO,o.BRANCH_NO,e.EMP_NAME,b.BRANCH_NAME
+        FROM  t_mst_inside_sal_order o
+        LEFT JOIN t_md_branch_emp e on o.SAL_EMP_NO = e.EMP_NO
+        LEFT JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        WHERE 1=1
+        <if test="empNo!=null and ''!=empNo">
+            and  o.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+          and  o.BRANCH_NO  = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dealerNo!=null and ''!=dealerNo">
+            and  b.DEALER_NO  = #{dealerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="salesOrg!=null and ''!=salesOrg">
+            and  b.SALES_ORG  = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null">
+            and  o.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null">
+            and o.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+
+
+    </select>
+
+    <delete id="deleteInSalOrderByDispOrderNo" parameterType="String">
+        DELETE  FROM  t_mst_inside_sal_order
+        WHERE  INS_ORDER_NO = #{insOrderNo,jdbcType=VARCHAR}
+    </delete>
+</mapper>

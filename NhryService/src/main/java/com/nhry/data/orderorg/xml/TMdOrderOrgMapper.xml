@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.orderorg.dao.TMdOrderOrgMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.orderorg.domain.TMdOrderOrg" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ORG_NAME" property="orgName" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="CONTACT" property="contact" jdbcType="VARCHAR" />
+    <result column="MP" property="mp" jdbcType="VARCHAR" />
+    <result column="ORG_CODE" property="orgCode" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ORG_NAME, SALES_ORG, TEL, ADDRESS, CONTACT, MP, CREATE_AT,ORG_CODE, CREATE_BY, CREATE_BY_TXT,
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+  </sql>
+  <select id="selectOrderOrgByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_order_org
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectOrgByCustId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT t.ORG_NAME,t.ORG_CODE FROM t_md_order_org t
+    join t_md_org_cust t1 on t1.ORG_ID = t.ID
+    where  t1.CUST_ID= #{custId,jdbcType=VARCHAR}
+  </select>
+  <select id="findTMdOrderOrgList" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrderOrgModel">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    t_md_order_org i
+    WHERE i.SALES_ORG =#{salesOrg,jdbcType=VARCHAR}
+    <if test="queryTxt != null and queryTxt !=''">
+    AND (i.ORG_NAME like '%${queryTxt}%' or i.ORG_CODE like '%${queryTxt}%' or i.TEL like '%${queryTxt}%' or i.MP like '%${queryTxt}%')
+    </if>
+  </select>
+  <select id="findTMdOrderOrgByOrgCode" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrderOrgModel">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    t_md_order_org i
+    WHERE i.ORG_CODE =#{orgCode,jdbcType=VARCHAR}
+    AND i.SALES_ORG =#{salesOrg,jdbcType=VARCHAR}
+  </select>
+  <select id="findOrderOrgListForSelect" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    i.ID,i.ORG_NAME,i.ORG_CODE
+    FROM
+    t_md_order_org i
+    WHERE i.SALES_ORG =#{salesOrg,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteOrderOrgByPrimaryKey" parameterType="com.nhry.model.basic.OrderOrgModel" >
+    delete from t_md_order_org
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertOrderOrg" parameterType="com.nhry.data.orderorg.domain.TMdOrderOrg" >
+    insert into t_md_order_org (ID, ORG_NAME, SALES_ORG, 
+      TEL, ADDRESS, CONTACT,
+      MP, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT,ORG_CODE)
+    values (#{id,jdbcType=VARCHAR}, #{orgName,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
+      #{tel,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR},
+      #{mp,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR},#{orgCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertOrderOrgSelective" parameterType="com.nhry.data.orderorg.domain.TMdOrderOrg" >
+    insert into t_md_order_org
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="orgName != null" >
+        ORG_NAME,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="tel != null" >
+        TEL,
+      </if>
+      <if test="address != null" >
+        ADDRESS,
+      </if>
+      <if test="contact != null" >
+        CONTACT,
+      </if>
+      <if test="mp != null" >
+        MP,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="orgCode != null" >
+        ORG_CODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orgName != null" >
+        #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="mp != null" >
+        #{mp,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCode != null" >
+        #{orgCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateOrderOrgByPrimaryKeySelective" parameterType="com.nhry.data.orderorg.domain.TMdOrderOrg" >
+    update t_md_order_org
+    <set >
+      <if test="orgName != null" >
+        ORG_NAME = #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        CONTACT = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="mp != null" >
+        MP = #{mp,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCode != null" >
+        ORG_CODE = #{orgCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateOrderOrgByPrimaryKey" parameterType="com.nhry.data.orderorg.domain.TMdOrderOrg" >
+    update t_md_order_org
+    set ORG_NAME = #{orgName,jdbcType=VARCHAR},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      TEL = #{tel,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      CONTACT = #{contact,jdbcType=VARCHAR},
+      MP = #{mp,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      ORG_CODE = #{orgCOde,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

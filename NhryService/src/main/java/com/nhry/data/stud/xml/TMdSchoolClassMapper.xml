@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stud.dao.TMdSchoolClassMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchoolClass" >
+    <id column="MID" property="mid" jdbcType="VARCHAR" />
+    <result column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
+    <result column="CLASS_CODE" property="classCode" jdbcType="VARCHAR" />
+    <result column="CLASS_NUM" property="classNum" jdbcType="INTEGER" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MID, SCHOOL_CODE, CLASS_CODE, CLASS_NUM, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
+    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, SALES_ORG
+  </sql>
+  
+  <select id="findNoneClassBySchool" resultType="com.nhry.data.stud.domain.TMdClass" parameterType="com.nhry.model.stud.SchoolClassModel">
+    SELECT 
+    CLASS_CODE classCode, CLASS_NAME className
+    FROM t_md_class
+	WHERE SALES_ORG=#{salesOrg}
+	AND VISIABLE='10'
+	AND CLASS_CODE NOT IN 
+	(
+		select CLASS_CODE from t_md_school_class where SCHOOL_CODE=#{schoolCode} and SALES_ORG=#{salesOrg}
+	)
+	order by CLASS_CODE ASC
+  </select>
+  <select id="findAllClassBySchool" resultType="com.nhry.data.stud.domain.TMdClass" parameterType="com.nhry.model.stud.SchoolClassModel" >
+    SELECT
+    b.CLASS_CODE classCode, b.CLASS_NAME className
+	FROM t_md_school_class a
+	LEFT JOIN t_md_class b ON a.CLASS_CODE=b.CLASS_CODE
+	where a.SCHOOL_CODE = #{schoolCode}
+   	and a.SALES_ORG=#{salesOrg}
+   	and b.SALES_ORG=#{salesOrg}
+   	order by a.CLASS_CODE ASC
+  </select>
+  <delete id="delSchoolClassBySalesOrg" parameterType="com.nhry.model.stud.SchoolClassModel" >
+    delete from t_md_school_class
+    where SCHOOL_CODE = #{schoolCode}
+   	and SALES_ORG=#{salesOrg}
+  </delete>
+  <insert id="insertSchoolClass" parameterType="com.nhry.data.stud.domain.TMdSchoolClass" >
+    insert into t_md_school_class
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        MID,
+      </if>
+      <if test="schoolCode != null" >
+        SCHOOL_CODE,
+      </if>
+      <if test="classCode != null" >
+        CLASS_CODE,
+      </if>
+      <if test="classNum != null" >
+        CLASS_NUM,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="classCode != null" >
+        #{classCode,jdbcType=VARCHAR},
+      </if>
+      <if test="classNum != null" >
+        #{classNum,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

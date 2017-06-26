@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TRecBotDetailMapper">
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TRecBotDetail" >
+        <result column="DET_LSH" property="detLsh" jdbcType="VARCHAR" />
+        <result column="SPEC " property="spec" jdbcType="VARCHAR" />
+        <result column="EMP_NO " property="empNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="REC_DATE" property="recDate" jdbcType="DATE" />
+        <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+        <result column="REAL_NUM" property="realNum" jdbcType="INTEGER" />
+        <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+        <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
+        <result column="DISP_ORDER_NO " property="dispOrderNo" jdbcType="VARCHAR" />
+        <result column="STATUS" property="status" jdbcType="VARCHAR" />
+        <result column="CREATE_AT" property="createAt" jdbcType="DATE" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="boxDetailMap" type="com.nhry.data.milktrans.domain.TRecBotDetail">
+        <result column="SPEC " property="spec" jdbcType="VARCHAR" />
+        <result column="EMP_NO " property="empNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+        <result column="DISP_ORDER_NO " property="dispOrderNo" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="BoxRetResultMap" type="com.nhry.model.milktrans.ReturnBoxModel" >
+        <result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
+        <result column="DET_LSH" property="detLsh" jdbcType="VARCHAR" />
+        <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+        <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="SPEC" property="spec" jdbcType="VARCHAR" />
+        <result column="STATUS" property="status" jdbcType="VARCHAR" />
+        <result column="REC_DATE" property="recDate" jdbcType="DATE" />
+        <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+        <result column="REAL_NUM" property="realNum" jdbcType="INTEGER" />
+        <result column="CREATE_AT" property="createAt" jdbcType="DATE" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+      DET_LSH,SPEC,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,STATUS,
+        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+    </sql>
+    <insert id="addRecBotItem" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
+        insert into T_REC_BOT_DETAIL(
+        DET_LSH,BRANCH_NO,DISP_ORDER_NO,EMP_NO, SPEC, RECEIVE_NUM,CREATE_AT, CREATE_BY, CREATE_BY_TXT,STATUS)
+        values( #{detLsh,jdbcType=VARCHAR},#{branchNo,jdbcType=VARCHAR},#{dispOrderNo,jdbcType=VARCHAR},
+        #{empNo,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR},#{receiveNum,jdbcType=INTEGER},
+        #{createAt,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR})
+
+    </insert>
+
+    <select id="selectBotDetailByDetLshAndSpec" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        DET_LSH,SPEC,
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.bot_type"></include> and i.ITEM_CODE = SPEC ) SPEC_NAME,
+        RECEIVE_NUM,REAL_NUM,STATUS
+        from t_rec_bot_detail
+        where DET_LSH = #{detLsh}
+        and SPEC = #{spec}
+    </select>
+
+
+    <select id="selectBotDetailByOrderAndSpec" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        DET_LSH,SPEC,
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.bot_type"></include> and i.ITEM_CODE = SPEC ) SPEC_NAME,
+        RECEIVE_NUM,REAL_NUM,STATUS
+        from t_rec_bot_detail
+        where DISP_ORDER_NO = #{dispOrderNo}
+        and SPEC = #{spec}
+    </select>
+
+    <update id="uptRecBotDetail" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
+        update T_REC_BOT_DETAIL
+        <set>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="receiveNum != null">
+                RECEIVE_NUM = #{receiveNum,jdbcType=INTEGER},
+            </if>
+            <if test="realNum != null">
+                REAL_NUM = #{realNum,jdbcType=INTEGER},
+            </if>
+            <if test="spec != null">
+                SPEC = #{spec,jdbcType=VARCHAR},
+            </if>
+            <if test="recDate != null">
+                REC_DATE = #{recDate,jdbcType=DATE},
+            </if>
+            <if test="lastModified != null">
+                LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModified != null">
+                LAST_MODIFIED_BY = #{lastModified,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifiedByTxt != null">
+                LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE  DET_LSH = #{detLsh,jdbcType=VARCHAR}
+    </update>
+
+
+    <select id="selectRetByDispOrderNo" resultMap="BaseResultMap" parameterType="String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from t_rec_bot_detail
+        where DISP_ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+    </select>
+
+
+
+    <select id="searchRetBoxPage" resultMap="BoxRetResultMap" parameterType="com.nhry.model.milktrans.ReturnboxSerarch">
+        SELECT
+        (
+          SELECT i.ITEM_NAME from t_sys_code_item i
+          WHERE i.TYPE_CODE= <include refid="mybaties.constant.bot_type"/>
+          and i.ITEM_CODE = d.SPEC
+        ) SPEC_NAME,
+        d.RECEIVE_NUM,
+        d.REAL_NUM ,
+        d.REC_DATE,
+        d.STATUS,
+        d.SPEC,
+        d.CREATE_AT,d.LAST_MODIFIED,
+        d.BRANCH_NO,br.BRANCH_NAME,d.EMP_NO,e.EMP_NAME,br.DEALER_NO,de.DEALER_NAME,d.DET_LSH
+        FROM t_rec_bot_detail d
+        LEFT JOIN t_md_branch br ON d.BRANCH_NO = br.BRANCH_NO
+        LEFT JOIN t_md_dealer de on br.DEALER_NO = de.DEALER_NO
+        LEFT JOIN t_md_branch_emp e on d.EMP_NO = e.EMP_NO
+        where 1=1
+        <if test="salesOrg!=null and ''!=salesOrg">
+            and  br.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        <if test="status!=null and ''!=status">
+            and  d.STATUS = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+          and  d.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and d.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dealerNo!=null and ''!=dealerNo">
+            and br.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null">
+            and  d.CREATE_AT &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null">
+            and d.CREATE_AT &lt;= #{endDate,jdbcType=DATE}
+        </if>
+        ORDER BY d.CREATE_AT asc
+    </select>
+
+
+    <select id="craeteRetBotByStock" resultMap="boxDetailMap" parameterType="com.nhry.model.stock.StockModel">
+	    SELECT
+        SUM(t2.QTY) RECEIVE_NUM,
+        e.BOT_TYPE SPEC,
+        t2.BRANCH_NO
+        FROM t_ssm_stock t2
+        LEFT JOIN t_md_mara_ex e ON t2.MATNR = e.MATNR
+        WHERE 1=1
+        and e.RET_BOT_FLAG = 'Y'
+        and e.BOT_TYPE IS NOT NULL
+        and e.SALES_ORG = t2.SALES_ORG
+        and t2.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and  t2.QTY is not null  AND t2.QTY > 0
+        GROUP BY e.BOT_TYPE
+    </select>
+
+
+    <delete id="delBotDetailByDetLsh"  parameterType="String">
+         DELETE  FROM  t_rec_bot_detail
+          where DET_LSH = #{detLsh}
+    </delete>
+</mapper>

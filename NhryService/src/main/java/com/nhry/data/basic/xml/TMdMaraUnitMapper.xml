@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdMaraUnitMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMaraUnit" >
+    <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <id column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="UMREZ" property="umrez" jdbcType="DECIMAL" />
+    <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />
+    <result column="UMREN" property="umren" jdbcType="DECIMAL" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MATNR, UNIT, UMREZ, BASE_UNIT, UMREN, LAST_MODIFIED, CREATE_AT
+  </sql>
+  <select id="selectMaraUnitByNo" resultMap="BaseResultMap" parameterType="com.nhry.data.basic.domain.TMdMaraUnitKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_mara_unit
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and UNIT = #{unit,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteMaraUnitByNo" parameterType="com.nhry.data.basic.domain.TMdMaraUnitKey" >
+    delete from t_md_mara_unit
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and UNIT = #{unit,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertMaraUnit" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
+    insert into t_md_mara_unit (MATNR, UNIT, UMREZ, 
+      BASE_UNIT, UMREN, LAST_MODIFIED, 
+      CREATE_AT)
+    values (#{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{umrez,jdbcType=DECIMAL}, 
+      #{baseUnit,jdbcType=VARCHAR}, #{umren,jdbcType=DECIMAL}, #{lastModified,jdbcType=TIMESTAMP}, 
+      #{createAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertMaraUnitSelective" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
+    insert into t_md_mara_unit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="unit != null" >
+        UNIT,
+      </if>
+      <if test="umrez != null" >
+        UMREZ,
+      </if>
+      <if test="baseUnit != null" >
+        BASE_UNIT,
+      </if>
+      <if test="umren != null" >
+        UMREN,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="umrez != null" >
+        #{umrez,jdbcType=DECIMAL},
+      </if>
+      <if test="baseUnit != null" >
+        #{baseUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="umren != null" >
+        #{umren,jdbcType=DECIMAL},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateMaraUnitSelective" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
+    update t_md_mara_unit
+    <set >
+      <if test="umrez != null" >
+        UMREZ = #{umrez,jdbcType=DECIMAL},
+      </if>
+      <if test="baseUnit != null" >
+        BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="umren != null" >
+        UMREN = #{umren,jdbcType=DECIMAL},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and UNIT = #{unit,jdbcType=VARCHAR}
+  </update>
+  <update id="updateMaraUnit" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
+    update t_md_mara_unit
+    set UMREZ = #{umrez,jdbcType=DECIMAL},
+      BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
+      UMREN = #{umren,jdbcType=DECIMAL},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP}
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and UNIT = #{unit,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<configs>
+ <!-- 环境标示(开发/生产/测试) develope/product/test -->
+  <config key="app_mode" value="product"></config>
+  <!-- MessageCode key默认的value配置 -->
+  <config key="404"  value="资源不存在"></config>
+  <config key="serverError"  value="服务异常"></config>
+  <config key="logicError"  value="逻辑异常"></config>
+  <config key="success"  value="success"></config>
+  <config key="unauthorized" value="无权限访问"></config>
+  <config key="session_expire" value="session过期或者失效,请重新登录!"></config>
+  <!-- 通用密码 -->
+  <config key="commonPw" value="abcd1234"></config>
+  <config key="dhxt_base_pw" value="01@da99b8b994b5794094f2eae"></config>
+  <config key="snapp_base_pw" value="010da9@b8b994b5794094f2eae"></config>
+  <config key="ec_base_pw" value="010da99b8b99@b5794094f2eae"></config>
+  <config key="cisco_base_pw" value="010da99b8b994b5@94094f2eae"></config>
+  <!-- redis用户存取key值 -->
+  <config key="app_user_key" value="app_user_key"></config>
+   <!-- accessKey-->
+  <config key="app_access_key" value="app_access_key"></config>
+   <!-- redis 中session存活时间(单位：小时)-->
+  <config key="session_duration" value="2"></config>
+  <!-- 自有奶站性质 -->
+  <config key="own_Branch" value="01"></config>
+  <!-- 经销商奶站性质 -->
+  <config key="dealer_Branch" value="02"></config>
+  <!-- 价格组类型 公司价 -->
+  <config key="price_type_comp" value="10"></config>
+  <!-- 价格组类型 区域价 -->
+  <config key="price_type_area" value="20"></config>
+  <!-- 价格组类型 奶站价 -->
+  <config key="price_type_station" value="30"></config>
+ <!-- 地址省市区typeCode -->
+ <config key="Province_City_County" value="1001"></config>
+  <!-- 销售组织typeCode -->
+  <config key="sales_org" value="1002"></config>
+  <!-- 奶站内勤编号 -->
+  <config key="branch_back_office" value="10004"></config>
+  <!-- 部门内勤编号 -->
+  <config key="department_back_office" value="10003"></config>
+  <!-- 经销商内勤编号 -->
+  <config key="dealer_back_office" value="10005"></config>
+  <!-- 系统管理员编号 -->
+  <config key="sys_manager_no" value="10008"></config>
+  <!-- 省份对应关系(奶站省份) -->
+  <config key="branch_province" value="2006"></config>
+  <config key="COMPANT_DISP_FEE" value="4150,4110"></config>
+  <!-- 定时任务是否本地执行 true:本地自动执行；false:本地不自动执行-->
+  <config key="timer_execute_in_local" value="false"></config>
+  <!-- 送奶工报货编号 -->
+  <config key="emp_send_mode" value="2010"></config>
+ <!-- 奶站配送日期设置 -->
+ <config key="branch_require_date" value="2011"></config>
+</configs>

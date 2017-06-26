@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stock.dao.TSsmGiOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stock.domain.TSsmGiOrder" >
+    <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
+    <result column="SYNC_AT" property="syncAt" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="REQ_ORDER_NO" property="reqOrderNo" jdbcType="VARCHAR"/>
+
+    <result column="QTY" property="qtY" jdbcType="VARCHAR" />
+    <result column="CONFIRM_QTY" property="confirm_QTY" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+
+  <!--  liuyin  ADD  ,QTY,CONFIRM_QTY   start-->
+  <sql id="Base_Column_List1" >
+    ORDER_NO, ORDER_DATE, BRANCH_NO, MEMO_TXT, SYNC_AT, STATUS,REQ_ORDER_NO,QTY,CONFIRM_QTY
+  </sql>
+  <!--  liuyin  update END-->
+
+
+  <sql id="Base_Column_List" >
+    ORDER_NO, ORDER_DATE, BRANCH_NO, MEMO_TXT, SYNC_AT, STATUS,REQ_ORDER_NO
+  </sql>
+
+
+  <select id="selectGiOrderByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ssm_gi_order
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteGiOrderByNo" parameterType="java.lang.String" >
+    delete from t_ssm_gi_order
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertGiOrder" parameterType="com.nhry.data.stock.domain.TSsmGiOrder" >
+    insert into t_ssm_gi_order (ORDER_NO, ORDER_DATE, BRANCH_NO, 
+      MEMO_TXT, SYNC_AT, STATUS,REQ_ORDER_NO
+      )
+    values (#{orderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{branchNo,jdbcType=VARCHAR}, 
+      #{memoTxt,jdbcType=VARCHAR}, #{syncAt,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR},#{reqOrderNo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertGiOrderSelective" parameterType="com.nhry.data.stock.domain.TSsmGiOrder" >
+    insert into t_ssm_gi_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT,
+      </if>
+      <if test="syncAt != null" >
+        SYNC_AT,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="reqOrderNo != null">
+        REQ_ORDER_NO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="memoTxt != null" >
+        #{memoTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="syncAt != null" >
+        #{syncAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="reqOrderNo != null">
+        #{reqOrderNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateGiOrderSelective" parameterType="com.nhry.data.stock.domain.TSsmGiOrder" >
+    update t_ssm_gi_order
+    <set >
+      <if test="orderDate != null" >
+        ORDER_DATE = #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="syncAt != null" >
+        SYNC_AT = #{syncAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="reqOrderNo != null">
+        REQ_ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateGiOrder" parameterType="com.nhry.data.stock.domain.TSsmGiOrder" >
+    update t_ssm_gi_order
+    set ORDER_DATE = #{orderDate,jdbcType=DATE},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
+      SYNC_AT = #{syncAt,jdbcType=TIMESTAMP},
+      REQ_ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+
+  <!--  liuyin  update start-->
+  <!--<select id="findGiOrder" parameterType="com.nhry.model.stock.GiOrderModel" resultMap="BaseResultMap">-->
+    <!--SELECT <include refid="Base_Column_List"/> FROM t_ssm_gi_order WHERE  BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and ORDER_DATE = #{orderDate,jdbcType=DATE}-->
+  <!--</select>-->
+  <select id="findGiOrder" parameterType="com.nhry.model.stock.GiOrderModel" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List1"/> FROM
+    (
+    SELECT  ts.ORDER_NO, ts.ORDER_DATE, ts.BRANCH_NO,    ts.MEMO_TXT  , ts.SYNC_AT, ts.STATUS,ts.REQ_ORDER_NO,
+     sum(binary i.qty)  as QTY, sum(binary i.CONFIRM_QTY) as  CONFIRM_QTY   FROM t_ssm_gi_order
+    ts  left join  t_ssm_gi_order_item i on i.ORDER_NO =ts.ORDER_NO
+    WHERE    ts.BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and ts.ORDER_DATE = #{orderDate,jdbcType=DATE}
+     group by  ts.ORDER_NO
+    ) vt
+  </select>
+  <!--  liuyin  update end-->
+  <select id="findGiOrderByReqOrderNo" parameterType="string" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_ssm_gi_order WHERE  REQ_ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

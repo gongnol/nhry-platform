@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TBranchNotsellListMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TBranchNotsellList" >
+    <id column="LIST_NO" property="listNo" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LIST_NO, MATNR, SALES_ORG, DEALER_NO, BRANCH_NO, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
+    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, CREATE_AT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_branch_notsell_list
+    where LIST_NO = #{listNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="delBranchNotsellByNo" parameterType="java.lang.String" >
+    delete from t_branch_notsell_list
+    where LIST_NO = #{listNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delBranchNotsellByMatnr" parameterType="java.lang.String" >
+    delete from t_branch_notsell_list where MATNR = #{matnr,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addBranchNotSell" parameterType="com.nhry.data.basic.domain.TBranchNotsellList" >
+    insert into t_branch_notsell_list
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="listNo != null" >
+        LIST_NO,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="dealerNo != null" >
+        DEALER_NO,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="listNo != null" >
+        #{listNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerNo != null" >
+        #{dealerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.basic.domain.TBranchNotsellList" >
+    update t_branch_notsell_list
+    <set >
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerNo != null" >
+        DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where LIST_NO = #{listNo,jdbcType=VARCHAR}
+  </update>
+  <select id="getNotSellListByMatnr" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+      SELECT
+		LIST_NO,
+		MATNR,
+		SALES_ORG,
+		DEALER_NO,
+		BRANCH_NO,
+		(
+			CASE t_branch_notsell_list.DEALER_NO
+			WHEN '-1' THEN
+				'<include refid="mybaties.constant.ownBranch"></include>'
+			ELSE
+				(
+					SELECT
+						d.DEALER_NAME
+					FROM
+						t_md_dealer d
+					WHERE
+						d.DEALER_NO = t_branch_notsell_list.DEALER_NO
+				)
+			END
+		) DEALER_NAME
+	FROM
+		t_branch_notsell_list 
+	    where SALES_ORG =#{salesOrg} and MATNR = #{matnr}
+  </select>
+  <select id="getNotSellDealerNosByMatnr"  resultType="String" parameterType="java.util.HashMap">
+      SELECT DEALER_NO FROM t_branch_notsell_list where SALES_ORG =#{salesOrg} and MATNR = #{matnr}
+  </select>
+</mapper>

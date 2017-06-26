@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TSsmSalOrderItems" >
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+        <result column="ITEM_NO" property="itemNo" jdbcType="INTEGER" />
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+        <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+        <result column="QTY" property="qty" jdbcType="INTEGER" />
+        <result column="TYPE" property="type" jdbcType="VARCHAR" />
+        <result column="INI_QTY" property="iniQty" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,TYPE,INI_QTY
+    </sql>
+
+    <insert id="addSalOrderItem"  parameterType="com.nhry.data.milktrans.domain.TSsmSalOrderItems" >
+        insert into t_ssm_sal_order_items
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="orderNo != null" >
+                ORDER_NO,
+            </if>
+            <if test="orderDate != null" >
+                ORDER_DATE,
+            </if>
+            <if test="itemNo != null" >
+                ITEM_NO,
+            </if>
+            <if test="matnr != null" >
+                MATNR,
+            </if>
+            <if test="refMatnr != null" >
+                REF_MATNR,
+            </if>
+            <if test="unit != null" >
+                UNIT,
+            </if>
+            <if test="qty != null" >
+                QTY,
+            </if>
+            <if test="type != null" >
+                TYPE,
+            </if>
+            <if test="promNo != null" >
+                PROM_NO,
+            </if>
+            <if test="discountAmt != null" >
+                DISCOUNT_AMT,
+            </if>
+            <if test="iniQty != null" >
+                INI_QTY,
+            </if>
+            <if test="price!=null">
+                PRICE,
+            </if>
+            <if test="yk21 != null">
+                YK21
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="orderNo != null" >
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderDate != null" >
+                #{orderDate,jdbcType=DATE},
+            </if>
+            <if test="itemNo != null" >
+                #{itemNo,jdbcType=INTEGER},
+            </if>
+            <if test="matnr != null" >
+                #{matnr,jdbcType=VARCHAR},
+            </if>
+            <if test="refMatnr != null" >
+                #{refMatnr,jdbcType=VARCHAR},
+            </if>
+            <if test="unit != null" >
+                #{unit,jdbcType=VARCHAR},
+            </if>
+            <if test="qty != null" >
+                #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="type != null" >
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="promNo != null" >
+                #{promNo,jdbcType=VARCHAR},
+            </if>
+            <if test="discountAmt != null" >
+                #{discountAmt,jdbcType=VARCHAR},
+            </if>
+            <if test="iniQty != null" >
+                #{iniQty,jdbcType=INTEGER},
+            </if>
+            <if test="price!=null">
+                #{price,jdbcType=VARCHAR},
+            </if>
+            <if test="yk21 != null">
+                #{yk21,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="findItemsForPI" resultType="hashmap" parameterType="string">
+        SELECT
+            i.*, ex.WERKS WERKS,
+            ex.RESLO RESLO,
+            i.QTY SUM_QTY,
+            IFNULL((
+                SELECT DISTINCT
+                    unit
+                FROM
+                    t_ssm_gi_order_item it
+                INNER JOIN t_ssm_gi_order d ON it.ORDER_NO = d.ORDER_NO
+                WHERE
+                    d.BRANCH_NO = o.BRANCH_NO
+                AND it.MATNR = i.MATNR
+            ),m.BASE_UNIT) BASE_UNIT
+        FROM
+            t_ssm_sal_order_items i
+        JOIN t_ssm_sal_order o ON i.ORDER_DATE = o.ORDER_DATE
+        AND i.ORDER_NO = #{orderNo}
+        AND i.QTY > 0
+        AND i.ORDER_NO = o.ORDER_NO
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+        JOIN t_md_mara m ON m.MATNR = i.MATNR
+        AND m.SALES_ORG = b.SALES_ORG
+        JOIN t_md_mara_ex ex ON m.MATNR = ex.MATNR
+        AND m.SALES_ORG = ex.SALES_ORG
+    </select>
+    <select id="findDealerItemsForPI" resultType="hashmap" parameterType="string">
+        SELECT
+        i.*, ex.WERKS WERKS,
+        ex.RESLO RESLO,
+        i.QTY SUM_QTY,
+        m.BASE_UNIT
+        FROM
+        t_ssm_sal_order_items i
+        JOIN t_ssm_sal_order o ON i.ORDER_DATE = o.ORDER_DATE
+        AND i.ORDER_NO = #{orderNo}
+        AND i.QTY > 0
+        AND i.ORDER_NO = o.ORDER_NO
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+        JOIN t_md_mara m ON m.MATNR = i.MATNR
+        AND m.SALES_ORG = b.SALES_ORG
+        JOIN t_md_mara_ex ex ON m.MATNR = ex.MATNR
+        AND m.SALES_ORG = ex.SALES_ORG
+    </select>
+    <select id="selectItemsBySalOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+          i.MATNR,ex.SHORT_TXT MATNR_TXT,i.QTY,i.TYPE,i.UNIT,i.ORDER_NO,i.ORDER_DATE,i.ITEM_NO,i.INI_QTY
+        FROM
+        t_ssm_sal_order_items i
+        LEFT JOIN  t_md_mara_ex ex ON  i.MATNR = ex.MATNR and ex.SALES_ORG = #{salesOrg}
+        where 1=1
+        and ORDER_NO = #{orderNo}
+        ORDER  BY  i.MATNR ASC
+    </select>
+
+    <delete id="delSalOrderItemsByOrderNo" parameterType="string">
+        DELETE
+        FROM
+        t_ssm_sal_order_items
+        where 1=1
+        and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </delete>
+    <select id="selectPromDaliyDiscountAmtOfDearler" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+        SELECT
+            matnr MATNR,
+            SUM(DISCOUNT_AMT) DISCOUNT_AMT,
+            SUM(qty) QTY,
+            sum(PRICE1*qty) REMAIN_AMT,
+            PROMOTION PROMOTION_FLAG
+        FROM
+            (SELECT
+                i.ORDER_NO,
+                    i.MATNR matnr,
+                    i.PRICE_NET_VALUE,
+                    i.PRICE_HOME,
+                    i.QTY,
+                    (i.PRICE - i.PRICE_DELIVER) * o.DISCOUNT_AMT - i.PRICE_HOME PRICE1,
+                    (i.PRICE - i.PRICE_DELIVER) * (1 - IFNULL(o.DISCOUNT_AMT,1)) * i.QTY AS DISCOUNT_AMT,
+                    o.PROMOTION
+            FROM
+                t_mst_order_daliy_plan_item i
+            JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
+                AND o.PREORDER_SOURCE != '70'
+                AND o.PREORDER_STAT != '30'
+                AND o.PREORDER_STAT != '40'
+                AND i.`STATUS` != '30'
+                AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            JOIN t_promotion p ON o.PROMOTION = p.PROM_NO
+                AND p.PROM_SUB_TYPE = 'Z017'
+            JOIN t_md_mara_ex e ON i.MATNR = e.MATNR
+                AND e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+                AND ((e.PRE_DAYS = 2
+                AND i.DISP_DATE = #{secondDay,jdbcType=DATE})
+                OR (e.PRE_DAYS = 1
+                AND i.DISP_DATE = #{firstDay,jdbcType=DATE}))) a
+        GROUP BY matnr , PROMOTION_FLAG
+    </select>
+    <select id="selectPromDaliyDiscountAmtOfBranch" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+        SELECT
+            a.MATNR,
+            sum(a.DISCOUNT_AMT) DISCOUNT_AMT,
+            sum(a.QTY) QTY,
+            sum(a.PRICE1*a.QTY) REMAIN_AMT,
+            a.PROMOTION PROMOTION_FLAG
+        FROM
+            (
+                SELECT
+                    o.ORDER_NO,
+                    o.PROMOTION,
+                    it.CONFIRM_MATNR MATNR,
+                    it.CONFIRM_QTY QTY,
+					(it.PRICE - it.PRICE_DELIVER) * o.DISCOUNT_AMT - it.PRICE_HOME PRICE1,
+					(it.PRICE - it.PRICE_DELIVER) * (1 - IFNULL(o.DISCOUNT_AMT,1)) * it.QTY AS DISCOUNT_AMT
+                FROM
+                    t_mst_disp_order_item it
+                JOIN t_mst_disp_order ds ON it.ORDER_NO = ds.ORDER_NO
+                AND ds.`STATUS` = '20'
+                AND it.CONFIRM_QTY > 0
+                AND ds.DISP_DATE = #{orderDate,jdbcType=DATE}
+                AND ds.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                JOIN t_preorder o ON o.ORDER_NO = it.ORG_ORDER_NO
+                JOIN t_promotion p ON p.PROM_NO = o.PROMOTION
+                AND p.PROM_SUB_TYPE = 'Z017'
+            ) a
+        GROUP BY
+            a.MATNR,a.PROMOTION
+    </select>
+
+    <update id="updateDiscountAmt" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrderItems">
+        UPDATE t_ssm_sal_order_items
+            SET DISCOUNT_AMT = #{discountAmt,jdbcType=DECIMAL}
+            WHERE
+                ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+            AND ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+            AND ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </update>
+
+    <select id="getSalOrderItemByKey" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrderItems">
+        SELECT <include refid="Base_Column_List"/> FROM t_ssm_sal_order_items
+        WHERE
+                ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+            AND ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+            AND ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </select>
+
+    <update id="updateSalOrderItem" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrderItems">
+        UPDATE t_ssm_sal_order_items
+        SET QTY = #{qty,jdbcType=DECIMAL}
+        WHERE
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        AND ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+        AND ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </update>
+
+    <select id="sumSalOrderByDate" resultType="BigDecimal" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+        SELECT
+            SUM(i.QTY)
+        FROM
+            t_ssm_sal_order o
+        JOIN t_ssm_sal_order_items i ON o.ORDER_NO = i.ORDER_NO
+        AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        AND o.REQUIRED_DATE = #{requiredDate,jdbcType=DATE};
+    </select>
+</mapper>

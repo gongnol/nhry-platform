@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milk.dao.TMstRefuseResendMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TMstRefuseResend" >
+    <result column="RESEND_ORDER_NO" property="resendOrderNo" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="REMAIN_QTY" property="remainQty" jdbcType="DECIMAL" />
+    <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
+    <result column="INSIDE_QTY" property="insideQty" jdbcType="DECIMAL" />
+    <result column="USE_QTY" property="useQty" jdbcType="DECIMAL" />
+    <result column="QTY" property="qty" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="DISP_ORDER_NO" property="dispOrderNo" jdbcType="VARCHAR" />
+    <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+
+  </resultMap>
+  <sql id="Base_Column_List" >
+    SALES_ORG,BRANCH_NO, DISP_ORDER_NO,DISP_DATE,QTY,IFNULL(CONFIRM_QTY,0) CONFIRM_QTY,IFNULL(REMAIN_QTY,0) REMAIN_QTY,
+    MATNR,STATUS,EMP_NO,RESEND_ORDER_NO,IFNULL(INSIDE_QTY,0) INSIDE_QTY
+  </sql>
+
+  <insert id="addTMstRefuseResend" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend" >
+    insert into t_mst_refuse_resend
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resendOrderNo != null" >
+        RESEND_ORDER_NO,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="dispOrderNo != null" >
+        DISP_ORDER_NO,
+      </if>
+      <if test="dispDate != null" >
+        DISP_DATE,
+      </if>
+      <if test="empNo != null" >
+        EMP_NO,
+      </if>
+      <if test="qty!= null" >
+        QTY,
+      </if>
+      <if test="confirmQty != null" >
+        CONFIRM_QTY,
+      </if>
+      <if test="remainQty != null" >
+        REMAIN_QTY,
+      </if>
+      <if test="insideQty != null" >
+        INSIDE_QTY,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resendOrderNo != null" >
+        #{resendOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispOrderNo != null" >
+        #{dispOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispDate != null" >
+        #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="empNo != null" >
+        #{empNo,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmQty != null" >
+        #{confirmQty,jdbcType=DECIMAL},
+      </if>
+      <if test="remainQty != null" >
+        #{remainQty,jdbcType=DECIMAL},
+      </if>
+      <if test="insideQty != null" >
+        #{insideQty,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="uptRefuseResend" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend" >
+    update t_mst_refuse_resend
+    <set >
+      <if test="qty!= null" >
+            QTY =  #{qty,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmQty != null" >
+        CONFIRM_QTY =  #{confirmQty,jdbcType=DECIMAL},
+      </if>
+      <if test="remainQty != null" >
+        REMAIN_QTY = #{remainQty,jdbcType=DECIMAL},
+      </if>
+      <if test="insideQty != null" >
+       INSIDE_QTY =  #{insideQty,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where 1=1
+    <if test="branchNo!=null and ''!=branchNo">
+     and  BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="empNo!=null and ''!=empNo">
+     and  EMP_NO = #{empNo,jdbcType=VARCHAR}
+    </if>
+    <if test="resendOrderNo != null" >
+      and   RESEND_ORDER_NO = #{resendOrderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="matnr != null" >
+       and MATNR = #{matnr,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate != null and ''!=dispDate" >
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    <if test="dispOrderNo != null and ''!=dispOrderNo" >
+      and DISP_ORDER_NO =  #{dispOrderNo,jdbcType=VARCHAR}
+    </if>
+  </update>
+<delete id="delRefuseResendByDispAndMatnr" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend">
+  DELETE FROM t_mst_refuse_resend
+  WHERE  1=1
+    <if test="matnr!=null and ''!=matnr">
+      and MATNR = #{matnr,jdbcType=VARCHAR}
+    </if>
+      <if test="empNo!=null and ''!=empNo">
+        and EMP_NO=#{empNo,jdbcType=VARCHAR}
+      </if>
+    <if test="dispDate!=null and ''!=dispDate">
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    <if test="dispOrderNo!=null and ''!=dispOrderNo">
+      and DISP_ORDER_NO =  #{dispOrderNo,jdbcType=VARCHAR}
+    </if>
+</delete>
+  <select id="findNoUsedRefuseResend" resultMap="BaseResultMap" parameterType="String">
+    SELECT
+        rs.MATNR,
+        SUM(rs.REMAIN_QTY) QTY
+    FROM
+        t_mst_refuse_resend rs
+    WHERE
+        rs.REMAIN_QTY > 0
+    AND rs.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    GROUP BY
+        rs.MATNR
+  </select>
+
+  <select id="findNoUsedAndUsedRefuseResend" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    SELECT
+        t.MATNR
+    FROM
+        (
+            SELECT
+                rr.MATNR
+            FROM
+                t_mst_refuse_resend rr
+            WHERE
+                rr.REMAIN_QTY > 0
+            AND rr.BRANCH_NO = #{branchNo}
+            UNION
+                SELECT
+                    rr.MATNR
+                FROM
+                    t_mst_refuse_resend_item i
+                LEFT JOIN t_mst_refuse_resend rr ON i.RESEND_ORDER_NO =  rr.RESEND_ORDER_NO
+                WHERE
+                    i.ORDER_NO = #{orderNo}
+                AND rr.MATNR IS NOT NULL
+        ) t
+    GROUP BY
+        t.MATNR
+
+
+  </select>
+
+  <select id="queryRefuseResendByMatnr" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+            r.RESEND_ORDER_NO,
+            r.MATNR,
+            ex.SHORT_TXT MATNR_TXT,
+            (r.REMAIN_QTY + i.QTY) REMAIN_QTY,
+            r.DISP_DATE,
+            r.EMP_NO,
+            e.EMP_NAME,
+            i.QTY USE_QTY
+        FROM
+            t_mst_refuse_resend_item i
+        LEFT JOIN t_mst_refuse_resend r ON i.RESEND_ORDER_NO = r.RESEND_ORDER_NO
+        LEFT JOIN t_md_mara_ex ex ON r.MATNR = ex.MATNR
+        AND r.SALES_ORG = ex.SALES_ORG
+        LEFT JOIN t_md_branch_emp e ON r.EMP_NO = e.EMP_NO
+        WHERE
+            i.ORDER_NO = #{orderNo}
+            and r.MATNR = #{matnr}
+
+        UNION
+            SELECT
+                r.RESEND_ORDER_NO,
+                r.MATNR,
+                ex.SHORT_TXT MATNR_TXT,
+                r.REMAIN_QTY,
+                r.DISP_DATE,
+                r.EMP_NO,
+                e.EMP_NAME,
+                '' USE_QTY
+            FROM
+                t_mst_refuse_resend r
+            LEFT JOIN t_md_mara_ex ex ON r.MATNR = ex.MATNR AND r.SALES_ORG = ex.SALES_ORG
+            LEFT JOIN t_md_branch_emp e ON r.EMP_NO = e.EMP_NO
+            WHERE
+                r.MATNR = #{matnr}
+            AND r.REMAIN_QTY>0
+            AND r.BRANCH_NO = #{branchNo}
+            AND r.RESEND_ORDER_NO NOT IN (
+                SELECT
+                    RESEND_ORDER_NO
+                FROM
+                    t_mst_refuse_resend_item
+                WHERE
+                    ORDER_NO = #{orderNo}
+                GROUP BY RESEND_ORDER_NO
+            )
+  </select>
+
+
+  <select id="selectRefuseResend" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend" resultMap="BaseResultMap">
+    SELECT
+   <include refid="Base_Column_List"/>
+    FROM t_mst_refuse_resend
+    WHERE 1=1
+    <if test="resendOrderNo!=null and ''!=resendOrderNo">
+     and  RESEND_ORDER_NO = #{resendOrderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="branchNo!=null and ''!=branchNo">
+      and BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="empNo!=null and ''!=empNo">
+      and EMP_NO = #{empNo,jdbcType=VARCHAR}
+    </if>
+    <if test="matnr!=null and ''!=matnr">
+      and MATNR = #{matnr,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate!=null and ''!=dispDate">
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+  </select>
+    <select id="selectRefuseForInside" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend" resultMap="BaseResultMap">
+        SELECT
+            t.RESEND_ORDER_NO,
+            t.EMP_NO,
+            t2.EMP_NAME,
+            t.MATNR,
+            t1.SHORT_TXT as MATNR_TXT,
+            t.QTY,
+            t.CONFIRM_QTY,
+            t.INSIDE_QTY,
+            t.REMAIN_QTY,
+            t.DISP_DATE
+        FROM
+            t_mst_refuse_resend t
+        inner join t_md_mara_ex t1 on t1.MATNR = t.MATNR and t1.SALES_ORG=t.SALES_ORG
+        inner join t_md_branch_emp t2 on t2.EMP_NO = t.EMP_NO
+        WHERE
+            t.REMAIN_QTY > 0
+        <if test="branchNo!=null and ''!=branchNo">
+            and t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="salesOrg!=null and ''!=salesOrg">
+            and t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and t.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+            </select>
+    <select id="selectUseQtyByEmpNoAndMatnr" parameterType="String" resultType="com.nhry.data.milktrans.domain.TMstRefuseResend">
+        SELECT
+            r.MATNR matnr,
+            r.EMP_NO empNo,
+            sum(i.QTY) useQty
+        FROM
+            t_mst_refuse_resend_item i
+        LEFT JOIN t_mst_refuse_resend r ON i.RESEND_ORDER_NO = r.RESEND_ORDER_NO
+        LEFT JOIN t_md_mara_ex ex ON r.MATNR = ex.MATNR
+        AND r.SALES_ORG = ex.SALES_ORG
+        LEFT JOIN t_md_branch_emp e ON r.EMP_NO = e.EMP_NO
+        WHERE
+            i.ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR}
+        GROUP BY
+            r.emp_no,
+            r.MATNR
+    </select>
+</mapper>

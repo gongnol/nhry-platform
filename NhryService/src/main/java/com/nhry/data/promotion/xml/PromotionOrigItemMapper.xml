@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.promotion.dao.PromotionOrigItemMapper">
+  <resultMap id="BaseResultMap" type="com.nhry.data.promotion.domain.PromotionOrigItem">
+    <id column="PROM_NO" jdbcType="VARCHAR" property="promNo" />
+    <id column="ITEM_NO" jdbcType="VARCHAR" property="itemNo" />
+    <result column="GOOD_NO" jdbcType="VARCHAR" property="goodNo" />
+    <result column="ORIG_NUM" jdbcType="DECIMAL" property="origNum" />
+    <result column="UNIT" jdbcType="VARCHAR" property="unit" />
+    <result column="DISCOUNT_AMT" jdbcType="DECIMAL" property="discountAmt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    PROM_NO, ITEM_NO, GOOD_NO, ORIG_NUM, UNIT, DISCOUNT_AMT
+  </sql>
+  <select id="selectOrigItem" parameterType="com.nhry.data.promotion.domain.PromotionOrigItemKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_orig_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteOrigItem" parameterType="com.nhry.data.promotion.domain.PromotionOrigItemKey">
+    delete from t_promotion_orig_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </delete>
+
+  <update id="updateOrigItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionOrigItem">
+    update t_promotion_orig_item
+    <set>
+      <if test="goodNo != null">
+        GOOD_NO = #{goodNo,jdbcType=VARCHAR},
+      </if>
+      <if test="origNum != null">
+        ORIG_NUM = #{origNum,jdbcType=DECIMAL},
+      </if>
+      <if test="unit != null">
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="discountAmt != null">
+        DISCOUNT_AMT = #{discountAmt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateOrigItem" parameterType="com.nhry.data.promotion.domain.PromotionOrigItem">
+    update t_promotion_orig_item
+    set GOOD_NO = #{goodNo,jdbcType=VARCHAR},
+      ORIG_NUM = #{origNum,jdbcType=DECIMAL},
+      DISCOUNT_AMT = #{discountAmt,jdbcType=VARCHAR},
+      UNIT = #{unit,jdbcType=VARCHAR}
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insertOrigItem" parameterType="com.nhry.data.promotion.domain.PromotionOrigItem">
+    insert into t_promotion_orig_item (PROM_NO, ITEM_NO, GOOD_NO, 
+      ORIG_NUM, UNIT, DISCOUNT_AMT)
+    values (#{promNo,jdbcType=VARCHAR}, #{itemNo,jdbcType=VARCHAR}, #{goodNo,jdbcType=VARCHAR}, 
+      #{origNum,jdbcType=DECIMAL}, #{unit,jdbcType=VARCHAR}, #{discountAmt,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertOrigItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionOrigItem">
+    insert into t_promotion_orig_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="promNo != null">
+        PROM_NO,
+      </if>
+      <if test="itemNo != null">
+        ITEM_NO,
+      </if>
+      <if test="goodNo != null">
+        GOOD_NO,
+      </if>
+      <if test="origNum != null">
+        ORIG_NUM,
+      </if>
+      <if test="unit != null">
+        UNIT,
+      </if>
+      <if test="discountAmt != null">
+        DISCOUNT_AMT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="promNo != null">
+        #{promNo,jdbcType=VARCHAR},
+      </if>
+      <if test="itemNo != null">
+        #{itemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="goodNo != null">
+        #{goodNo,jdbcType=VARCHAR},
+      </if>
+      <if test="origNum != null">
+        #{origNum,jdbcType=DECIMAL},
+      </if>
+      <if test="unit != null">
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="discountAmt != null">
+        #{DISCOUNT_AMT,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  
+   <delete id="delOrigPromByNo" parameterType="java.lang.String">
+	    delete from t_promotion_orig_item
+	    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+  	</delete>
+</mapper>

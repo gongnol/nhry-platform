@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.auth.dao.TSysUserGroupMapper">
+  <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysUserGroup">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="GROUP_NAME" jdbcType="VARCHAR" property="groupName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, GROUP_NAME
+  </sql>
+  <select id="findUserGroupById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_user_group
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteUserGroupById" parameterType="java.lang.String">
+    delete from t_sys_user_group
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addUserGroup" parameterType="com.nhry.data.auth.domain.TSysUserGroup">
+    insert into t_sys_user_group (ID, GROUP_NAME)
+    values (#{id,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateUserGroupById" parameterType="com.nhry.data.auth.domain.TSysUserGroup">
+    update t_sys_user_group
+    set GROUP_NAME = #{groupName,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="findAllUserGroups" resultMap="BaseResultMap">
+	   select  
+	    <include refid="Base_Column_List" />
+	    from t_sys_user_group order by GROUP_NAME
+  </select>
+</mapper>

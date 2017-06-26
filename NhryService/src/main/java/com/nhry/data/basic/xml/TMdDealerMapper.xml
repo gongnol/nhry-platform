@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdDealerMapper" >
+ <!-- <cache type="org.mybatis.caches.redis.RedisCache" /> --> 
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdDealer" >
+    <id column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+    <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="PARENT" property="parent" jdbcType="VARCHAR" />
+    <result column="DEALER_TYPE" property="dealerType" jdbcType="VARCHAR" />
+    <result column="CONTACT" property="contact" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="COUNTY" property="county" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="DEL_FLAG" property="delFlag" jdbcType="CHAR" />
+    <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    DEALER_NO, DEALER_NAME, SALES_ORG, PARENT, DEALER_TYPE, CONTACT, TEL, ADDRESS, PROVINCE, 
+    CITY, COUNTY, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+    LAST_MODIFIED_BY_TXT, DEL_FLAG,COMPANY_CODE
+  </sql>
+  <select id="selectDealerByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_dealer
+    where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteDealerByNo" parameterType="java.lang.String" >
+    delete from t_md_dealer
+    where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+  </delete>
+  <select id="findDealersBySalesOrg" resultMap="BaseResultMap" parameterType="String">
+      select DEALER_NO, DEALER_NAME from t_md_dealer
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR} ORDER BY DEALER_NAME
+  </select>
+  <insert id="insertDealer" parameterType="com.nhry.data.basic.domain.TMdDealer" >
+    insert into t_md_dealer (DEALER_NO, DEALER_NAME, SALES_ORG, 
+      PARENT, DEALER_TYPE, CONTACT, 
+      TEL, ADDRESS, PROVINCE, 
+      CITY, COUNTY, CREATE_AT, 
+      CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
+      LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, DEL_FLAG,COMPANY_CODE
+      )
+    values (#{dealerNo,jdbcType=VARCHAR}, #{dealerName,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
+      #{parent,jdbcType=VARCHAR}, #{dealerType,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, 
+      #{tel,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, 
+      #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}, #{delFlag,jdbcType=CHAR},#{companyCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <!--
+  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdDealer" >
+    insert into t_md_dealer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dealerNo != null" >
+        DEALER_NO,
+      </if>
+      <if test="dealerName != null" >
+        DEALER_NAME,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="parent != null" >
+        PARENT,
+      </if>
+      <if test="dealerType != null" >
+        DEALER_TYPE,
+      </if>
+      <if test="contact != null" >
+        CONTACT,
+      </if>
+      <if test="tel != null" >
+        TEL,
+      </if>
+      <if test="address != null" >
+        ADDRESS,
+      </if>
+      <if test="province != null" >
+        PROVINCE,
+      </if>
+      <if test="city != null" >
+        CITY,
+      </if>
+      <if test="county != null" >
+        COUNTY,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="delFlag != null" >
+        DEL_FLAG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dealerNo != null" >
+        #{dealerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerName != null" >
+        #{dealerName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="parent != null" >
+        #{parent,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerType != null" >
+        #{dealerType,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null" >
+        #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  -->
+  <update id="updateDealerSelective" parameterType="com.nhry.data.basic.domain.TMdDealer" >
+    update t_md_dealer
+    <set >
+      <if test="dealerName != null" >
+        DEALER_NAME = #{dealerName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="parent != null" >
+        PARENT = #{parent,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerType != null" >
+        DEALER_TYPE = #{dealerType,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        CONTACT = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null" >
+        COUNTY = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null" >
+        DEL_FLAG = #{delFlag,jdbcType=CHAR},
+      </if>
+    </set>
+    where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateDealer" parameterType="com.nhry.data.basic.domain.TMdDealer" >
+    update t_md_dealer
+    set DEALER_NAME = #{dealerName,jdbcType=VARCHAR},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      PARENT = #{parent,jdbcType=VARCHAR},
+      DEALER_TYPE = #{dealerType,jdbcType=VARCHAR},
+      CONTACT = #{contact,jdbcType=VARCHAR},
+      TEL = #{tel,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      COUNTY = #{county,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      DEL_FLAG = #{delFlag,jdbcType=CHAR}
+    where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

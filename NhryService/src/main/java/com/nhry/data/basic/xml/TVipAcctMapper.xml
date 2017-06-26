@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TVipAcctMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TVipAcct" >
+    <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <id column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+    <result column="ACCT_AMT" property="acctAmt" jdbcType="DECIMAL" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="CARD_NO" property="cardNo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    BRANCH_NO, VIP_CUST_NO, ACCT_AMT, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
+    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,CARD_NO
+  </sql>
+  <select id="findVipAcctByCustNo" resultMap="BaseResultMap" parameterType="String" >
+    select <include refid="Base_Column_List" />
+    from t_vip_acct 
+    where VIP_CUST_NO = #{custNo,jdbcType=VARCHAR}
+  </select>
+  <insert id="addVipAcct" parameterType="com.nhry.data.basic.domain.TVipAcct" >
+    insert into t_vip_acct
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="vipCustNo != null" >
+        VIP_CUST_NO,
+      </if>
+      <if test="acctAmt != null" >
+        ACCT_AMT,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+       <if test="cardNo != null">
+          CARD_NO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="vipCustNo != null" >
+        #{vipCustNo,jdbcType=VARCHAR},
+      </if>
+      <if test="acctAmt != null" >
+        #{acctAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+          #{cardNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="uptVipAcct" parameterType="com.nhry.data.basic.domain.TVipAcct" >
+    update t_vip_acct
+    <set >
+      <if test="acctAmt != null" >
+        ACCT_AMT = #{acctAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+          CARD_NO = #{cardNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      and VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

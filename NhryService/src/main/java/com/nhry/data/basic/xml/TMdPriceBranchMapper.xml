@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdPriceBranchMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdPriceBranch" >
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="addPriceBranch" parameterType="com.nhry.data.basic.domain.TMdPriceBranch" >
+    insert into t_md_price_branch
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <delete id="delPriceBranchByNo" parameterType="String">
+      delete from t_md_price_branch where BRANCH_NO = #{branchNo}
+  </delete>
+  <delete id="delPriceBranchById" parameterType="String">
+      delete from t_md_price_branch where id = #{id}
+  </delete>
+  <delete id="delPriceBranch" parameterType="java.util.Map">
+      delete from t_md_price_branch where BRANCH_NO = #{branchNo} and id = #{id}
+  </delete>
+  <select id="findPriceBranchCount" resultType="Integer" parameterType="java.util.Map">
+      select count(BRANCH_NO) from t_md_price_branch
+      <where>
+          <if test="branchNo != null and branchNo != ''">
+          		BRANCH_NO = #{branchNo}
+          </if>
+          <if test="id != null and id != ''">
+               and id = #{id}
+          </if>
+      </where>
+  </select>
+  <select id="findPriceBrachCountByPt" resultType="Integer" parameterType="com.nhry.data.basic.domain.TMdPriceBranch">
+     SELECT
+		COUNT(p.ID)
+	FROM
+		T_MD_PRICE p,
+		T_MD_PRICE_BRANCH pb
+	WHERE
+		p.ID = pb.id
+	AND p.PRICE_TYPE = #{priceType}
+	<!-- AND pb.id = #{id} -->
+	AND pb.BRANCH_NO = #{branchNo}
+  </select>
+</mapper>

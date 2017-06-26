@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.auth.dao.TSysAccesskeyMapper" >
+  <cache type="org.mybatis.caches.redis.RedisCache" /> 
+  <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysAccesskey" >
+    <id column="ACCESSKEY" property="accesskey" jdbcType="VARCHAR" />
+    <id column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="LOGINNAME" property="loginname" jdbcType="VARCHAR" />
+    <result column="VISIT_FIRST_TIME" property="visitFirstTime" jdbcType="TIMESTAMP" />
+    <result column="VISIT_LAST_TIME" property="visitLastTime" jdbcType="TIMESTAMP" />
+    <result column="VISIT_IP" property="visitIp" jdbcType="VARCHAR" />
+    <result column="VISIT_URL" property="visitUrl" jdbcType="VARCHAR" />
+    <result column="VISIT_AMOUNT" property="visitAmount" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ACCESSKEY, TYPE, LOGINNAME, VISIT_FIRST_TIME, VISIT_LAST_TIME, VISIT_IP, VISIT_URL, 
+    VISIT_AMOUNT
+  </sql>
+  <select id="findAccesskeyByKey" resultMap="BaseResultMap" parameterType="com.nhry.data.auth.domain.TSysAccesskey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_accesskey
+    where ACCESSKEY = #{accesskey,jdbcType=VARCHAR}
+      and TYPE = #{type,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteAccesskeyByAk" parameterType="com.nhry.data.auth.domain.TSysAccesskey" >
+    delete from t_sys_accesskey
+    where ACCESSKEY = #{accesskey,jdbcType=VARCHAR}
+      and TYPE = #{type,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addIsysAccessKey" parameterType="com.nhry.data.auth.domain.TSysAccesskey" >
+    insert into t_sys_accesskey
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="accesskey != null" >
+        ACCESSKEY,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="loginname != null" >
+        LOGINNAME,
+      </if>
+      <if test="visitFirstTime != null" >
+        VISIT_FIRST_TIME,
+      </if>
+      <if test="visitLastTime != null" >
+        VISIT_LAST_TIME,
+      </if>
+      <if test="visitIp != null" >
+        VISIT_IP,
+      </if>
+      <if test="visitUrl != null" >
+        VISIT_URL,
+      </if>
+      <if test="visitAmount != null" >
+        VISIT_AMOUNT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="accesskey != null" >
+        #{accesskey,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="loginname != null" >
+        #{loginname,jdbcType=VARCHAR},
+      </if>
+      <if test="visitFirstTime != null" >
+        #{visitFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitLastTime != null" >
+        #{visitLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitIp != null" >
+        #{visitIp,jdbcType=VARCHAR},
+      </if>
+      <if test="visitUrl != null" >
+        #{visitUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="visitAmount != null" >
+        #{visitAmount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateIsysAccessKey" parameterType="com.nhry.data.auth.domain.TSysAccesskey" >
+    update t_sys_accesskey
+    <set >
+      <if test="loginname != null" >
+        LOGINNAME = #{loginname,jdbcType=VARCHAR},
+      </if>
+      <if test="visitFirstTime != null" >
+        VISIT_FIRST_TIME = #{visitFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitLastTime != null" >
+        VISIT_LAST_TIME = #{visitLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitIp != null" >
+        VISIT_IP = #{visitIp,jdbcType=VARCHAR},
+      </if>
+      <if test="visitUrl != null" >
+        VISIT_URL = #{visitUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="visitAmount != null" >
+        VISIT_AMOUNT = #{visitAmount,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ACCESSKEY = #{accesskey,jdbcType=VARCHAR}
+      and TYPE = #{type,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteExpiredAccesskey">
+     DELETE FROM t_sys_accesskey where hour(timediff(SYSDATE(),VISIT_LAST_TIME))>8
+  </delete>
+</mapper>

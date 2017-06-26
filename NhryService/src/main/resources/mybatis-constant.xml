@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybaties.constant">
+    <!-- 销售组织type_code -->
+	<sql id="SALES_ORG_CONSTANT">'1002'</sql>
+	<!-- 全国省、市、区、街type_code -->
+	<sql id="COUNTRY_CITY_CONSTANT">'1001'</sql>
+	<!-- 公司代码 -->
+	<sql id="comp_code">'1003'</sql>
+	<!-- 采购组织 -->
+	<sql id="purchase_org">'1004'</sql>
+	<!-- 工厂 -->
+	<sql id="factory">'1005'</sql>
+	<!-- 订户来源 -->
+	<sql id="vip_src">'1006'</sql>
+	<!-- 订户类型 -->
+	<sql id="vip_type">'1007'</sql>
+	<!-- 价格组类型 -->
+	<sql id="price_type">'1008'</sql>
+	<!-- 奶瓶规格 -->
+	<sql id="bot_type">'1009'</sql>
+	<!-- 收款方式 -->
+	<sql id="payment_type">'1010'</sql>
+	<!-- 库存地点-->
+	<sql id="storage_location">'1011'</sql>
+	<!-- 系统资源类型 -->
+	<sql id="sys_res_type">1012</sql>
+	<!-- 系统资源类型 页面资源-->
+	<sql id="sys_res_type_pages">10</sql>
+	<!-- 系统资源类型 页面组件-->
+	<sql id="sys_res_type_component">20</sql>
+	<!-- 采购组 -->
+	<sql id="purchasing_group">1013</sql>
+	<!-- 价格组类型  公司价 -->
+	<sql id="price_type_comp">10</sql>
+	<!-- 产品大类 -->
+	<sql id="products_first_category">'2000'</sql>
+	<!-- 产品中类 -->
+	<sql id="products_second_category">'2001'</sql>
+	<!-- 产品品牌/副品牌 -->
+	<sql id="products_third_category">'2002'</sql>
+	<!-- 产品规格 -->
+	<sql id="products_spec">'2003'</sql>
+	<!-- 包装类型 -->
+	<sql id="packing _type">'2004'</sql>
+	<!-- 重点产品分类 -->
+	<sql id="major_products_category">'2005'</sql>
+	<!-- 省份对应关系(奶站省份) -->
+	<sql id="branch_province">'2006'</sql>
+	<!-- 奶站上线状态 -->
+	<sql id="branch_status">'2012'</sql>
+	<!-- 促销类型 -->
+	<sql id="PROM_SUB_TYPE">'2013'</sql>
+	<!-- 角色ID  送奶员 -->
+	<sql id="milkman">'10001'</sql>
+	<!-- 角色ID  送奶员 -->
+	<sql id="ownBranch">自营奶站</sql>
+</mapper>  

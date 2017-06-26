@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper" >
+
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TSsmReqGoodsOrder" >
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="REQUIRED_DATE" property="requiredDate" jdbcType="VARCHAR" />
+        <result column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR" />
+        <result column="STATUS" property="status" jdbcType="INTEGER" />
+        <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
+        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ORDER_NO,ORDER_DATE,BRANCH_NO,REQUIRED_DATE,VOUCHER_NO,STATUS,MEMO_TXT,CREATE_AT,CREATE_BY,CREATE_BY_TXT,
+        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+    </sql>
+
+
+
+    <insert id="insertRequireOrder"  parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrder" >
+        insert into t_ssm_req_goods_order (ORDER_NO,ORDER_DATE,BRANCH_NO,REQUIRED_DATE,STATUS,
+        CREATE_AT,CREATE_BY,CREATE_BY_TXT, LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT)
+        VALUES(
+        #{orderNo,jdbcType=VARCHAR},#{orderDate,jdbcType=DATE},#{branchNo,jdbcType=VARCHAR},#{requiredDate,jdbcType=DATE},
+        #{status,jdbcType=VARCHAR},#{createAt,jdbcType=TIMESTAMP},#{createBy,jdbcType=VARCHAR},
+        #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP},#{lastModifiedBy,jdbcType=VARCHAR},
+        #{lastModifiedByTxt,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="searchRequireOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_ssm_req_goods_order
+        WHERE  1=1
+        <if test="orderDate!=null">
+            and  ORDER_DATE = #{orderDate,jdbcType=DATE}
+        </if>
+        <if test="requiredDate!=null">
+            and  REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+        </if>
+        AND   BRANCH_NO =#{branchNo,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getRequireOrderByNo" resultMap="BaseResultMap" parameterType="String" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_ssm_req_goods_order
+        WHERE ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+    </select>
+
+    <update id="uptRequireGoodsModifyInfo" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrder" >
+        update t_ssm_req_goods_order
+        set
+            <if test="status!=null and ''!=status">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+
+            <if test="voucherNo!=null and ''!=voucherNo">
+                VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR},
+            </if>
+            LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+            LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+            LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+            where 1=1
+             and   ORDER_NO= #{orderNo,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getRequireOrderByVoucherNo" resultMap="BaseResultMap" parameterType="String" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_ssm_req_goods_order
+        WHERE VOUCHER_NO =  #{voucherNo,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleRequireGoodsOrderbyNo" parameterType="String">
+        DELETE  FROM t_ssm_req_goods_order
+        WHERE  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </delete>
+
+
+    <select id="searchRequireOrderByRequireDate" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_ssm_req_goods_order
+        WHERE  REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+        AND   BRANCH_NO =#{branchNo,jdbcType=VARCHAR}
+    </select>
+
+    <select id="searchRequireOrderByDealer" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearchPage">
+        select
+        o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.STATUS,o.MEMO_TXT,b.BRANCH_NAME
+        FROM t_ssm_req_goods_order o
+        JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+        AND b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        AND o.ORDER_DATE = #{requiredDate,jdbcType=DATE}
+        <if test="status != null and status != ''">
+          AND o.STATUS = #{status,jdbcType=VARCHAR}
+        </if>
+    </select>
+</mapper>

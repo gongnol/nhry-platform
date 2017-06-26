@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.basic.dao.TMdBranchScopeMapper">
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdBranchScopeKey">
+    <id column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
+    <id column="RESIDENTIAL_AREA_ID" jdbcType="VARCHAR" property="residentialAreaId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.basic.domain.TMdBranchScopeKey">
+    delete from t_md_branch_scope
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      and RESIDENTIAL_AREA_ID = #{residentialAreaId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.basic.domain.TMdBranchScopeKey">
+    insert into t_md_branch_scope (BRANCH_NO, RESIDENTIAL_AREA_ID)
+    values (#{branchNo,jdbcType=VARCHAR}, #{residentialAreaId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdBranchScopeKey">
+    insert into t_md_branch_scope
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="branchNo != null">
+        BRANCH_NO,
+      </if>
+      <if test="residentialAreaId != null">
+        RESIDENTIAL_AREA_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="branchNo != null">
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialAreaId != null">
+        #{residentialAreaId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <delete id="deleteByBranchNo" parameterType="com.nhry.service.basic.pojo.BranchScopeModel">
+    delete from t_md_branch_scope
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and RESIDENTIAL_AREA_ID in
+    <foreach item="residentialAreaIds" index="index"  collection="residentialAreaIds"  open="(" separator="," close=")">
+       #{residentialAreaIds}
+    </foreach>
+  </delete>
+  <select id="getBranchScopeByBranchNo" resultMap="BaseResultMap" parameterType="String">
+    SELECT  BRANCH_NO,RESIDENTIAL_AREA_ID
+    FROM t_md_branch_scope
+    WHERE BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="addBranchScope" parameterType="com.nhry.data.basic.domain.TMdBranchScopeKey">
+      insert into t_md_branch_scope (BRANCH_NO, RESIDENTIAL_AREA_ID)
+      values (#{branchNo,jdbcType=VARCHAR}, #{residentialAreaId,jdbcType=VARCHAR})
+    </insert>
+
+  <delete id="deleteAllAreaByBranchNo" parameterType="String">
+    delete from t_md_branch_scope
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </delete>
+</mapper>

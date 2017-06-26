@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<configs>
+	<!-- 环境标示 -->
+	<config key="redisHost" value="54.222.218.2"></config>
+	<config key="ladp_url" value="ldap://54.223.35.93:1389"></config>
+	<config key="ladp_uname" value="cn=Directory Manager"></config>
+	<config key="ladp_password" value="Abcd1234"></config>
+	<config key="ladp_basedn" value="ou=People,o=newhopedairy,o=isp"></config>
+	<config key="ladp_dh_auth" value="Auth_dhxt"></config>
+	<!-- idm auth2.0 -->
+	<config key="authurl" value="http://myditest.newhopedairy.cn:8080/siam/oauth2.0/authorize"></config>
+	<config key="auth_token" value="http://myditest.newhopedairy.cn:8080/siam/oauth2.0/accessToken"></config>
+	<config key="client_id" value="Auth_dhxt"></config>
+	<!-- <config key="client_id" value="Auth_dhxt1"></config> -->
+	<!-- 回调地址-->
+	<config key="redirect_uri" value="http://54.223.124.94:8082/master/idm/auth"></config>
+	<!-- 
+	<config key="redirect_uri" value="http://54.222.170.10:8070/idm/auth"></config>
+	 -->
+	<config key="response_type" value="code"></config>
+	<config key="client_secret" value="secret"></config>
+	<config key="grant_type" value="authorizaiton_code"></config>
+	<config key="auth_profile" value="http://myditest.newhopedairy.cn:8080/siam/oauth2.0/profile"></config>
+	<!-- app token 校验接口 -->
+	<config key="app_token_validate"  value="http://myditest.newhopedairy.cn:8080/siam/rest/validate"></config>
+	<!-- 前端页面home -->
+	<config key="front_home_page" value="http://54.223.147.25/release/#/newhope/home"></config>
+	<!-- 
+	 <config key="front_home_page" value="http://localhost/local/#/newhope/home"></config>
+	  -->
+	<config key="front_short_url" value="/local/#/newhope/home"></config>
+	<!-- 电商接口base url -->
+	<config key="ec_base_url" value="http://ec2-54-222-233-1.cn-north-1.compute.amazonaws.com.cn"></config>
+	<!-- 更新奶站信息 -->
+	<config key="ec_upt_branch" value="/FY_MOBILE_SVR/WFY_UNI_SERVICE.json?method=callProcService"></config>
+	<!-- idm rest验证接口 appcode、salt  -->
+	<config key="idm_appcode"  value="wsuser"></config>
+	<config key="idm_salt"  value="232ed9n196h69u5f1a24afc26b51c61e"></config>
+	<!-- idm 登录接口 -->
+	<config key="idm_logout_uri" value="http://myditest.newhopedairy.cn:8080/siam/logout?service="></config>
+	<!-- 短信是否发送开关 -->
+	<config key="send_message_flag" value="false"></config>
+
+	<!--#主数据-->
+	<config key="PI.MasterData.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=ZT_Q&amp;receiverParty=&amp;receiverService=&amp;interface=ZT_MasterDataQuery&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3AMasterData"/>
+	<!--#业务数据-->
+	<config key="PI.BusinessData.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=ZT_Q&amp;receiverParty=&amp;receiverService=&amp;interface=ZT_BusinessData_Maintain&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3ABusinessData"/>
+	<!--#会员创建 / 订户维护-->
+	<config key="PI.VipInfoData.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=ZT_Q&amp;receiverParty=&amp;receiverService=&amp;interface=ZT_CRM_BuData_Maintain&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3ABusinessData" />
+	<!--#积分余额-->
+	<config key="PI.VipPointData.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=PointQuery_Out&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData"/>
+	<!--#积分明细-->
+	<config key="PI.VipDetialData.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=PTDetailQuery_Out&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData" />
+	<!--#会员活动创建-->
+	<config key="PI.MemberActCreate.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=MemberActCreate&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData" />
+	<!--#会员地址更新-->
+	<config key="PI.MemberAddrUpdate.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=MemberAddrUpdate&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData" />
+	<config key="PI.MasterData.USERNAME" value="ZT_CONN"/>
+	<config key="PI.MasterData.PASSWORD" value="CANDYTOZT"/>
+	<!-- CRM接口开关 -->
+	<config key="PI.CRM.EXEC" value="on"/>
+	<!-- 短信 -->
+	<config key="SMS.URL" value="https://smsapi.ums86.com:9600/sms_hb/services/Sms?wsdl"/>
+	<config key="SMS.SpCode" value="228672"/>
+	<config key="SMS.LoginName" value="sc_xhry"/>
+	<config key="SMS.Password" value="ry85953221.com"/>
+	<config key="filePath" value="/opt/s3/"/>
+	<!-- 没有配置组织时，提示页面地址 -->
+	<config key="info_page_uri" value="http://54.223.147.25/release/#/error/NoSalesOrg"></config>
+	<config key="online_code" value="0300015781"/>
+</configs>

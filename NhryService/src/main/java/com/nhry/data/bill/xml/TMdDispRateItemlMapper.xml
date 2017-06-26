@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.bill.dao.TMdDispRateItemMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.bill.domain.TMdDispRateItem" >
+        <id column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
+        <result column="ITEM_VALUE" property="itemValue" jdbcType="INTEGER" />
+        <result column="ITEM_INDEX" property="itemIndex" jdbcType="INTEGER" />
+        <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+
+        <result column="RATE" property="rate" jdbcType="DECIMAL" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+       ITEM_VALUE,ITEM_INDEX,SALES_ORG,RATE,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+    </sql>
+
+    <select id="getDispRateNumBySalOrg" resultMap="BaseResultMap" parameterType="String">
+         SELECT
+        SALES_ORG,ITEM_VALUE,ITEM_INDEX,RATE,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+        from t_md_disp_rate_items
+       where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        ORDER  BY  ITEM_INDEX ASC
+    </select>
+
+    <delete id="delDispRateNumBySaleOrg" parameterType="String">
+          DELETE  FROM  t_md_disp_rate_items
+          WHERE   SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="addDispRateItem"   parameterType="com.nhry.data.bill.domain.TMdDispRateItem" >
+        insert INTO  t_md_disp_rate_items (SALES_ORG,ITEM_NO,ITEM_VALUE,ITEM_INDEX,RATE,CREATE_BY,CREATE_BY_TXT,
+                  LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT)
+        values( #{salesOrg,jdbcType=VARCHAR},#{itemNo,jdbcType=VARCHAR},#{itemValue,jdbcType=INTEGER},#{itemIndex,jdbcType=INTEGER},
+        #{rate,jdbcType=DECIMAL}, #{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR},
+        #{lastModified,jdbcType=TIMESTAMP},#{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>

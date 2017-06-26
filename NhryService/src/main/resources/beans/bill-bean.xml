@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"  
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+		default-lazy-init="true">
+	<!--订户结算-->
+	<bean id="customerBillMapper" class="com.nhry.data.bill.impl.CustomerBillMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+
+	<bean id="customerBillService" class="com.nhry.service.bill.impl.CustomerBillServiceImpl">
+		<property name="urMapper"  ref="urMapper"></property>
+	   <property name="customerBillMapper"  ref="customerBillMapper"></property>
+		<property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
+		<property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
+		<property name="orderService"  ref="orderService"></property>
+		<property name="promotionService"  ref="promotionService"></property>
+		<property name="tVipCustInfoService" ref="custService"></property>
+		<property name="messLogService" ref="messLogService"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
+		<property name="piVipInfoDataService" ref="piVipInfoDataService"></property>
+		<property name="tDispOrderItemMapper" ref="tDispOrderItemMapper"></property>
+		<property name="tOrderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"></property>
+		<property name="piVipPointCreateBatService" ref="piVipPointCreateBatService"/>
+		<property name="operationLogMapper" ref="operationLogMapper"></property>
+		<property name="branchMapper" ref="branchMapper"></property>
+	</bean>
+	<!-- 日志-->
+	<bean id="operationLogMapper" class="com.nhry.data.basic.impl.TMdOperationLogMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<!--奶站结算-->
+	<bean id="branchBillMapper" class="com.nhry.data.bill.impl.BranchBillMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="branchBillService" class="com.nhry.service.bill.impl.BranchBillServiceImpl">
+		<property name="branchBillMapper"  ref="branchBillMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
+		<property name="tSysUserRoleMapper"  ref="urMapper"></property>
+	</bean>
+
+
+	<!--员工结算-->
+
+	<bean id="tMdEmpSalMapper" class="com.nhry.data.bill.impl.TMdEmpSalMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="empBillMapper" class="com.nhry.data.bill.impl.EmpBillMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tMdDispRateMapper" class="com.nhry.data.bill.impl.TMdDispRateMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tMdDispRateItemMapper" class="com.nhry.data.bill.impl.TMdDispRateItemMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="empBillService" class="com.nhry.service.bill.impl.EmpBillServiceImpl">
+		<property name="urMapper"  ref="urMapper"></property>
+		<property name="branchMapper"  ref="branchMapper"></property>
+		<property name="tMdEmpSalMapper"  ref="tMdEmpSalMapper"></property>
+		<property name="empBillMapper"  ref="empBillMapper"></property>
+		<property name="branchEmpMapper"  ref="branchEmpMapper"></property>
+		<property name="tMdDispRateMapper"  ref="tMdDispRateMapper"></property>
+		<property name="tMdDispRateItemMapper"  ref="tMdDispRateItemMapper"></property>
+		<property name="tMdMaraExMapper"  ref="maraExMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
+	</bean>
+
+
+</beans>

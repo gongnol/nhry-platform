@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stock.dao.TSsmVoucherItemMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stock.domain.TSsmVoucherItem" >
+    <id column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR" />
+    <id column="VOUCHER_DATE" property="voucherDate" jdbcType="DATE" />
+    <id column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
+    <result column="REVERT_VOUCHER_ITEM_NO" property="revertVoucherItemNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="WERKS" property="werks" jdbcType="VARCHAR" />
+    <result column="LGORT" property="lgort" jdbcType="VARCHAR" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="QTY" property="qty" jdbcType="DECIMAL" />
+    <result column="IN_OUT_TYPE" property="inOutType" jdbcType="VARCHAR" />
+    <result column="BWART" property="bwart" jdbcType="VARCHAR" />
+    <result column="CHG_REASON" property="chgReason" jdbcType="VARCHAR" />
+    <result column="COST_CENTER" property="costCenter" jdbcType="VARCHAR" />
+    <result column="REF_ORDER_NO" property="refOrderNo" jdbcType="VARCHAR" />
+    <result column="REF_ORDER_ITEM_NO" property="refOrderItemNo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    VOUCHER_NO, VOUCHER_DATE, ITEM_NO, REVERT_VOUCHER_ITEM_NO, BRANCH_NO, MATNR, WERKS, 
+    LGORT, UNIT, QTY, IN_OUT_TYPE, BWART, CHG_REASON, COST_CENTER, REF_ORDER_NO, REF_ORDER_ITEM_NO
+  </sql>
+  <select id="getVoucherItem" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmVoucherItemKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ssm_voucher_item
+    where VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR}
+      and VOUCHER_DATE = #{voucherDate,jdbcType=DATE}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteVoucherItem" parameterType="com.nhry.data.stock.domain.TSsmVoucherItemKey" >
+    delete from t_ssm_voucher_item
+    where VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR}
+      and VOUCHER_DATE = #{voucherDate,jdbcType=DATE}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertVoucherItem" parameterType="com.nhry.data.stock.domain.TSsmVoucherItem" >
+    insert into t_ssm_voucher_item (VOUCHER_NO, VOUCHER_DATE, ITEM_NO, 
+      REVERT_VOUCHER_ITEM_NO, BRANCH_NO, MATNR, 
+      WERKS, LGORT, UNIT, 
+      QTY, IN_OUT_TYPE, BWART, 
+      CHG_REASON, COST_CENTER, REF_ORDER_NO, 
+      REF_ORDER_ITEM_NO)
+    values (#{voucherNo,jdbcType=VARCHAR}, #{voucherDate,jdbcType=DATE}, #{itemNo,jdbcType=VARCHAR}, 
+      #{revertVoucherItemNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, 
+      #{werks,jdbcType=VARCHAR}, #{lgort,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
+      #{qty,jdbcType=DECIMAL}, #{inOutType,jdbcType=VARCHAR}, #{bwart,jdbcType=VARCHAR}, 
+      #{chgReason,jdbcType=VARCHAR}, #{costCenter,jdbcType=VARCHAR}, #{refOrderNo,jdbcType=VARCHAR}, 
+      #{refOrderItemNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertVoucherItemSelective" parameterType="com.nhry.data.stock.domain.TSsmVoucherItem" >
+    insert into t_ssm_voucher_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="voucherNo != null" >
+        VOUCHER_NO,
+      </if>
+      <if test="voucherDate != null" >
+        VOUCHER_DATE,
+      </if>
+      <if test="itemNo != null" >
+        ITEM_NO,
+      </if>
+      <if test="revertVoucherItemNo != null" >
+        REVERT_VOUCHER_ITEM_NO,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="werks != null" >
+        WERKS,
+      </if>
+      <if test="lgort != null" >
+        LGORT,
+      </if>
+      <if test="unit != null" >
+        UNIT,
+      </if>
+      <if test="qty != null" >
+        QTY,
+      </if>
+      <if test="inOutType != null" >
+        IN_OUT_TYPE,
+      </if>
+      <if test="bwart != null" >
+        BWART,
+      </if>
+      <if test="chgReason != null" >
+        CHG_REASON,
+      </if>
+      <if test="costCenter != null" >
+        COST_CENTER,
+      </if>
+      <if test="refOrderNo != null" >
+        REF_ORDER_NO,
+      </if>
+      <if test="refOrderItemNo != null" >
+        REF_ORDER_ITEM_NO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="voucherNo != null" >
+        #{voucherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherDate != null" >
+        #{voucherDate,jdbcType=DATE},
+      </if>
+      <if test="itemNo != null" >
+        #{itemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="revertVoucherItemNo != null" >
+        #{revertVoucherItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="werks != null" >
+        #{werks,jdbcType=VARCHAR},
+      </if>
+      <if test="lgort != null" >
+        #{lgort,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=DECIMAL},
+      </if>
+      <if test="inOutType != null" >
+        #{inOutType,jdbcType=VARCHAR},
+      </if>
+      <if test="bwart != null" >
+        #{bwart,jdbcType=VARCHAR},
+      </if>
+      <if test="chgReason != null" >
+        #{chgReason,jdbcType=VARCHAR},
+      </if>
+      <if test="costCenter != null" >
+        #{costCenter,jdbcType=VARCHAR},
+      </if>
+      <if test="refOrderNo != null" >
+        #{refOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refOrderItemNo != null" >
+        #{refOrderItemNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateVoucherItemSelective" parameterType="com.nhry.data.stock.domain.TSsmVoucherItem" >
+    update t_ssm_voucher_item
+    <set >
+      <if test="revertVoucherItemNo != null" >
+        REVERT_VOUCHER_ITEM_NO = #{revertVoucherItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="werks != null" >
+        WERKS = #{werks,jdbcType=VARCHAR},
+      </if>
+      <if test="lgort != null" >
+        LGORT = #{lgort,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        QTY = #{qty,jdbcType=DECIMAL},
+      </if>
+      <if test="inOutType != null" >
+        IN_OUT_TYPE = #{inOutType,jdbcType=VARCHAR},
+      </if>
+      <if test="bwart != null" >
+        BWART = #{bwart,jdbcType=VARCHAR},
+      </if>
+      <if test="chgReason != null" >
+        CHG_REASON = #{chgReason,jdbcType=VARCHAR},
+      </if>
+      <if test="costCenter != null" >
+        COST_CENTER = #{costCenter,jdbcType=VARCHAR},
+      </if>
+      <if test="refOrderNo != null" >
+        REF_ORDER_NO = #{refOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refOrderItemNo != null" >
+        REF_ORDER_ITEM_NO = #{refOrderItemNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR}
+      and VOUCHER_DATE = #{voucherDate,jdbcType=DATE}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateVoucherItem" parameterType="com.nhry.data.stock.domain.TSsmVoucherItem" >
+    update t_ssm_voucher_item
+    set REVERT_VOUCHER_ITEM_NO = #{revertVoucherItemNo,jdbcType=VARCHAR},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      MATNR = #{matnr,jdbcType=VARCHAR},
+      WERKS = #{werks,jdbcType=VARCHAR},
+      LGORT = #{lgort,jdbcType=VARCHAR},
+      UNIT = #{unit,jdbcType=VARCHAR},
+      QTY = #{qty,jdbcType=DECIMAL},
+      IN_OUT_TYPE = #{inOutType,jdbcType=VARCHAR},
+      BWART = #{bwart,jdbcType=VARCHAR},
+      CHG_REASON = #{chgReason,jdbcType=VARCHAR},
+      COST_CENTER = #{costCenter,jdbcType=VARCHAR},
+      REF_ORDER_NO = #{refOrderNo,jdbcType=VARCHAR},
+      REF_ORDER_ITEM_NO = #{refOrderItemNo,jdbcType=VARCHAR}
+    where VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR}
+      and VOUCHER_DATE = #{voucherDate,jdbcType=DATE}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

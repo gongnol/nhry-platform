@@ -1,0 +1,15 @@
+project:
+  image: nhry/play-framework:1.0
+  ports:
+    - "8080:9000"
+  volumes:
+    - ./repositories:/root/.sbt/repositories
+    - ./sbtopts:/usr/local/etc/sbtopts
+    - ./playJavaApp:/app
+    - /root/soft/local://root/.ivy2/local
+    - /root/soft/cache://root/.ivy2/cache
+  extra_hosts:
+    - "nexus.nhry-dev.com:192.169.20.252"
+  entrypoint:
+    - sbt
+    - run

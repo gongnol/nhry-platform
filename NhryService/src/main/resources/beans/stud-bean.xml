@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"  
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+		default-lazy-init="true">
+		
+	<bean id="classMapper" class="com.nhry.data.stud.impl.TMdClassMapperImpl" />
+	<bean id="schoolClassMapper" class="com.nhry.data.stud.impl.TMdSchoolClassMapperImpl"/>
+	<bean id="tMdSchoolMapper" class="com.nhry.data.stud.impl.TMdSchoolMapperImpl" />
+	<bean id="tMdSchoolRuleMapper" class="com.nhry.data.stud.impl.TMdSchoolRuleMapperImpl" />
+	<bean id="orderStudMapper" class="com.nhry.data.stud.impl.TMstOrderStudMapperImpl" />
+	<bean id="maraStudMapper" class="com.nhry.data.stud.impl.TMdMaraStudMapperImpl"/>
+	<bean id="orderStudItemMapper" class="com.nhry.data.stud.impl.TMstOrderStudItemMapperImpl"/>
+	<bean id="orderStudLossMapper" class="com.nhry.data.stud.impl.TMstOrderStudLossMapperImpl"/>
+	<bean id="tMdSchoolMaraRuleMapper" class="com.nhry.data.stud.impl.TMdSchoolMaraRuleMapperImpl"/>
+	<bean id="tMdSchoolMaraRuleBaseMapper" class="com.nhry.data.stud.impl.TMdSchoolMaraRuleBaseMapperImpl"/>
+	
+	<bean id="classService" class="com.nhry.service.stud.impl.ClassServiceImpl" />
+	<bean id="schoolService" class="com.nhry.service.stud.impl.SchoolServiceImpl" />
+	<bean id="schoolClassService"  class="com.nhry.service.stud.impl.SchoolClassServiceImpl"/>
+	<bean id="schoolRuleService"  class="com.nhry.service.stud.impl.SchoolRuleServiceImpl"/>
+	<bean id="orderStudService"  class="com.nhry.service.stud.impl.OrderStudServiceImpl"/>
+	<bean id="maraStudService" class="com.nhry.service.stud.impl.MaraStudServiceImpl"/>
+	<bean id="SchoolMaraRuleService" class="com.nhry.service.stud.impl.SchoolMaraRuleServiceImpl"/>
+	
+	
+</beans>

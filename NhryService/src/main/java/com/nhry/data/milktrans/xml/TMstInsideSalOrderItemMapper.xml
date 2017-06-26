@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TMstInsideSalOrderItem" >
+        <result column="INS_ORDER_NO" property="insOrderNo" jdbcType="VARCHAR" />
+        <result column="ORDER_DATE"   property="orderDate" jdbcType="DATE" />
+        <result column="ITEM_NO"      property="itemNo" jdbcType="VARCHAR" />
+        <result column="ORG_ORDER_NO" property="orgOrderNo" jdbcType="VARCHAR" />
+        <result column="MATNR "       property="matnr" jdbcType="VARCHAR" />
+        <result column="QTY"          property="qty" jdbcType="DECIMAL" />
+        <result column="PRICE"        property="price" jdbcType="DECIMAL" />
+        <result column="REASON"       property="reason" jdbcType="VARCHAR" />
+        <result column="MATNR_TXT"    property="matnrTxt" jdbcType="VARCHAR" />
+        <result column="SPEC"       property="spec" jdbcType="VARCHAR" />
+        <result column="SEC_CATE"       property="secCate" jdbcType="VARCHAR" />
+        <result column="ZBOT_CODE"       property="zbotCode" jdbcType="VARCHAR" />
+
+    </resultMap>
+    <sql id="Base_Column_List" >
+       INS_ORDER_NO,ORDER_DATE,ITEM_NO,ORG_ORDER_NO,MATNR,QTY,PRICE,REASON
+    </sql>
+    <delete id="delInSalOrderItemByOrderNo"  parameterType="String" >
+        DELETE  FROM  t_mst_inside_sal_order_item
+        WHERE  INS_ORDER_NO = #{insOrderNo,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insertOrderItem" parameterType="com.nhry.data.milktrans.domain.TMstInsideSalOrderItem">
+        insert into t_mst_inside_sal_order_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="insOrderNo != null">
+                INS_ORDER_NO,
+            </if>
+            <if test="orderDate != null">
+                ORDER_DATE,
+            </if>
+            <if test="itemNo != null">
+                ITEM_NO,
+            </if>
+            <if test="orgOrderNo != null">
+                ORG_ORDER_NO,
+            </if>
+            <if test="matnr != null">
+                MATNR,
+            </if>
+            <if test="qty != null">
+                QTY,
+            </if>
+            <if test="price != null">
+                PRICE,
+            </if>
+            <if test="reason != null">
+                REASON,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="insOrderNo != null">
+                #{insOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderDate != null">
+                #{orderDate,jdbcType=DATE},
+            </if>
+            <if test="itemNo != null">
+                #{itemNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orgOrderNo != null">
+                #{orgOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="matnr != null">
+                #{matnr,jdbcType=VARCHAR},
+            </if>
+
+            <if test="qty != null">
+                #{qty,jdbcType=DECIMAL},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="reason != null">
+                #{reason,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="batchAddNewInsideOrderItems" parameterType="java.util.List" >
+        insert into t_mst_inside_sal_order_item
+        (INS_ORDER_NO,ORDER_DATE, ITEM_NO, ORG_ORDER_NO, MATNR,QTY,  PRICE,REASON) values
+        <foreach collection="list" item="item" index="index"
+                 separator=",">
+            ( #{item.insOrderNo}, #{item.orderDate}, #{item.itemNo},
+            #{item.orgOrderNo}, #{item.matnr},
+            #{item.qty},#{item.price}, #{item.reason}
+           )
+        </foreach>
+    </insert>
+
+    <select id="getInsideSalOrderDetail" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.InSideSalOrderDetailSearchModel">
+      SELECT
+       i.INS_ORDER_NO ,i.ORDER_DATE ,i.ITEM_NO ,i.ORG_ORDER_NO,i.MATNR,i.QTY, i.PRICE, i.REASON,
+        ex.SHORT_TXT MATNR_TXT,
+       (
+        SELECT i.ITEM_NAME from t_sys_code_item i
+        WHERE i.TYPE_CODE= <include refid="mybaties.constant.products_second_category"/>
+        and i.ITEM_CODE =m.SEC_CATE
+      ) SEC_CATE,
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i
+        WHERE i.TYPE_CODE= <include refid="mybaties.constant.packing _type"/>
+        and i.ITEM_CODE =m.ZBOT_CODE
+        ) ZBOT_CODE,
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i
+        WHERE i.TYPE_CODE= <include refid="mybaties.constant.products_spec"/>
+        and i.ITEM_CODE =m.SPEC
+        ) SPEC
+        FROM t_mst_inside_sal_order_item i
+      LEFT JOIN  t_md_mara m on  i.MATNR = m.MATNR and m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR and ex.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      where 1=1
+        and i.INS_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteInSalOrderItemByMap"  parameterType="java.util.Map" >
+        DELETE  FROM  t_mst_inside_sal_order_item
+        WHERE  INS_ORDER_NO = #{insOrderNo,jdbcType=VARCHAR}
+        and MATNR = #{matnr,jdbcType=VARCHAR}
+        and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+        and REASON = #{reason,jdbcType=VARCHAR}
+    </delete>
+    <select id="getItemsByNo" resultMap="BaseResultMap" parameterType="String">
+        SELECT
+        <include refid="Base_Column_List" />
+        from t_mst_inside_sal_order_item
+        WHERE  INS_ORDER_NO = #{insOrderNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

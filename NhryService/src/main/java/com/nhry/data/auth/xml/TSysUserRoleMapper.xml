@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.auth.dao.TSysUserRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysUserRole" >
+    <id column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="IS_DEFAULT" property="isDefault" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LOGIN_NAME, ID, IS_DEFAULT
+  </sql>
+  <delete id="deleteUserRoleByLoginName" parameterType="com.nhry.data.auth.domain.TSysUserRole" >
+    delete from t_sys_user_role
+    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+      and ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addUserRole" parameterType="com.nhry.data.auth.domain.TSysUserRole" >
+    insert into t_sys_user_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="loginName != null" >
+        LOGIN_NAME,
+      </if>
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="isDefault != null" >
+        IS_DEFAULT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="loginName != null" >
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null" >
+        #{isDefault,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateUserRoleByLoginName" parameterType="com.nhry.data.auth.domain.TSysUserRole" >
+    update t_sys_user_role
+    <set >
+      <if test="isDefault != null" >
+        IS_DEFAULT = #{isDefault,jdbcType=CHAR},
+      </if>
+    </set>
+    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+      and ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="findUserRoleRelations"  resultMap="BaseResultMap" parameterType="com.nhry.data.auth.domain.TSysUserRole">
+     SELECT <include refid="Base_Column_List" /> FROM t_sys_user_role ur 
+	  where LOGIN_NAME = #{loginName,jdbcType=VARCHAR} and ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteUserRoles" parameterType="com.nhry.model.auth.UserRoleModel">
+      delete from t_sys_user_role 
+     <where>
+          <if test="roleIds != null">
+               LOGIN_NAME = #{loginName,jdbcType=VARCHAR} and ID in 
+	      <foreach collection="roleIds" open="(" close=")" separator=","  item="item">
+	         #{item}
+	      </foreach>
+          </if>
+	      <if test="loginNames != null">
+	          OR (
+	                ID = #{roleId,jdbcType=VARCHAR} and LOGIN_NAME in 
+			      <foreach collection="loginNames" open="(" close=")" separator=","  item="item">
+			         #{item}
+			      </foreach>
+	          )
+	      </if> 
+     </where> 
+  </delete>
+  <select id="findUserRoleByRid"  resultMap="BaseResultMap" parameterType="String">
+     SELECT <include refid="Base_Column_List" /> FROM t_sys_user_role ur where ID = #{rid,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getUserRoleByLoginName"  resultMap="BaseResultMap" parameterType="String">
+    SELECT <include refid="Base_Column_List" /> FROM t_sys_user_role ur where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </select>
+    <select id="getUserRidsByLoginName"  resultType="String" parameterType="String">
+    	SELECT id FROM t_sys_user_role ur where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </select>
+</mapper>

@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.impl.TMdBranchEmpMapperImpl" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdBranchEmp" >
+    <id column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="HR_EMP_NO" property="hrEmpNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+    <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+    <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+    <result column="ROLE_Name" property="roleName" jdbcType="VARCHAR" />
+    <result column="GENDER" property="gender" jdbcType="VARCHAR" />
+    <result column="EMP_TYPE" property="empType" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="MP" property="mp" jdbcType="VARCHAR" />
+    <result column="WEBCHAT" property="webchat" jdbcType="VARCHAR" />
+    <result column="ID_NO" property="idNo" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="SALARY_MET" property="salaryMet" jdbcType="CHAR" />
+    <result column="BASE_SALARY" property="baseSalary" jdbcType="INTEGER" />
+    <result column="JOIN_DATE" property="joinDate" jdbcType="DATE" />
+    <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="LEAVE_DATE" property="leaveDate" jdbcType="DATE" />
+    <result column="SAPCODE" property="sapcode" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="RouteResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="RESIDENTIAL_AREA_TXT" jdbcType="VARCHAR" property="residentialAreaTxt" />
+    <result column="PROVINCE" jdbcType="VARCHAR" property="province" />
+    <result column="CITY" jdbcType="VARCHAR" property="city" />
+    <result column="COUNTY" jdbcType="VARCHAR" property="county" />
+    <result column="STREET" jdbcType="VARCHAR" property="street" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="ADDRESS_TXT" jdbcType="VARCHAR" property="addressTxt" />
+    <result column="RESIDENTIAL_NUM" jdbcType="INTEGER" property="residentialNum" />
+    <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="PROPERTY_TXT" jdbcType="VARCHAR" property="propertyTxt" />
+    <result column="PROPERTY_TEL" jdbcType="VARCHAR" property="propertyTel" />
+  </resultMap>
+  <!--员工表字段-->
+  <sql id="Base_Column_List" >
+    EMP_NO, HR_EMP_NO, BRANCH_NO, EMP_NAME,GENDER, EMP_TYPE, TEL, MP, WEBCHAT, ID_NO, CREATE_AT,SALES_ORG,
+    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, SALARY_MET,BASE_SALARY,JOIN_DATE,
+    STATUS, SAPCODE
+  </sql>
+
+  <!--员工路线表字段-->
+  <sql id="Route_Column_List">
+    ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET,STATUS, ADDRESS_TXT, RESIDENTIAL_NUM,
+    SALES_ORG, PROPERTY_TXT, PROPERTY_TEL
+  </sql>
+
+
+  <select id="selectBranchEmpByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   select emp.EMP_NO,emp.HR_EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME,branch.BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,
+          emp.MP,emp.BASE_SALARY,emp.SALARY_MET,emp.JOIN_DATE,emp.WEBCHAT,emp.ID_NO,emp.STATUS,
+     (
+		SELECT
+			group_concat(role.ROLE_NAME)
+		FROM
+			t_sys_user_role urole,
+			t_sys_role role
+		WHERE
+			urole.ID = role.ID
+		AND urole.LOGIN_NAME = emp.HR_EMP_NO
+		ORDER BY
+			role.ROLE_NAME
+	) ROLE_NAME,emp.SALES_ORG,emp.SAPCODE
+    from t_md_branch_emp emp
+    <!-- 
+    left join t_sys_user_role urole on emp.HR_EMP_NO = urole.LOGIN_NAME
+    LEFT JOIN t_sys_role role on urole.ID = role.ID
+     -->
+    LEFT JOIN T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
+    where emp. EMP_NO = #{0}
+</select>
+
+ <select id="selectActiveBranchEmpByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+      <include refid="Base_Column_List"/>
+      from t_md_branch_emp
+      where STATUS='1' and HR_EMP_NO = #{0}
+</select>
+
+  <select id="selectBranchEmpByEmpNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+      <include refid="Base_Column_List"/>
+      from t_md_branch_emp
+      where EMP_NO = #{0}
+  </select>
+
+  <update id="deleteBranchEmpByNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+    update t_md_branch_emp set  LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      STATUS = #{status}
+    where EMP_NO = #{empNo}
+  </update>
+  <delete id="deleteEmpRole"  parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+      DELETE  FROM  t_sys_user_role
+      where LOGIN_NAME = #{empNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addBranchEmp" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+    insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO,
+      EMP_NAME,GENDER,EMP_TYPE, TEL,
+      MP, WEBCHAT, ID_NO,CREATE_AT, CREATE_BY, CREATE_BY_TXT,
+      STATUS,LEAVE_DATE,JOIN_DATE,SALES_ORG,SAPCODE)
+    values (#{empNo,jdbcType=VARCHAR}, #{hrEmpNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, 
+      #{empName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, #{empType,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR},
+      #{mp,jdbcType=VARCHAR}, #{webchat,jdbcType=VARCHAR}, #{idNo,jdbcType=VARCHAR},
+      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR},
+      #{status,jdbcType=CHAR},#{leaveDate,jdbcType=DATE},#{joinDate,jdbcType=DATE},#{salesOrg,jdbcType=VARCHAR},#{sapcode,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="addEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+       insert into t_md_emp_role(EMP_NO,ROLE_ID)  values(#{empNo,jdbcType=VARCHAR},#{roleId,jdbcType=VARCHAR})
+  </insert>
+  <update id="uptBranchEmpByNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+    update t_md_branch_emp
+    <set>
+      <if test="hrEmpNo != null">
+        HR_EMP_NO = #{hrEmpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null">
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empName != null">
+        EMP_NAME = #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        GENDER = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="empType != null">
+        EMP_TYPE = #{empType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mp != null">
+        MP = #{mp,jdbcType=VARCHAR},
+      </if>
+      <if test="webchat != null">
+        WEBCHAT = #{webchat,jdbcType=VARCHAR},
+      </if>
+      <if test="idNo != null">
+        ID_NO = #{idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSalary != null">
+        BASE_SALARY = #{baseSalary,jdbcType=INTEGER},
+      </if>
+      <if test="salaryMet != null">
+        SALARY_MET = #{salaryMet,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveDate != null">
+         LEAVE_DATE = #{leaveDate,jdbcType=DATE}
+      </if>
+      <if test="sapcode != null">
+        SAPCODE = #{sapcode,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where EMP_NO = #{empNo,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="uptBranchEmpByBraNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+    update t_md_branch_emp
+    <set>
+      <if test="hrEmpNo != null">
+        HR_EMP_NO = #{hrEmpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null">
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empName != null">
+        EMP_NAME = #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        GENDER = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="empType != null">
+        EMP_TYPE = #{empType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mp != null">
+        MP = #{mp,jdbcType=VARCHAR},
+      </if>
+      <if test="webchat != null">
+        WEBCHAT = #{webchat,jdbcType=VARCHAR},
+      </if>
+      <if test="idNo != null">
+        ID_NO = #{idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSalary != null">
+        BASE_SALARY = #{baseSalary,jdbcType=INTEGER},
+      </if>
+      <if test="salaryMet != null">
+        SALARY_MET = #{salaryMet,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveDate != null">
+         LEAVE_DATE = #{leaveDate,jdbcType=DATE}
+      </if>
+      <if test="sapcode != null">
+        SAPCODE = #{sapcode,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where Status='1' and BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and HR_EMP_NO = #{empNo,jdbcType=VARCHAR}
+  </update>
+
+  <update id="uptEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+    update t_sys_user_role
+    set
+        ID = #{roleId,jdbcType=VARCHAR}
+    where LOGIN_NAME = #{empNo,jdbcType=VARCHAR}
+  </update>
+  <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.EmpQueryModel">
+    select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER,
+    emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.ID_NO,emp.STATUS
+    from t_md_branch_emp emp
+    LEFT JOIN  T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
+    LEFT JOIN T_SYS_USER_ROLE erole on emp.HR_EMP_NO = erole.LOGIN_NAME
+    LEFT JOIN t_sys_role role  on  erole.ID = role.ID
+    where  1=1
+    AND emp.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="branchNo != null and branchNo !=''">
+      AND emp.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerNo != null and dealerNo !=''">
+      AND branch.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg != null and salesOrg !=''">
+      AND branch.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null and status != ''">
+      AND  emp.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="roleId != null and roleId != ''">
+      AND role.ID = #{roleId,jdbcType=VARCHAR}
+    </if>
+    <if test="search !=null and '' !=search" >
+      and  ( emp.EMP_NAME like '%${search}%'
+      or  emp.HR_EMP_NO like'%${search}%')
+    </if>
+    ORDER BY emp.STATUS desc
+  </select>
+
+  <select id="selectEmpRoutes" parameterType="String" resultMap="RouteResultMap">
+    select
+    <include refid="Route_Column_List" />
+    from t_md_residential_area area
+    LEFT  JOIN  T_MD_EMP_SCOPE scope on  area.ID = scope.RESIDENTIAL_AREA_ID
+    where 1=1
+    and scope.EMP_NO =  #{empNo,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="getAllEmpByBranchNo" parameterType="com.nhry.model.basic.EmpQueryModel" resultMap="BaseResultMap">
+    select
+    e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
+    e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
+    e.STATUS
+    from t_md_branch_emp e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
+    where 1=1
+    and e.STATUS='1'
+    and u.ID=  <include refid="mybaties.constant.milkman"/>
+    <if test="branchNo != null and branchNo != ''">
+     	AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+     </if>
+     <if test="salesOrg != null and salesOrg != ''">
+     	AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+     </if>
+
+  </select>
+
+
+
+  <select id="getAllEmpBySalesOrg" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_md_branch_emp
+    where 1=1
+    and STATUS='1'
+    and SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="getAllBranchEmpByNo" parameterType="com.nhry.model.basic.BranchEmpSearchModel" resultMap="BaseResultMap">
+    select DISTINCT
+    e.EMP_NO,e.EMP_NAME
+    from t_md_branch_emp e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
+    LEFT  JOIN  t_sys_role r on u.ID = r.ID
+    where 1=1
+    and e.STATUS='1'
+    AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+   and u.ID=  <include refid="mybaties.constant.milkman"/>
+    <if test="branchNo != null and branchNo != ''">
+      AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    GROUP BY e.HR_EMP_NO
+  </select>
+
+  <select id="getAllRationalMilkManByBranchNo" parameterType="com.nhry.model.bill.EmpSalQueryModel" resultMap="BaseResultMap">
+    select DISTINCT
+    e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
+    e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
+    e.STATUS
+    from t_md_branch_emp e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
+    LEFT  JOIN  t_sys_role r on u.ID = r.ID
+    where 1=1
+    and e.STATUS='1'
+    AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      and u.ID=  <include refid="mybaties.constant.milkman"/>
+    <if test="branchNo != null and branchNo != ''">
+      AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    GROUP BY e.HR_EMP_NO
+
+    UNION ALL
+
+    select DISTINCT
+    e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
+    e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
+    e.STATUS
+    from t_md_branch_emp e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
+    LEFT  JOIN  t_sys_role r on u.ID = r.ID
+    where 1=1
+    and e.STATUS='0'
+    AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and u.ID=  <include refid="mybaties.constant.milkman"/>
+    <if test="branchNo != null and branchNo != ''">
+      AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    and e.LEAVE_DATE &gt;= #{startDate,jdbcType=DATE}
+    and e.LEAVE_DATE &lt;= #{endDate,jdbcType=DATE}
+    GROUP BY e.HR_EMP_NO
+  </select>
+  <select id="isEmp" resultType="int" parameterType="com.nhry.data.basic.domain.TMdBranchEmp">
+    SELECT
+        count(1)
+    FROM
+        t_md_branch_emp t
+    WHERE
+        t.EMP_NO != #{empNo,jdbcType=VARCHAR}
+    AND t.SAPCODE = #{sapcode,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateSapCode" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrder">
+    UPDATE t_ssm_sal_order SET ONLINE_CODE = #{onlineCode,jdbcType=VARCHAR} WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  <select id="selectSalOrderByOnlineCode" resultType="com.nhry.data.milktrans.domain.TSsmSalOrder">
+    SELECT ORDER_NO orderNo,ONLINE_CODE onlineCode FROM t_ssm_sal_order WHERE ONLINE_CODE = #{onlineCode,jdbcType=VARCHAR} AND (VOUCHER_NO IS NULL or VOUCHER_NO = '') AND PREORDER_SOURCE = 'EM'
+  </select>
+</mapper>

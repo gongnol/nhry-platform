@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.auth.dao.TSysResourceMapper">
+    <resultMap id="sysResResultMap" type="com.nhry.data.auth.domain.TSysResource">
+        <id column="RES_CODE" property="resCode" jdbcType="VARCHAR"/>
+        <result column="RES_NAME" property="resName" jdbcType="VARCHAR"/>
+        <result column="PARENT" property="parent" jdbcType="VARCHAR"/>
+        <result column="RES_TYPE" property="resType" jdbcType="VARCHAR"/>
+        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR"/>
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP"/>
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR"/>
+        <result column="RES_URL" property="resUrl" jdbcType="VARCHAR"/>
+        <result column="RES_INDEX" property="index" jdbcType="INTEGER"/>
+        <result column="ATTR1" property="attr1" jdbcType="VARCHAR"/>
+        <result column="ATTR2" property="attr2" jdbcType="VARCHAR"/>
+        <result column="ATTR3" property="attr3" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="sysResResultParentMap" type="com.nhry.data.auth.domain.TSysResource">
+        <id column="RES_CODE" property="resCode" jdbcType="VARCHAR"/>
+        <result column="RES_NAME" property="resName" jdbcType="VARCHAR"/>
+        <result column="PARENT" property="parent" jdbcType="VARCHAR"/>
+        <result column="RES_TYPE" property="resType" jdbcType="VARCHAR"/>
+        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR"/>
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP"/>
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR"/>
+        <result column="RES_URL" property="resUrl" jdbcType="VARCHAR"/>
+        <result column="RES_INDEX" property="index" jdbcType="INTEGER"/>
+        <result column="ATTR1" property="attr1" jdbcType="VARCHAR"/>
+        <result column="ATTR2" property="attr2" jdbcType="VARCHAR"/>
+        <result column="ATTR3" property="attr3" jdbcType="VARCHAR"/>
+        <result column="PARENT_NAME" property="parentName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="sysRoleResMap" type="com.nhry.data.auth.domain.TSysRoleResource">
+        <result column="ID" property="id" jdbcType="VARCHAR"/>
+        <result column="RES_CODE" property="resCode" jdbcType="VARCHAR"/>
+        <result column="IS_DEFAULT" property="isDefault" jdbcType="CHAR"/>
+    </resultMap>
+    <sql id="sysRes_Column_List">
+    RES_CODE, RES_NAME, PARENT, RES_TYPE, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
+    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, RES_URL,RES_INDEX,ATTR1,ATTR2,ATTR3
+  </sql>
+    <select id="selectResByCode" resultMap="sysResResultParentMap" parameterType="java.lang.String">
+        select
+        r1.*,r2.res_name PARENT_NAME
+        from t_sys_resource r1 left join t_sys_resource r2 on r1.parent = r2.res_code where r1.RES_CODE = #{resCode}
+    </select>
+    <delete id="deleteResByCode" parameterType="java.lang.String">
+    delete from t_sys_resource where RES_CODE = #{resCode,jdbcType=VARCHAR}
+  </delete>
+    <insert id="addRes" parameterType="com.nhry.data.auth.domain.TSysResource">
+        insert into t_sys_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resCode != null">
+                RES_CODE,
+            </if>
+            <if test="resName != null">
+                RES_NAME,
+            </if>
+            <if test="parent != null">
+                PARENT,
+            </if>
+            <if test="resType != null">
+                RES_TYPE,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+            <if test="lastModified != null">
+                LAST_MODIFIED,
+            </if>
+            <if test="lastModifiedBy != null">
+                LAST_MODIFIED_BY,
+            </if>
+            <if test="lastModifiedByTxt != null">
+                LAST_MODIFIED_BY_TXT,
+            </if>
+            <if test="resUrl != null">
+                RES_URL,
+            </if>
+            <if test="index != null">
+                RES_INDEX,
+            </if>
+            <if test="attr1 != null">
+                ATTR1,
+            </if>
+            <if test="attr2 != null">
+                ATTR2,
+            </if>
+            <if test="attr3 != null">
+                ATTR3,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resCode != null">
+                #{resCode,jdbcType=VARCHAR},
+            </if>
+            <if test="resName != null">
+                #{resName,jdbcType=VARCHAR},
+            </if>
+            <if test="parent != null">
+                #{parent,jdbcType=VARCHAR},
+            </if>
+            <if test="resType != null">
+                #{resType,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModified != null">
+                #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifiedBy != null">
+                #{lastModifiedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifiedByTxt != null">
+                #{lastModifiedByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="resUrl != null">
+                #{resUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="index != null">
+                #{index,jdbcType=INTEGER},
+            </if>
+            <if test="attr1 != null">
+                #{attr1,jdbcType=VARCHAR},
+            </if>
+            <if test="attr2 != null">
+                #{attr2,jdbcType=VARCHAR},
+            </if>
+            <if test="attr3 != null">
+                #{attr3,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateResByCode" parameterType="com.nhry.data.auth.domain.TSysResource">
+        update t_sys_resource
+        <set>
+            <if test="resName != null">
+                RES_NAME = #{resName,jdbcType=VARCHAR},
+            </if>
+            <if test="parent != null">
+                PARENT = #{parent,jdbcType=VARCHAR},
+            </if>
+            <if test="resType != null">
+                RES_TYPE = #{resType,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                CREATE_BY = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModified != null">
+                LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifiedBy != null">
+                LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifiedByTxt != null">
+                LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="resUrl != null">
+                RES_URL = #{resUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="index != null">
+                RES_INDEX = #{index,jdbcType=INTEGER},
+            </if>
+            <if test="attr1 != null">
+                ATTR1 = #{attr1,jdbcType=INTEGER},
+            </if>
+            <if test="attr2 != null">
+                ATTR2 = #{attr2,jdbcType=VARCHAR},
+            </if>
+            <if test="attr3 != null">
+                ATTR3 = #{attr3,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where RES_CODE = #{resCode,jdbcType=VARCHAR}
+    </update>
+
+    <insert id="addRoleRes" parameterType="com.nhry.data.auth.domain.TSysRoleResource">
+        insert into t_sys_role_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="resCode != null">
+                RES_CODE,
+            </if>
+            <if test="isDefault != null">
+                IS_DEFAULT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="resCode != null">
+                #{resCode,jdbcType=VARCHAR},
+            </if>
+            <if test="isDefault != null">
+                #{isDefault,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="findRoleResByRc" resultMap="sysRoleResMap" parameterType="com.nhry.data.auth.domain.TSysRoleResource">
+      select * from t_sys_role_resource sr where sr.ID=#{id} and sr.RES_CODE=#{resCode}
+  </select>
+    <delete id="deleteRoleResByRc" parameterType="com.nhry.data.auth.domain.TSysRoleResource">
+      delete from t_sys_role_resource where ID=#{id} and RES_CODE=#{resCode}
+  </delete>
+    <select id="findRoleResByRid" resultMap="sysRoleResMap" parameterType="String">
+      select * from t_sys_role_resource sr where sr.ID=#{rid}
+  </select>
+    <select id="findRoleResByResCode" resultMap="sysRoleResMap" parameterType="String">
+      select * from t_sys_role_resource sr where sr.RES_CODE=#{resCode}
+  </select>
+    <select id="findRecoureByUserId" resultMap="sysResResultMap" parameterType="String">
+        SELECT
+        distinct r.*
+        FROM
+            t_sys_resource r
+        LEFT JOIN t_sys_resource d ON r.PARENT = d.RES_CODE
+        JOIN t_sys_role_resource rr ON r.RES_CODE = rr.RES_CODE
+        JOIN t_sys_role role ON role.id = rr.ID
+        JOIN t_sys_user_role ur ON ur.ID = role.ID
+        JOIN t_sys_user usr ON usr.LOGIN_NAME = ur.LOGIN_NAME
+        AND usr.LOGIN_NAME = #{userId} ORDER BY r.RES_INDEX ASC
+    </select>
+    <select id="getAllResources" resultMap="sysResResultMap" >
+        select <include refid="sysRes_Column_List"/> from t_sys_resource ORDER BY CREATE_AT,LAST_MODIFIED
+    </select>
+    <select id="getRoleRosources" parameterType="String" resultMap="sysResResultMap" >
+       select distinct t1.RES_CODE, t1.RES_NAME, t1.PARENT, t1.RES_TYPE,t1.RES_URL from t_sys_resource t1,T_SYS_ROLE_RESOURCE tr where t1.RES_CODE=tr.RES_CODE and tr.ID=#{id}
+    </select>
+    <select id="findComponentByLogName" resultMap="sysResResultMap" parameterType="String">
+        SELECT DISTINCT
+			r.RES_CODE,
+			r.RES_NAME,
+			r.RES_TYPE,
+			r.RES_URL,
+			(
+				SELECT
+					r1.RES_NAME
+				FROM
+					t_sys_resource r1
+				WHERE
+					r1.RES_CODE = r.PARENT
+			) PARENT,
+			r.ATTR1,
+			r.ATTR2,
+			r.ATTR3
+		FROM
+			t_sys_resource r
+		JOIN t_sys_role_resource rr ON r.RES_CODE = rr.RES_CODE
+		JOIN t_sys_role role ON role.id = rr.ID
+		JOIN t_sys_user_role ur ON ur.ID = role.ID
+		JOIN t_sys_user usr ON usr.LOGIN_NAME = ur.LOGIN_NAME
+		WHERE
+			r.RES_TYPE = <include refid="mybaties.constant.sys_res_type_component"></include>
+		AND usr.LOGIN_NAME = #{userId}
+    </select>
+     <select id="findPagesByLogName" resultMap="sysResResultMap" parameterType="String">
+        SELECT DISTINCT
+			r.RES_CODE,
+			r.RES_NAME,
+			r.RES_TYPE,
+			r.RES_URL,
+			(
+				SELECT
+					r1.RES_NAME
+				FROM
+					t_sys_resource r1
+				WHERE
+					r1.RES_CODE = r.PARENT
+			) PARENT,
+			r.ATTR1,
+			r.ATTR2,
+			r.ATTR3
+		FROM
+			t_sys_resource r
+		JOIN t_sys_role_resource rr ON r.RES_CODE = rr.RES_CODE
+		JOIN t_sys_role role ON role.id = rr.ID
+		JOIN t_sys_user_role ur ON ur.ID = role.ID
+		JOIN t_sys_user usr ON usr.LOGIN_NAME = ur.LOGIN_NAME
+		WHERE
+			r.RES_TYPE = <include refid="mybaties.constant.sys_res_type_pages"></include>
+		AND usr.LOGIN_NAME = #{userId}
+    </select>
+</mapper>

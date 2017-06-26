@@ -1,0 +1,3 @@
+[repositories]
+  local
+  nhry-maven: http://nexus.nhry-dev.com/nexus/content/groups/public/

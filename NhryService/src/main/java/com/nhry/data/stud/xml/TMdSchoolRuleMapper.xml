@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stud.dao.TMdSchoolRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchoolRule" >
+    <id column="MID" property="mid" jdbcType="VARCHAR" />
+    <result column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
+    <result column="SCHOOL_CODE_TXT" property="schoolCodeTxt" jdbcType="VARCHAR" />
+    <result column="IS_BATCH_PRINT" property="isBatchPrint" jdbcType="VARCHAR" />
+    <result column="VISIABLE" property="visiable" jdbcType="VARCHAR" />
+    <result column="WEEK1_MATNR" property="week1Matnr" jdbcType="VARCHAR" />
+    <result column="WEEK2_MATNR" property="week2Matnr" jdbcType="VARCHAR" />
+    <result column="WEEK3_MATNR" property="week3Matnr" jdbcType="VARCHAR" />
+    <result column="WEEK4_MATNR" property="week4Matnr" jdbcType="VARCHAR" />
+    <result column="WEEK5_MATNR" property="week5Matnr" jdbcType="VARCHAR" />
+    <result column="WEEK6_MATNR" property="week6Matnr" jdbcType="VARCHAR" />
+    <result column="WEEK7_MATNR" property="week7Matnr" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="checkbox" property="checkbox"  />
+    <result column="SCHOOL_NAME" property="schoolName"  />
+  </resultMap>
+  
+  
+  <select id="findAllSchoolWithOutSet" parameterType="java.lang.String" resultType="com.nhry.data.stud.domain.TMdSchool">
+  	SELECT a.SCHOOL_CODE schoolCode, a.SCHOOL_NAME schoolName, a.SALES_ORG salesOrg
+	FROM t_md_school a
+	LEFT JOIN t_md_school_rule b ON a.SCHOOL_CODE=b.SCHOOL_CODE AND a.SALES_ORG=b.SALES_ORG
+	WHERE a.VISIABLE='10'
+	AND a.SALES_ORG=#{salesOrg}
+	AND b.MID IS NULL
+  </select>
+  
+  <sql id="Base_Column_List" >
+    ru.MID, sc.SCHOOL_CODE,sc.SCHOOL_NAME, ru.IS_BATCH_PRINT, ru.VISIABLE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
+    ru.WEEK4_MATNR, ru.WEEK5_MATNR, ru.WEEK6_MATNR, ru.WEEK7_MATNR, ru.CREATE_AT, ru.CREATE_BY, ru.CREATE_BY_TXT, 
+    ru.LAST_MODIFIED, ru.LAST_MODIFIED_BY, ru.LAST_MODIFIED_BY_TXT, ru.SALES_ORG,if(ifnull(ru.VISIABLE,10)='10',false,true) checkbox
+  </sql>
+  
+  <select id="findSchoolRuleByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	select 
+  	ru.MID, ru.SCHOOL_CODE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
+    ru.WEEK4_MATNR, ru.WEEK5_MATNR, ru.WEEK6_MATNR, ru.WEEK7_MATNR
+    from t_md_school_rule ru
+    where ru.VISIABLE='10'
+    and ru.SALES_ORG=#{salesOrg}
+    and ru.SCHOOL_CODE=#{schoolCode}
+    limit 1
+  </select>
+  
+   <select id="serchSchoolRuleList" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolRuleQueryModel" >
+    select 
+    ru.MID, sc.SCHOOL_CODE, sc.SCHOOL_CODE_TXT,sc.SCHOOL_NAME, ru.IS_BATCH_PRINT, ru.VISIABLE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
+    ru.WEEK4_MATNR, ru.WEEK5_MATNR, ru.WEEK6_MATNR, ru.WEEK7_MATNR, 
+    ru.SALES_ORG,if(ifnull(ru.VISIABLE,10)='10',false,true) checkbox
+    FROM   t_md_school_rule  ru
+    LEFT JOIN t_md_school  sc  on sc.SCHOOL_CODE=ru.SCHOOL_CODE  and sc.SALES_ORG=ru.SALES_ORG
+    where 1=1 
+    and sc.VISIABLE='10'
+    and sc.SALES_ORG=#{salesOrg}
+    <if test="keyWord != null and keyWord != '' " >
+        and (sc.SCHOOL_CODE like '%${keyWord}%' or sc.SCHOOL_NAME  like '%${keyWord}%')
+    </if>
+    
+     <if test="visiable != null and visiable !='' " >
+        and ifnull(ru.VISIABLE,'10')=#{visiable}
+     </if>
+     order by ru.LAST_MODIFIED DESC
+  </select>
+  
+  
+  
+  <insert id="saveone" parameterType="com.nhry.data.stud.domain.TMdSchoolRule" >
+    insert into t_md_school_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        MID,
+      </if>
+      <if test="schoolCode != null" >
+        SCHOOL_CODE,
+      </if>
+      <if test="isBatchPrint != null" >
+        IS_BATCH_PRINT,
+      </if>
+      <if test="visiable != null" >
+        VISIABLE,
+      </if>
+      <if test="week1Matnr != null" >
+        WEEK1_MATNR,
+      </if>
+      <if test="week2Matnr != null" >
+        WEEK2_MATNR,
+      </if>
+      <if test="week3Matnr != null" >
+        WEEK3_MATNR,
+      </if>
+      <if test="week4Matnr != null" >
+        WEEK4_MATNR,
+      </if>
+      <if test="week5Matnr != null" >
+        WEEK5_MATNR,
+      </if>
+      <if test="week6Matnr != null" >
+        WEEK6_MATNR,
+      </if>
+      <if test="week7Matnr != null" >
+        WEEK7_MATNR,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isBatchPrint != null" >
+        #{isBatchPrint,jdbcType=VARCHAR},
+      </if>
+      <if test="visiable != null" >
+        #{visiable,jdbcType=VARCHAR},
+      </if>
+      <if test="week1Matnr != null" >
+        #{week1Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week2Matnr != null" >
+        #{week2Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week3Matnr != null" >
+        #{week3Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week4Matnr != null" >
+        #{week4Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week5Matnr != null" >
+        #{week5Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week6Matnr != null" >
+        #{week6Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week7Matnr != null" >
+        #{week7Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateReule" parameterType="com.nhry.data.stud.domain.TMdSchoolRule" >
+    update t_md_school_rule
+    <set >
+      <if test="schoolCode != null" >
+        SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isBatchPrint != null" >
+        IS_BATCH_PRINT = #{isBatchPrint,jdbcType=VARCHAR},
+      </if>
+      <if test="visiable != null" >
+        VISIABLE = #{visiable,jdbcType=VARCHAR},
+      </if>
+      <if test="week1Matnr != null" >
+        WEEK1_MATNR = #{week1Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week2Matnr != null" >
+        WEEK2_MATNR = #{week2Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week3Matnr != null" >
+        WEEK3_MATNR = #{week3Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week4Matnr != null" >
+        WEEK4_MATNR = #{week4Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week5Matnr != null" >
+        WEEK5_MATNR = #{week5Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week6Matnr != null" >
+        WEEK6_MATNR = #{week6Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="week7Matnr != null" >
+        WEEK7_MATNR = #{week7Matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where MID = #{mid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.stud.domain.TMdSchoolRule" >
+    update t_md_school_rule
+    set SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR},
+      IS_BATCH_PRINT = #{isBatchPrint,jdbcType=VARCHAR},
+      VISIABLE = #{visiable,jdbcType=VARCHAR},
+      WEEK1_MATNR = #{week1Matnr,jdbcType=VARCHAR},
+      WEEK2_MATNR = #{week2Matnr,jdbcType=VARCHAR},
+      WEEK3_MATNR = #{week3Matnr,jdbcType=VARCHAR},
+      WEEK4_MATNR = #{week4Matnr,jdbcType=VARCHAR},
+      WEEK5_MATNR = #{week5Matnr,jdbcType=VARCHAR},
+      WEEK6_MATNR = #{week6Matnr,jdbcType=VARCHAR},
+      WEEK7_MATNR = #{week7Matnr,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+    where MID = #{mid,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/mvc  http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd"
+	default-lazy-init="true">
+	<!-- ibatis3 工厂类 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:/com/nhry/data/*/xml/*Mapper.xml" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+	</bean>
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate"  scope="prototype">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="dynamicSqlSessionTemplate" class="com.nhry.common.datasource.DynamicSqlSessionTemplate" scope="prototype">
+		<constructor-arg index="0" ref="sqlSessionTemplate" />
+	</bean>
+	<bean id="userSessionService" class="com.nhry.common.auth.UserSessionService">
+	   <property name="isysAkService" ref="isysAkService"></property>
+	   <property name="userService" ref="userService"></property>
+	   <property name="objectRedisTemplate" ref="objectRedisTemplate"></property>
+	</bean>
+	<!-- 定义单个jdbc数据源的事务管理器 -->
+	<bean id="transactionManager" class="com.nhry.common.datasource.DynamicDataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 以 @Transactional 标注来定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<!-- 配置事务的传播特性 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="updateIsysAccessKey" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="findAccesskeyByKey" propagation="REQUIRES_NEW" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="sendRequireOrderToERPByDate" propagation="REQUIRES_NEW" read-only="false"
+					    no-rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="creaSalOrderOfDealerBranchByDate" propagation="REQUIRES_NEW" read-only="false"
+					   no-rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="creaSalOrderOfSelftBranchByDate2" propagation="REQUIRES_NEW" read-only="false"
+					   no-rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="sendSalOrderErp" propagation="REQUIRES_NEW" read-only="false"
+					   no-rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="add*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="create*" propagation="REQUIRED" read-only="false"  rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="delete*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="del*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="upt*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="proc*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="edit*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="reEdit*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="batch*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="modify*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="find*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="select*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="search*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="get*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="*" read-only="false"  rollback-for="com.nhry.common.exception.ServiceException" />
+			<!-- <tx:method name="*" read-only="true" /> -->
+		</tx:attributes>
+	</tx:advice>
+	<!-- 那些类的哪些方法参与事务 -->
+	<aop:config>
+		<aop:pointcut id="allManagerMethod" expression="execution(* com.nhry.service..impl..*(..))" />
+		<aop:advisor pointcut-ref="allManagerMethod" advice-ref="txAdvice" />
+	</aop:config>
+	<context:component-scan base-package="com.nhry.rest" />
+	<context:component-scan base-package="com.nhry.common.auth" />
+	<context:component-scan base-package="com.nhry.servlet" />
+</beans>

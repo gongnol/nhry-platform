@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd"
+       default-lazy-init="true">
+    <bean id="piProductMapper" class="com.nhry.data.basic.impl.PIProductMapperImpl">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    <!-- -->
+    <bean class="com.nhry.service.pi.impl.PIProductServiceImpl" id="piProductService">
+        <property name="piProductMapper" ref="piProductMapper"/>
+        <property name="maraMapper" ref="maraMapper"/>
+        <property name="branchMapper" ref="branchMapper"/>
+        <property name="dealerMapper" ref="dealerMapper"/>
+        <property name="maraUnitMapper" ref="maraUnitMapper"/>
+        <property name="codeItemMapper" ref="codeItemMapper"/>
+        <property name="branchExMapper" ref="branchExMapper"/>
+        <property name="messageService" ref="messService"/>
+        <property name="ecService" ref="messLogService"/>
+        <property name="taskExecutor" ref="taskExecutor"/>
+    </bean>
+
+    <bean class="com.nhry.service.pi.impl.PIRequireOrderServiceImpl" id="piRequireOrderService">
+        <property name="branchExMapper" ref="branchExMapper"/>
+        <property name="tSsmReqGoodsOrderItemMapper" ref="tSsmReqGoodsOrderItemMapper"/>
+        <property name="ssmGiOrderMapper" ref="ssmGiOrderMapper"/>
+        <property name="ssmGiOrderItemMapper" ref="ssmGiOrderItemMapper"/>
+        <property name="tSsmReqGoodsOrderMapper" ref="tSsmReqGoodsOrderMapper"/>
+        <property name="tSsmSalOrderItemMapper" ref="tSsmSalOrderItemMapper"/>
+        <property name="branchMapper" ref="branchMapper"/>
+        <property name="ssmSalOrderMapper" ref="tSsmSalOrderMapper"/>
+        <property name="sysCodeItemMapper" ref="codeItemMapper"/>
+        <property name="ssmSalFactoryPriceMapper" ref="ssmSalFactoryPriceMapper"/>
+        <property name="userSessionService" ref="userSessionService"/>
+    </bean>
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <!--
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    -->
+    <bean id="piOrderService" class="com.nhry.service.pi.impl.PIOrderServiceImpl">
+        <property name="orderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"/>
+        <property name="orderMapper" ref="tPreOrderMapper"/>
+        <property name="planOrderItemMapper" ref="tPlanOrderItemMapper"/>
+        <property name="branchMapper" ref="branchMapper"/>
+        <property name="addressMapper" ref="addressMapper"/>
+    </bean>
+    <bean class="com.nhry.data.basic.impl.TVipCrmMapperImpl" id="vipCrmMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.service.basic.impl.TVipCrmInfoServiceImpl" id="vipCrmInfoService">
+        <property name="vipCrmMapper" ref="vipCrmMapper"/>
+        <property name="vipcrmAddressMapper" ref="vipcrmAddressMapper"></property>
+        <property name="vipCustInfoMapper" ref="custMapper"/>
+    </bean>
+     <bean class="com.nhry.data.basic.impl.TVipCrmAddressMapperImpl" id="vipcrmAddressMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.service.pi.impl.PIVipInfoDataServiceImpl" id="piVipInfoDataService">
+        <property name="vipCrmInfoService" ref="vipCrmInfoService"/>
+        <property name="branchService" ref="branchService"/>
+        <property name="dictionaryService" ref="dicService"/>
+        <property name="residentialAreaService" ref="residentialAreaService"/>
+        <property name="vipCustInfoService" ref="custService"/>
+        <property name="vipCrmAddressMapper" ref="vipcrmAddressMapper"/>
+        <property name="taskExecutor" ref="taskExecutor"/>
+        <property name="branchEmpService" ref="branchEmpService"/>
+    </bean>
+    <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
+                    address="/orderService"/>
+    <bean class="com.nhry.service.pi.impl.PIVipPointServiceImpl" id="piVipPointService">
+
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionMapperImpl" id="promotionMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionConItemMapperImpl" id="promotionConItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionGiftItemMapperImpl" id="promotionGiftItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionOrigItemMapperImpl" id="promotionOrigItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionScopeItemMapperImpl" id="promotionScopeItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.service.promotion.impl.PromotionDataServiceImpl" id="promotionDataService">
+        <property name="promotionScopeItemMapper" ref="promotionScopeItemMapper"/>
+        <property name="promotionConItemMapper" ref="promotionConItemMapper"/>
+        <property name="promotionGiftItemMapper" ref="promotionGiftItemMapper"/>
+        <property name="promotionMapper" ref="promotionMapper"/>
+        <property name="promotionOrigItemMapper" ref="promotionOrigItemMapper"/>
+    </bean>
+    <bean class="com.nhry.service.pi.impl.PIPromotionDataServiceImpl" id="piPromotionDataService">
+        <property name="promotionDataService" ref="promotionDataService"/>
+    </bean>
+    <jaxws:endpoint implementor="#piPromotionDataService" id="piPromotionDataServiceImpl" address="/promotionDataService"/>
+    <bean class="com.nhry.service.pi.impl.SmsSendServiceImpl" id="smsSendService"/>
+    <bean class="com.nhry.service.pi.impl.PIVipPointCreateBatServiceImpl" id="piVipPointCreateBatService">
+        <property name="dictionaryService" ref="dicService"/>
+        <property name="taskExecutor" ref="taskExecutor"/>
+    </bean>
+    <bean class="com.nhry.service.milktrans.impl.RedateByTradeServiceImpl" id="redateByTradeService">
+        <property name="tSsmRedateByTradeMapper" ref="tSsmRedateByTradeMapper"/>
+        <property name="taskExecutor" ref="taskExecutor"/>
+        <property name="dictionaryService" ref="dicService"/>
+        <property name="promotionMapper" ref="promotionMapper"/>
+        <property name="tPlanOrderItemMapper" ref="tPlanOrderItemMapper"/>
+        <property name="branchExMapper" ref="branchExMapper"/>
+    </bean>
+    <bean class="com.nhry.service.pi.impl.PIRedateByTradeServiceImpl" id="piRedateByTradeService">
+        <property name="redateByTradeService" ref="redateByTradeService"/>
+        <property name="dictionaryService" ref="dicService"/>
+        <property name="branchMapper" ref="branchMapper"/>
+    </bean>
+</beans>

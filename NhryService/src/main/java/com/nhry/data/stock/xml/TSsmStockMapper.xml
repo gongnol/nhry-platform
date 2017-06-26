@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stock.dao.TSsmStockMapper">
+    <resultMap id="BaseResultMap" type="com.nhry.data.stock.domain.TSsmStock">
+        <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR"/>
+        <id column="MATNR" property="matnr" jdbcType="VARCHAR"/>
+        <result column="UNIT" property="unit" jdbcType="VARCHAR"/>
+        <result column="QTY" property="qty" jdbcType="DECIMAL"/>
+        <result column="TMP_QTY" property="tmpQty" jdbcType="DECIMAL"/>
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR"/>
+        <result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
+        <result column="SEC_CATE_NAME" property="secCateName" jdbcType="VARCHAR" />
+        <result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />    
+        <result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR" /> 
+        <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />        
+    </resultMap>
+    <sql id="Base_Column_List">
+    BRANCH_NO, MATNR, UNIT, QTY,TMP_QTY,SALES_ORG
+  </sql>
+    <select id="getStock" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmStockKey">
+        select
+        <include refid="Base_Column_List"/>
+        from t_ssm_stock
+        where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and MATNR = #{matnr,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteStock" parameterType="com.nhry.data.stock.domain.TSsmStockKey">
+    delete from t_ssm_stock
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      and MATNR = #{matnr,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insertStock" parameterType="com.nhry.data.stock.domain.TSsmStock">
+    insert into t_ssm_stock (BRANCH_NO, MATNR, UNIT, 
+      QTY,SALES_ORG,TMP_QTY)
+    values (#{branchNo,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
+      #{qty,jdbcType=DECIMAL},#{salesOrg,jdbcType=VARCHAR},#{tmpQty,jdbcType=DECIMAL})
+  </insert>
+    <update id="updateStock" parameterType="com.nhry.data.stock.domain.TSsmStock">
+        update t_ssm_stock
+        <set >
+          <if test="unit != null" >
+            UNIT = #{unit,jdbcType=VARCHAR},
+          </if>
+          <if test="qty != null" >
+            QTY = #{qty,jdbcType=DECIMAL},
+          </if>
+          <if test="tmpQty != null" >
+            TMP_QTY = #{tmpQty,jdbcType=DECIMAL},
+          </if>
+          <if test="salesOrg != null" >
+            SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+          </if>
+        </set>
+        where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+          and MATNR = #{matnr,jdbcType=VARCHAR}
+    </update>
+  <update id="updateStockToZero" parameterType="java.lang.String">
+       update t_ssm_stock
+    <set >
+        QTY = 0
+    </set>
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+    <select id="findStock" resultMap="BaseResultMap" parameterType="com.nhry.model.stock.StockModel">
+      SELECT
+        t1.MATNR,
+        t1.MATNR_TXT,
+        t1.SPEC_UNIT,
+        t.QTY,
+        t.TMP_QTY,
+        (
+          SELECT
+            I.ITEM_NAME
+          FROM
+            t_sys_code_item I
+          WHERE
+            i.TYPE_CODE =<include refid="mybaties.constant.packing _type"></include>
+          AND i.ITEM_CODE = t1.ZBOT_CODE
+        ) ZBOT_CODE_NAME,
+        (
+          SELECT
+            I.ITEM_NAME
+          FROM
+            t_sys_code_item I
+          WHERE
+            i.TYPE_CODE =<include refid="mybaties.constant.products_spec"></include>
+          AND i.ITEM_CODE = t1.SPEC
+        ) SPEC_NAME,
+        (
+          SELECT
+            I.ITEM_NAME
+          FROM
+            t_sys_code_item I
+          WHERE
+            i.TYPE_CODE =<include refid="mybaties.constant.products_second_category"></include>
+          AND i.ITEM_CODE = t1.SEC_CATE
+        ) SEC_CATE_NAME
+      FROM
+        t_ssm_stock t,
+        t_md_mara t1
+      WHERE
+        t.SALES_ORG = t1.SALES_ORG
+      AND t.MATNR = t1.MATNR
+      AND t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </select>
+    <select id="findStockTotal" resultType="BigDecimal" parameterType="com.nhry.model.stock.StockModel">
+      SELECT
+      IFNULL(sum(t.QTY), 0)
+      FROM
+      t_ssm_stock t,
+      t_md_mara t1
+      WHERE
+      t.SALES_ORG = t1.SALES_ORG
+      AND t.MATNR = t1.MATNR
+      AND t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </select>
+    <select id="findStockinsidesal" resultMap="BaseResultMap" parameterType="com.nhry.model.stock.StockModel">
+      SELECT
+        t1.MATNR,
+        t2.SHORT_TXT AS MATNR_TXT,
+        t1.SPEC_UNIT,
+        t.SALES_ORG,
+        t.QTY,
+        t.TMP_QTY,
+        (
+          SELECT
+            I.ITEM_NAME
+          FROM
+            t_sys_code_item I
+          WHERE
+            i.TYPE_CODE =<include refid="mybaties.constant.packing _type"></include>
+          AND i.ITEM_CODE = t1.ZBOT_CODE
+        ) ZBOT_CODE_NAME,
+        (
+          SELECT
+            I.ITEM_NAME
+          FROM
+            t_sys_code_item I
+          WHERE
+            i.TYPE_CODE =<include refid="mybaties.constant.products_spec"></include>
+          AND i.ITEM_CODE = t1.SPEC
+        ) SPEC_NAME,
+        (
+          SELECT
+            I.ITEM_NAME
+          FROM
+            t_sys_code_item I
+          WHERE
+            i.TYPE_CODE =<include refid="mybaties.constant.products_second_category"></include>
+          AND i.ITEM_CODE = t1.SEC_CATE
+        ) SEC_CATE_NAME
+      FROM
+        t_ssm_stock t
+        left join t_md_mara t1 on t.SALES_ORG = t1.SALES_ORG  AND t.MATNR = t1.MATNR
+        left join t_md_mara_ex t2 on t2.MATNR = t1.MATNR AND t1.SALES_ORG=t2.SALES_ORG
+      WHERE
+       t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.QTY is not null  AND t.QTY > 0
+    </select>
+  <select id="findTmpStockinsidesal" resultMap="BaseResultMap" parameterType="com.nhry.model.stock.StockModel">
+      SELECT
+      t1.MATNR,
+      t2.SHORT_TXT AS MATNR_TXT,
+      t1.SPEC_UNIT,
+      t.SALES_ORG,
+      t.QTY,
+      t.TMP_QTY,
+      (
+      SELECT
+      I.ITEM_NAME
+      FROM
+      t_sys_code_item I
+      WHERE
+      i.TYPE_CODE =<include refid="mybaties.constant.packing _type"></include>
+      AND i.ITEM_CODE = t1.ZBOT_CODE
+      ) ZBOT_CODE_NAME,
+      (
+      SELECT
+      I.ITEM_NAME
+      FROM
+      t_sys_code_item I
+      WHERE
+      i.TYPE_CODE =<include refid="mybaties.constant.products_spec"></include>
+      AND i.ITEM_CODE = t1.SPEC
+      ) SPEC_NAME,
+      (
+      SELECT
+      I.ITEM_NAME
+      FROM
+      t_sys_code_item I
+      WHERE
+      i.TYPE_CODE =<include refid="mybaties.constant.products_second_category"></include>
+      AND i.ITEM_CODE = t1.SEC_CATE
+      ) SEC_CATE_NAME
+      FROM
+      t_ssm_stock t
+      left join t_md_mara t1 on t.SALES_ORG = t1.SALES_ORG  AND t.MATNR = t1.MATNR
+      left join t_md_mara_ex t2 on t2.MATNR = t1.MATNR AND t1.SALES_ORG=t2.SALES_ORG
+      WHERE
+      t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.TMP_QTY is not null  AND t.TMP_QTY > 0
+  </select>
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.config.dao.NHSysCodeItemMapper" >
+  <!-- <cache type="org.mybatis.caches.redis.RedisCache" /> -->
+  <resultMap id="BaseResultMap" type="com.nhry.data.config.domain.NHSysCodeItem" >
+    <id column="TYPE_CODE" property="typeCode" jdbcType="VARCHAR" />
+    <id column="ITEM_CODE" property="itemCode" jdbcType="VARCHAR" />
+    <result column="ITEM_NAME" property="itemName" jdbcType="VARCHAR" />
+    <result column="PARENT" property="parent" jdbcType="VARCHAR" />
+    <result column="LEVEL" property="level" javaType="INTEGER"/>
+    <result column="ATTR1" property="attr1" jdbcType="VARCHAR" />
+    <result column="ATTR2" property="attr2" jdbcType="VARCHAR" />
+    <result column="ATTR3" property="attr3" jdbcType="VARCHAR" />
+    <result column="ATTR4" property="attr4" jdbcType="VARCHAR" />
+    <result column="ATTR5" property="attr5" jdbcType="VARCHAR" />
+    <result column="IDX" property="idx" jdbcType="INTEGER" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    TYPE_CODE, ITEM_CODE, ITEM_NAME, PARENT, ATTR1, ATTR2, ATTR3, ATTR4, ATTR5, IDX,LEVEL,
+    CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+  </sql>
+  <select id="findCodeItenByCode" resultMap="BaseResultMap" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_code_item
+    where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
+      and ITEM_CODE = #{itemCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteCodeItemByCode" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
+    delete from t_sys_code_item
+    where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
+      and ITEM_CODE = #{itemCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addCodeItem" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
+    insert into t_sys_code_item (TYPE_CODE, ITEM_CODE, ITEM_NAME, 
+      PARENT, ATTR1, ATTR2, 
+      ATTR3, ATTR4, ATTR5, 
+      IDX, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT,LEVEL)
+    values (#{typeCode,jdbcType=VARCHAR}, #{itemCode,jdbcType=VARCHAR}, #{itemName,jdbcType=VARCHAR}, 
+      #{parent,jdbcType=VARCHAR}, #{attr1,jdbcType=VARCHAR}, #{attr2,jdbcType=VARCHAR}, 
+      #{attr3,jdbcType=VARCHAR}, #{attr4,jdbcType=VARCHAR}, #{attr5,jdbcType=VARCHAR}, 
+      #{idx,jdbcType=INTEGER}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR},#{level,jdbcType=INTEGER})
+  </insert>
+  <update id="updateCodeItemByCode" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
+    update t_sys_code_item
+    set ITEM_NAME = #{itemName,jdbcType=VARCHAR},
+      PARENT = #{parent,jdbcType=VARCHAR},
+      ATTR1 = #{attr1,jdbcType=VARCHAR},
+      ATTR2 = #{attr2,jdbcType=VARCHAR},
+      ATTR3 = #{attr3,jdbcType=VARCHAR},
+      ATTR4 = #{attr4,jdbcType=VARCHAR},
+      ATTR5 = #{attr5,jdbcType=VARCHAR},
+      IDX = #{idx,jdbcType=INTEGER},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+       LEVEL = #{level,jdbcType=INTEGER}
+    where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
+      and ITEM_CODE = #{itemCode,jdbcType=VARCHAR}
+  </update>
+  <select id="getCodeItemsByTypeCode" parameterType="String" resultMap="BaseResultMap">
+       select 
+    <include refid="Base_Column_List" />
+     from T_SYS_CODE_ITEM where TYPE_CODE=#{0} order by PARENT,IDX asc
+  </select>
+  <select id="findTypeItemCountByTypeCode" resultType="Integer">
+      select count(ITEM_CODE) from t_sys_code_item where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
+  </select>
+  <select id="findItemsByParentCode"  resultMap="BaseResultMap" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
+      select 
+    <include refid="Base_Column_List" />
+     from T_SYS_CODE_ITEM where TYPE_CODE=#{typeCode} and PARENT=#{parent} order by IDX asc
+  </select>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.statistics.dao.DistributionInfoMapper">
+    <select id="findDistDifferInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.DistInfoModel">
+        SELECT
+        o.BRANCH_NO branchNo,
+        b.BRANCH_NAME branchName,
+        o.DISP_EMP_NO dispEmpNo,
+        e.EMP_NAME empName,
+        p.MILKMEMBER_NO mstCustNo,
+        f.VIP_NAME vipName,
+        o.ORDER_DATE orderDate,
+        CASE i.REASON
+        WHEN '20' THEN
+        '缺货'
+        WHEN '30' THEN
+        '质量原因'
+        WHEN '40' THEN
+        '损毁'
+        WHEN '50' THEN
+        '拒收'
+        WHEN '60' THEN
+        '拒收复送'
+        END reason,
+        i.MATNR matnr,
+        ex.SHORT_TXT shortTxt,
+        i.QTY-i.CONFIRM_QTY qty,
+        i.QTY sqty,
+        i.ORDER_NO,
+        i.CONFIRM_QTY,
+        concat(area.RESIDENTIAL_AREA_TXT,ma.ADDRESS_TXT) ADDRESS_TXT
+        FROM
+        t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND i.REASON IN ('20', '30', '40', '50','60')
+        AND o.`STATUS` = '20'
+        AND o.ORDER_DATE = i.ORDER_DATE
+        <if test="theDate != null">
+            AND i.ORDER_DATE = #{theDate,jdbcType=DATE}
+        </if>
+        <if test="beginDate != null">
+            AND i.ORDER_DATE &gt;= #{beginDate,jdbcType=DATE}
+        </if>
+        <if test="endDate != null">
+            AND i.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+        join t_md_branch b on b.BRANCH_NO = o.BRANCH_NO
+        <if test="branchNo != null">
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dealerId != null">
+            AND b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="salesOrg != null">
+            AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        LEFT JOIN t_preorder p ON p.ORDER_NO = i.ORG_ORDER_NO
+        LEFT JOIN t_md_address ma on ma.ADDRESS_ID = p.ADRESS_NO
+        LEFT JOIN t_md_residential_area area on area.ID = ma.RESIDENTIAL_AREA
+        LEFT JOIN t_vip_cust_info f ON f.VIP_CUST_NO = p.MILKMEMBER_NO
+        LEFT JOIN t_md_branch_emp e ON e.EMP_NO = o.DISP_EMP_NO
+        LEFT JOIN t_md_mara_ex ex on ex.matnr = i.matnr AND ex.SALES_ORG = b.SALES_ORG
+        ORDER BY
+        o.ORDER_DATE desc
+    </select>
+</mapper>

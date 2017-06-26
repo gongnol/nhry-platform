@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.order.dao.TMilkboxPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TMilkboxPlan" >
+  <id column="PLAN_NO" property="planNo" jdbcType="VARCHAR" />
+  <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+  <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+  <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+  <result column="MEMBER_NO" property="memberNo" jdbcType="VARCHAR" />
+  <result column="MEMBER_NAME" property="memberName" jdbcType="VARCHAR" />
+  <result column="MEMBER_TEL" property="memberTel" jdbcType="VARCHAR" />
+  <result column="ADRESS_NO" property="adressNo" jdbcType="VARCHAR" />
+  <result column="CUST_ADRESS" property="custAddress" jdbcType="VARCHAR" />
+  <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+  <result column="PLAN_DATE" property="planDate" jdbcType="DATE" />
+  <result column="MILKBOX_STAT" property="milkboxStat" jdbcType="VARCHAR" />
+  <result column="PAYMENT_STAT" property="paymentStat" jdbcType="VARCHAR" />
+  <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+  <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+  <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+  <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+  <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+  <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+  <result column="PRINT_FLAG" property="printFlag" jdbcType="VARCHAR" />
+  <result column="BRANCH_TEL" property="branchTel" jdbcType="VARCHAR" />
+  <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+</resultMap>
+ <resultMap id="outputResultMap" type="com.nhry.data.order.domain.TMilkboxPlan" extends="BaseResultMap">
+    <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL" />
+    <result column="PRO_NUM" property="proNum" jdbcType="VARCHAR" />
+     <result column="PAYMENTMETHOD" property="paymentmethod" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PLAN_NO, EMP_NO, EMP_NAME, ORDER_NO, MEMBER_NO, MEMBER_NAME, MEMBER_TEL, ADRESS_NO, 
+    BRANCH_NO, PLAN_DATE, MILKBOX_STAT, PAYMENT_STAT, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+  </sql>
+  <select id="selectMilkboxPlanByPlanNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    p.PLAN_NO, p.EMP_NO, p.EMP_NAME, p.ORDER_NO, p.MEMBER_NO, a.RECV_NAME MEMBER_NAME,a.MP MEMBER_TEL, concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADRESS_NO, 
+    p.BRANCH_NO, p.PLAN_DATE, p.MILKBOX_STAT, p.PAYMENT_STAT, b.MP BRANCH_TEL , b.BRANCH_NAME BRANCH_NAME
+    from t_mst_milkbox_plan p
+    left join t_vip_cust_info v on v.VIP_CUST_NO = p.MEMBER_NO
+    left join t_md_address a on a.ADDRESS_ID = p.ADRESS_NO
+    left join t_md_branch b on b.BRANCH_NO = p.BRANCH_NO
+    left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+    where PLAN_NO = #{planNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectMilkboxsByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.MilkboxSearchModel" >
+      SELECT
+      m.PLAN_NO,
+      m.EMP_NO,
+      m.EMP_NAME,
+      m.ORDER_NO,
+      m.MEMBER_NO,
+      v.VIP_NAME MEMBER_NAME,
+      v.MP MEMBER_TEL,
+      m.ADRESS_NO,
+      b.BRANCH_NAME BRANCH_NO,
+      concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) CUST_ADRESS,
+      m.PLAN_DATE,
+      m.MILKBOX_STAT,
+      m.PAYMENT_STAT
+      FROM
+      t_mst_milkbox_plan m
+      LEFT JOIN  t_vip_cust_info v on m.MEMBER_NO = v.VIP_CUST_NO
+      LEFT JOIN t_md_branch b on b.BRANCH_NO = m.BRANCH_NO
+      LEFT JOIN t_preorder o on o.ORDER_NO = m.ORDER_NO
+      left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
+      LEFT JOIN t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+      WHERE  1=1
+        <if test="status != null and status !=''">
+                AND m.MILKBOX_STAT = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="orderNo != null and orderNo !=''">
+                AND m.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        </if>
+        <if test="emp != null and emp !=''">
+                AND m.EMP_NO = #{emp,jdbcType=VARCHAR}
+        </if>
+        <if test="setDateStart != null and setDateStart !=''">
+                AND m.PLAN_DATE &gt;= #{setDateStart,jdbcType=DATE}
+        </if>
+        <if test="setDateEnd != null and setDateEnd !=''">
+                AND m.PLAN_DATE &lt;= #{setDateEnd,jdbcType=DATE}
+        </if>
+        <if test="branchNo != null and branchNo !=''">
+                AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="salesOrg != null and salesOrg !=''">
+                AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        order by o.ORDER_NO desc
+  </select>
+    <select id="selectMilkboxsCount" resultType="INTEGER">
+        select count(*) as amount from t_mst_milkbox_plan t
+        where  t.MILKBOX_STAT=20 and t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+     </select>
+  <delete id="deleteMilkBoxByOrderNo" parameterType="java.lang.String" >
+    delete from t_mst_milkbox_plan
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addNewMilkboxPlan" parameterType="com.nhry.data.order.domain.TMilkboxPlan" >
+    insert into t_mst_milkbox_plan
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="planNo != null" >
+        PLAN_NO,
+      </if>
+      <if test="empNo != null" >
+        EMP_NO,
+      </if>
+      <if test="empName != null" >
+        EMP_NAME,
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="memberNo != null" >
+        MEMBER_NO,
+      </if>
+      <if test="memberName != null" >
+        MEMBER_NAME,
+      </if>
+      <if test="memberTel != null" >
+        MEMBER_TEL,
+      </if>
+      <if test="adressNo != null" >
+        ADRESS_NO,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="planDate != null" >
+        PLAN_DATE,
+      </if>
+      <if test="milkboxStat != null" >
+        MILKBOX_STAT,
+      </if>
+      <if test="paymentStat != null" >
+        PAYMENT_STAT,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="planNo != null" >
+        #{planNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empNo != null" >
+        #{empNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empName != null" >
+        #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null" >
+        #{memberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="memberName != null" >
+        #{memberName,jdbcType=VARCHAR},
+      </if>
+      <if test="memberTel != null" >
+        #{memberTel,jdbcType=VARCHAR},
+      </if>
+      <if test="adressNo != null" >
+        #{adressNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="planDate != null" >
+        #{planDate,jdbcType=DATE},
+      </if>
+      <if test="milkboxStat != null" >
+        #{milkboxStat,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentStat != null" >
+        #{paymentStat,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=DATE},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=DATE},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateMilkboxPlan" parameterType="com.nhry.data.order.domain.TMilkboxPlan" >
+    update t_mst_milkbox_plan
+    <set >
+      <!-- <if test="empNo != null" >
+        EMP_NO = #{empNo,jdbcType=VARCHAR},
+      </if> -->
+      <!-- <if test="empName != null" >
+        EMP_NAME = #{empName,jdbcType=VARCHAR},
+      </if> -->
+      <!-- <if test="orderNo != null" >
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      </if> -->
+      <!-- <if test="memberNo != null" >
+        MEMBER_NO = #{memberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="memberName != null" >
+        MEMBER_NAME = #{memberName,jdbcType=VARCHAR},
+      </if>
+      <if test="memberTel != null" >
+        MEMBER_TEL = #{memberTel,jdbcType=VARCHAR},
+      </if> -->
+      <!-- <if test="adressNo != null" >
+        ADRESS_NO = #{adressNo,jdbcType=VARCHAR},
+      </if> -->
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="planDate != null" >
+        PLAN_DATE = #{planDate,jdbcType=DATE},
+      </if>
+      <if test="milkboxStat != null" >
+        MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentStat != null" >
+        PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR},
+      </if>
+      <!-- <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=DATE},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if> -->
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=DATE},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PLAN_NO = #{planNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateMilkboxPlans">
+    update t_mst_milkbox_plan
+    <set >
+        <if test="milkboxStat!=null and milkboxStat!=''">
+           MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR},
+        </if>
+    </set>
+    <where>
+        <if test="orderCodeArray!=null and orderCodeArray.size!=0">
+            AND ORDER_NO in
+            <foreach collection="orderCodeArray" item="planNo"
+                index="index" open="(" close=")" separator=",">
+                #{planNo}
+            </foreach>
+        </if>
+    </where>
+  </update>
+  <update id="updateMilkboxPlanPrinted" parameterType="java.lang.String">
+    update t_mst_milkbox_plan
+    set PRINT_FLAG = "20"
+    where PLAN_NO = #{planNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.order.domain.TMilkboxPlan" >
+    update t_mst_milkbox_plan
+    set EMP_NO = #{empNo,jdbcType=VARCHAR},
+      EMP_NAME = #{empName,jdbcType=VARCHAR},
+      ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      MEMBER_NO = #{memberNo,jdbcType=VARCHAR},
+      MEMBER_NAME = #{memberName,jdbcType=VARCHAR},
+      MEMBER_TEL = #{memberTel,jdbcType=VARCHAR},
+      ADRESS_NO = #{adressNo,jdbcType=VARCHAR},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      PLAN_DATE = #{planDate,jdbcType=DATE},
+      MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR},
+      PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=DATE},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=DATE},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+    where PLAN_NO = #{planNo,jdbcType=VARCHAR}
+  </update>
+  <select id="selectMilkboxPlantoOutput" resultMap="outputResultMap">
+       SELECT
+          tp.INIT_AMT,
+          tp.PAYMENTMETHOD,
+          p.EMP_NO,
+          p.EMP_NAME,
+          p.MEMBER_NO,
+          v.VIP_NAME MEMBER_NAME,
+          v.MP MEMBER_TEL,
+          concat(
+              r.RESIDENTIAL_AREA_TXT,
+              a.ADDRESS_TXT
+          ) ADRESS_NO,
+          p.BRANCH_NO,
+          p.PLAN_DATE,
+          p.MILKBOX_STAT,
+          p.PAYMENT_STAT,
+          b.MP BRANCH_TEL,
+          b.BRANCH_NAME BRANCH_NAME,
+          (
+              SELECT
+                  group_concat(
+                      ex.SHORT_TXT,
+                      '-',
+                      e.DISP_TOTAL
+                  )
+              FROM
+                  t_mst_plan_order_item e,
+                  t_md_mara p,
+                  t_md_mara_ex ex
+              WHERE
+                  e.ORDER_NO = tp.ORDER_NO
+              AND tp.ORDER_NO = e.ORDER_NO
+              AND tp.SALES_ORG = p.SALES_ORG
+              AND (
+                  e. STATUS != "30"
+                  OR e. STATUS IS NULL
+              )
+              AND e.MATNR = p.MATNR
+              AND ex.MATNR = p.MATNR
+          ) PRO_NUM
+      FROM
+          t_mst_milkbox_plan p
+      LEFT JOIN t_vip_cust_info v ON v.VIP_CUST_NO = p.MEMBER_NO
+      LEFT JOIN t_md_address a ON a.ADDRESS_ID = p.ADRESS_NO
+      LEFT JOIN t_md_branch b ON b.BRANCH_NO = p.BRANCH_NO
+      LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+      LEFT JOIN t_preorder tp ON tp.ORDER_NO = p.ORDER_NO
+      WHERE
+          (
+              tp.PREORDER_STAT != '30'
+              OR tp.PAYMENT_STAT != '40'
+          )
+      AND p.MILKBOX_STAT='20'
+      AND p.EMP_NO = #{empNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

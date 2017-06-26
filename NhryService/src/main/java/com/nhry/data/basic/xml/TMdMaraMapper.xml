@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdMaraMapper">
+    <!-- <cache type="org.mybatis.caches.redis.RedisCache" /> -->
+	<resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMara">
+		<id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+		<result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+		<result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="MARA_LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+		<result column="MARA_CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+		<result column="FIRST_CAT" property="firstCat" jdbcType="VARCHAR" />
+		<result column="SEC_CATE" property="secCate" jdbcType="VARCHAR" />
+		<result column="BRAND" property="brand" jdbcType="VARCHAR" />
+		<result column="WEIGHT" property="weight" jdbcType="REAL" />
+		<result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR" />
+		<result column="IMPORTANT_PRD_FLAG" property="importantPrdFlag" jdbcType="CHAR" />
+		<result column="SPEC" property="spec" jdbcType="VARCHAR" />
+		<result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR" />
+		<result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+		<result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR" />
+		<result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+		<result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+		<result column="FIRST_CAT_NAME" property="firstCateName" jdbcType="VARCHAR" />
+		<result column="SEC_CATE_NAME" property="secCateName" jdbcType="VARCHAR" />
+		<result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
+		<result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
+		<result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" />
+		<result column="SORT" property="sort" jdbcType="VARCHAR" />
+		<result column="HIDE" property="hide" jdbcType="VARCHAR" />
+		<association property="maraEx" resultMap="BaseAndExResultMap"></association>
+	</resultMap>
+	<resultMap id="BaseAndExResultMap" type="com.nhry.data.basic.domain.TMdMaraEx" >
+	    <id column="EX_MATNR" property="matnr" jdbcType="VARCHAR" />
+	    <result column="SALES_FLAG" property="salesFlag" jdbcType="VARCHAR" />
+	    <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+	    <result column="PRE_DAYS" property="preDays" jdbcType="INTEGER" />
+	    <result column="BOT_TYPE" property="botType" jdbcType="VARCHAR" />
+	    <result column="RET_BOT_FLAG" property="retBotFlag" jdbcType="CHAR" />
+	    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+	    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+	    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+	    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+	    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+	    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+	    <result column="RATE" property="rate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+		MATNR, MATNR_TXT, BASE_UNIT, STATUS, LAST_MODIFIED MARA_LAST_MODIFIED,
+		CREATE_AT MARA_CREATE_AT, FIRST_CAT,
+		SEC_CATE,
+		BRAND, WEIGHT, WEIGHT_UNIT,
+		IMPORTANT_PRD_FLAG, SPEC, SPEC_UNIT, BOT_SPEC,
+		ZBOT_CODE,SALES_ORG,DEALER_NO
+	</sql>
+	<select id="selectProductByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select <include refid="Base_Column_List" /> from t_md_mara where SALES_ORG = #{salesOrg,jdbcType=VARCHAR} and MATNR = #{matnr,jdbcType=VARCHAR}
+	</select>
+	<select id="selectProductAndExByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		SELECT
+		p.MATNR,
+		p.MATNR_TXT,
+		p.BASE_UNIT,
+		p. STATUS,
+		p.LAST_MODIFIED MARA_LAST_MODIFIED,
+		p.CREATE_AT MARA_CREATE_AT,
+		p.FIRST_CAT,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
+		p.SEC_CATE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
+		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
+		p.WEIGHT,
+		p.WEIGHT_UNIT,
+		p.IMPORTANT_PRD_FLAG,
+		p.SPEC,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
+		p.SPEC_UNIT,
+		p.BOT_SPEC,
+		p.ZBOT_CODE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
+		p.SALES_ORG,
+		p.DEALER_NO,
+		pex.rate,
+		pex.SHORT_TXT,
+		pex.PRE_DAYS,
+		pex.BOT_TYPE,
+		pex.MATNR EX_MATNR,
+		pex.SALES_FLAG,
+		pex.RET_BOT_FLAG,
+		pex.CREATE_AT, 
+		pex.CREATE_BY,
+		pex.CREATE_BY_TXT,
+		pex.LAST_MODIFIED,
+		pex.LAST_MODIFIED_BY,
+		pex.LAST_MODIFIED_BY_TXT  
+		FROM 
+		t_md_mara p 
+		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
+		WHERE p.SALES_ORG=#{salesOrg} and p.MATNR = #{matnr}
+	</select>
+	
+	
+	<select id="searchProducts" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
+		SELECT
+		p.MATNR,
+		p.MATNR_TXT,
+		p.BASE_UNIT,
+		p. STATUS,
+		ifnull(p.SORT,0) SORT,
+		p.LAST_MODIFIED MARA_LAST_MODIFIED,
+		p.CREATE_AT MARA_CREATE_AT,
+		p.FIRST_CAT,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
+		p.SEC_CATE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
+		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
+		p.WEIGHT,
+		p.WEIGHT_UNIT,
+		p.IMPORTANT_PRD_FLAG,
+		p.SPEC,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
+		p.SPEC_UNIT,
+		p.BOT_SPEC,
+		p.ZBOT_CODE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
+		p.SALES_ORG,
+		p.DEALER_NO,
+		pex.rate,
+		pex.SHORT_TXT,
+		pex.PRE_DAYS,
+		pex.BOT_TYPE,
+		pex.MATNR EX_MATNR,
+		pex.SALES_FLAG,
+		pex.RET_BOT_FLAG,
+		pex.CREATE_AT, 
+		pex.CREATE_BY,
+		pex.CREATE_BY_TXT,
+		pex.LAST_MODIFIED,
+		pex.LAST_MODIFIED_BY,
+		pex.LAST_MODIFIED_BY_TXT  
+		FROM
+		t_md_mara p
+		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
+		<where>
+			<if test="firstCatory != null and firstCatory !=''">
+				p.FIRST_CAT = #{firstCatory,jdbcType=VARCHAR}
+			</if>
+			<if test="secCatory != null and secCatory !=''">
+				AND p.SEC_CATE = #{secCatory,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null and status != ''">
+				AND IFNULL(p.STATUS,'N') = #{status,jdbcType=VARCHAR}
+			</if>
+			<if test="matnrTxt != null and matnrTxt != ''">
+				AND (p.MATNR like '%${matnrTxt}%' or p.MATNR_TXT like '%${matnrTxt}%' or pex.SHORT_TXT like '%${matnrTxt}%') 
+			</if>
+			<if test="salesOrg != null and salesOrg != ''">
+			   AND p.SALES_ORG=#{salesOrg}
+			</if>
+			<if test="dealerNo != null and dealerNo != ''">
+			   AND p.DEALER_NO=#{dealerNo}
+			</if>
+			
+			<if test="hide != null and hide != ''">
+			   AND p.HIDE=#{hide}
+			</if>
+			
+			
+		</where>
+		ORDER BY p.SORT desc
+	</select>
+	
+	<select id="selectProductAndExListByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		SELECT
+		p.MATNR,
+		p.MATNR_TXT,
+		p.BASE_UNIT,
+		p. STATUS,
+		p.LAST_MODIFIED MARA_LAST_MODIFIED,
+		p.CREATE_AT MARA_CREATE_AT,
+		p.FIRST_CAT,
+		p.SEC_CATE,
+		p.BRAND,
+		p.WEIGHT,
+		p.WEIGHT_UNIT,
+		p.IMPORTANT_PRD_FLAG,
+		p.SPEC,
+		p.SPEC_UNIT,
+		p.BOT_SPEC,
+		p.ZBOT_CODE,
+		p.SALES_ORG,
+		p.DEALER_NO,
+		pex.rate,
+		pex.SHORT_TXT,
+		pex.PRE_DAYS,
+		pex.BOT_TYPE,
+		pex.MATNR EX_MATNR,
+		pex.SALES_FLAG,
+		pex.RET_BOT_FLAG,
+		pex.CREATE_AT, 
+		pex.CREATE_BY,
+		pex.CREATE_BY_TXT,
+		pex.LAST_MODIFIED,
+		pex.LAST_MODIFIED_BY,
+		pex.LAST_MODIFIED_BY_TXT  
+		FROM
+		t_md_mara p
+		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
+		<where>
+		    <if test="productCode != null and productCode != ''">
+		        p.MATNR like #{productCode}  
+		    </if>
+		    <if test="salesOrg != null and salesOrg != ''">
+		       and p.SALES_ORG=#{salesOrg}
+		    </if>
+		</where>
+	</select>
+	<select id="findMarasBySalesCodeAndOrg" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		SELECT
+		p.MATNR,
+		p.MATNR_TXT,
+		p.BASE_UNIT,
+		p. STATUS,
+		p.LAST_MODIFIED MARA_LAST_MODIFIED,
+		p.CREATE_AT MARA_CREATE_AT,
+		p.FIRST_CAT,
+		p.SEC_CATE,
+		p.BRAND,
+		p.WEIGHT,
+		p.WEIGHT_UNIT,
+		p.IMPORTANT_PRD_FLAG,
+		p.SPEC,
+		p.SPEC_UNIT,
+		p.BOT_SPEC,
+		p.ZBOT_CODE,
+		p.SALES_ORG,
+		p.DEALER_NO 
+		FROM
+		t_md_mara p 
+		<where>
+		     p. STATUS='Y' 
+		    <if test="salesOrg != null and salesOrg != ''">
+		        AND p.SALES_ORG=#{salesOrg}
+		    </if>
+		    <if test="dealerNo != null and dealerNo != ''">
+		        AND p.DEALER_NO=#{dealerNo}
+		    </if>
+		    <if test="id != null and id != ''">
+		        AND NOT EXISTS (select * from T_MARA_PRICE_REL pl where pl.MATNR=p.MATNR and pl.id=#{id})
+		    </if>
+		</where>
+	</select>
+	<update id="uptProductByCode" parameterType="com.nhry.data.basic.domain.TMdMara">
+		update t_md_mara
+		<set>
+			<if test="matnrTxt != null">
+				MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where MATNR = #{matnr,jdbcType=VARCHAR}
+	</update>
+	<update id="pubProductByCode" parameterType="java.util.HashMap">
+		update t_md_mara set STATUS = #{status},LAST_MODIFIED=#{lastModified} where SALES_ORG= #{salesOrg} and MATNR = #{matnr}
+	</update>
+	<insert id="addProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
+		insert into t_md_mara
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="matnr != null">
+				MATNR,
+			</if>
+			<if test="matnrTxt != null">
+				MATNR_TXT,
+			</if>
+			<if test="baseUnit != null">
+				BASE_UNIT,
+			</if>
+			<if test="status != null">
+				STATUS,
+			</if>
+			<if test="lastModified != null">
+				LAST_MODIFIED,
+			</if>
+			<if test="createAt != null">
+				CREATE_AT,
+			</if>
+			<if test="firstCat != null">
+				FIRST_CAT,
+			</if>
+			<if test="secCate != null">
+				SEC_CATE,
+			</if>
+			<if test="brand != null">
+				BRAND,
+			</if>
+			<if test="weight != null">
+				WEIGHT,
+			</if>
+			<if test="weightUnit != null">
+				WEIGHT_UNIT,
+			</if>
+			<if test="importantPrdFlag != null">
+				IMPORTANT_PRD_FLAG,
+			</if>
+			<if test="spec != null">
+				SPEC,
+			</if>
+			<if test="specUnit != null">
+				SPEC_UNIT,
+			</if>
+			<if test="botSpec != null">
+				BOT_SPEC,
+			</if>
+			<if test="zbotCode != null">
+				ZBOT_CODE,
+			</if>
+			<if test="salesOrg != null">
+				SALES_ORG,
+			</if>
+			<if test="dealerNo != null">
+				DEALER_NO,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="matnr != null">
+				#{matnr,jdbcType=VARCHAR},
+			</if>
+			<if test="matnrTxt != null">
+				#{matnrTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="baseUnit != null">
+				#{baseUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModified != null">
+				#{lastModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createAt != null">
+				#{createAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="firstCat != null">
+				#{firstCat,jdbcType=VARCHAR},
+			</if>
+			<if test="secCate != null">
+				#{secCate,jdbcType=VARCHAR},
+			</if>
+			<if test="brand != null">
+				#{brand,jdbcType=VARCHAR},
+			</if>
+			<if test="weight != null">
+				#{weight,jdbcType=REAL},
+			</if>
+			<if test="weightUnit != null">
+				#{weightUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="importantPrdFlag != null">
+				#{importantPrdFlag,jdbcType=CHAR},
+			</if>
+			<if test="spec != null">
+				#{spec,jdbcType=VARCHAR},
+			</if>
+			<if test="specUnit != null">
+				#{specUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="botSpec != null">
+				#{botSpec,jdbcType=VARCHAR},
+			</if>
+			<if test="zbotCode != null">
+				#{zbotCode,jdbcType=VARCHAR},
+			</if>
+			<if test="salesOrg != null">
+				#{salesOrg,jdbcType=VARCHAR},
+			</if>
+			<if test="dealerNo != null">
+				#{dealerNo,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
+		update t_md_mara
+		<set>
+			<if test="matnrTxt != null">
+				MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="baseUnit != null">
+				BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModified != null">
+				LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createAt != null">
+				CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="firstCat != null">
+				FIRST_CAT = #{firstCat,jdbcType=VARCHAR},
+			</if>
+			<if test="secCate != null">
+				SEC_CATE = #{secCate,jdbcType=VARCHAR},
+			</if>
+			<if test="brand != null">
+				BRAND = #{brand,jdbcType=VARCHAR},
+			</if>
+			<if test="weight != null">
+				WEIGHT = #{weight,jdbcType=REAL},
+			</if>
+			<if test="weightUnit != null">
+				WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="importantPrdFlag != null">
+				IMPORTANT_PRD_FLAG = #{importantPrdFlag,jdbcType=CHAR},
+			</if>
+			<if test="spec != null">
+				SPEC = #{spec,jdbcType=VARCHAR},
+			</if>
+			<if test="specUnit != null">
+				SPEC_UNIT = #{specUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="botSpec != null">
+				BOT_SPEC = #{botSpec,jdbcType=VARCHAR},
+			</if>
+			<if test="zbotCode != null">
+				ZBOT_CODE = #{zbotCode,jdbcType=VARCHAR},
+			</if>
+			<if test="dealerNo != null">
+				DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where SALES_ORG=#{salesOrg} and MATNR = #{matnr,jdbcType=VARCHAR}
+	</update>
+	<select id="isProduct" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT count(1) FROM t_md_mara WHERE MATNR = #{id}
+	</select>
+	
+	<select id="getDealerMaras" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
+	    SELECT
+			p.MATNR,
+			exm.SHORT_TXT MATNR_TXT,
+			exm.SHORT_TXT,
+			p.BASE_UNIT,
+			ifnull(ms.SORT,0) SORT,
+			ifnull(ms.HIDE,'N') HIDE,
+			p. STATUS,
+			p.LAST_MODIFIED MARA_LAST_MODIFIED,
+			p.CREATE_AT MARA_CREATE_AT,
+			p.FIRST_CAT,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
+			p.SEC_CATE,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
+			p.BRAND,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
+			p.WEIGHT,
+			p.WEIGHT_UNIT,
+			p.IMPORTANT_PRD_FLAG,
+			p.SPEC,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
+			p.SPEC_UNIT,
+			p.BOT_SPEC,
+			p.ZBOT_CODE,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
+			p.SALES_ORG,
+			p.DEALER_NO 
+		FROM
+			t_md_mara p
+			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR and p.SALES_ORG = exm.SALES_ORG
+			LEFT JOIN t_md_mara_sort ms  on ms.MATNR = p.MATNR and ms.BRANCH_NO=#{branchNo}
+		where p.MATNR NOT IN (
+			SELECT
+				nl.matnr
+			FROM
+				T_BRANCH_NOTSELL_LIST nl
+			WHERE
+				nl.sales_org = #{salesOrg}
+			AND nl.dealer_no = #{dealerNo}
+		)
+		AND p.SALES_ORG = #{salesOrg}
+		AND P.STATUS='Y' 
+		
+		<if test="matnrTxt != null and matnrTxt != ''">
+		    AND (p.MATNR like '%${matnrTxt}%' or
+				p.MATNR_TXT like '%${matnrTxt}%' or exm.SHORT_TXT  like '%${matnrTxt}%' ) 
+		</if>
+		
+		
+			
+		<if test="hide != null and hide != ''">
+		   AND ifnull(ms.HIDE,'N')=#{hide}
+		</if>
+		
+		
+		<if test=" seting !=null and seting == 'N'.toString() ">
+			order by SORT desc
+		</if>
+		
+		<if test=" seting !=null and seting == 'Y'.toString() ">
+			order by p.SORT desc
+		</if>
+		
+		
+	</select>
+	
+	<select id="getCompMaras" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
+	    SELECT
+			p.MATNR,
+			exm.SHORT_TXT MATNR_TXT,
+			exm.SHORT_TXT,
+			p.BASE_UNIT,
+			p. STATUS,
+			ifnull(ms.SORT,0) SORT,
+			ifnull(ms.HIDE,'N') HIDE,
+			p.LAST_MODIFIED MARA_LAST_MODIFIED,
+			p.CREATE_AT MARA_CREATE_AT,
+			p.FIRST_CAT,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
+			p.SEC_CATE,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
+			p.BRAND,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
+			p.WEIGHT,
+			p.WEIGHT_UNIT,
+			p.IMPORTANT_PRD_FLAG,
+			p.SPEC,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
+			p.SPEC_UNIT,
+			p.BOT_SPEC,
+			p.ZBOT_CODE,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
+			p.SALES_ORG,
+			p.DEALER_NO 
+		FROM
+			t_md_mara p 
+			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR and p.SALES_ORG =#{salesOrg} 
+			LEFT JOIN t_md_mara_sort ms  on ms.MATNR = p.MATNR and ms.BRANCH_NO=#{branchNo}
+			WHERE p.MATNR not in (
+			SELECT
+				nl.matnr
+			FROM
+				T_BRANCH_NOTSELL_LIST nl
+			WHERE
+				nl.dealer_no = '-1'
+			AND nl.BRANCH_NO=#{branchNo}
+			AND nl.sales_org = #{salesOrg}
+		)
+		AND p.SALES_ORG = #{salesOrg}
+		AND p.STATUS='Y' 
+		<if test="matnrTxt != null and matnrTxt != ''">
+		    AND (p.MATNR like '%${matnrTxt}%' or
+				p.MATNR_TXT like '%${matnrTxt}%' or exm.SHORT_TXT  like '%${matnrTxt}%' ) 
+		</if>
+		
+		
+		<if test="hide != null and hide != ''">
+		   AND ifnull(ms.HIDE,'N')=#{hide}
+		</if>
+		
+		<if test=" seting !=null and seting == 'N'.toString() ">
+			order by SORT desc
+		</if>
+		
+		<if test=" seting !=null and seting == 'Y'.toString() ">
+			order by p.SORT desc
+		</if>
+		
+	</select>
+	<select id="getProductByCodeOrNameAndSalesOrg" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		SELECT
+		p.MATNR,
+		p.MATNR_TXT,
+		p.BASE_UNIT,
+		p. STATUS,
+		p.LAST_MODIFIED MARA_LAST_MODIFIED,
+		p.CREATE_AT MARA_CREATE_AT,
+		p.FIRST_CAT,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
+		p.SEC_CATE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
+		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
+		p.WEIGHT,
+		p.WEIGHT_UNIT,
+		p.IMPORTANT_PRD_FLAG,
+		p.SPEC,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
+		p.SPEC_UNIT,
+		p.BOT_SPEC,
+		p.ZBOT_CODE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
+		p.SALES_ORG,
+		p.DEALER_NO
+		FROM
+		t_md_mara p
+		where p. STATUS='Y'
+				and p.SALES_ORG=#{salesOrg}
+				AND ( p.MATNR LIKE '%${matnr}%' OR p.MATNR_TXT like  '%${matnrTxt}%' )
+	</select>
+	<select id="listsBySalesOrg" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
+		SELECT
+		p.MATNR,
+		p.MATNR_TXT,
+		p.BASE_UNIT,
+		p. STATUS,
+		p.LAST_MODIFIED MARA_LAST_MODIFIED,
+		p.CREATE_AT MARA_CREATE_AT,
+		p.FIRST_CAT,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
+		p.SEC_CATE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
+		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
+		p.WEIGHT,
+		p.WEIGHT_UNIT,
+		p.IMPORTANT_PRD_FLAG,
+		p.SPEC,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
+		p.SPEC_UNIT,
+		p.BOT_SPEC,
+		p.ZBOT_CODE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
+		p.SALES_ORG,
+		p.DEALER_NO
+		FROM
+		t_md_mara p WHERE p.MATNR not in (
+		SELECT
+		nl.matnr
+		FROM
+		T_BRANCH_NOTSELL_LIST nl
+		WHERE
+		nl.dealer_no = NULL
+		AND nl.sales_org = #{salesOrg}
+		)
+		AND p.SALES_ORG = #{salesOrg}
+		AND p.STATUS='Y'
+	</select>
+	
+	
+	
+	<update id="updateSort" parameterType="com.nhry.model.basic.UpdateMaraModel" >
+		UPDATE t_md_mara set SORT=#{sort} ,HIDE=#{hide}    WHERE MATNR=#{matnr} and SALES_ORG=#{salesOrg}
+	</update>
+	
+	
+	
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdMaraSortMapper">
+	<resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMaraSort">
+		<id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+		<id column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+		<id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+		<id column="SORT" property="sort"  />
+		<id column="HIDE" property="hide" jdbcType="VARCHAR" />
+	</resultMap>
+	
+ 	<insert id="addTMdMaraSort"  parameterType="com.nhry.model.basic.UpdateMaraModel" >
+        insert into t_md_mara_sort (MATNR,SALES_ORG,BRANCH_NO,SORT,HIDE ) values
+            (#{matnr},#{salesOrg},#{branchNo},#{sort},#{hide} ) 
+    </insert>
+    
+   <delete id="delete"  parameterType="com.nhry.model.basic.UpdateMaraModel" >
+        delete from t_md_mara_sort where MATNR=#{matnr} and   BRANCH_NO= #{branchNo}
+	</delete>
+    
+     <update id="updatebyMatnr"  parameterType="com.nhry.model.basic.UpdateMaraModel" >
+      	update t_md_mara_sort set SORT=#{sort} , HIDE=#{hide}  
+      		 where  MATNR=#{matnr}  and   BRANCH_NO= #{branchNo}
+	</update>
+    
+    
+    <select id="findListByBranchNo"  resultMap="BaseResultMap" parameterType="java.lang.String" >
+    	 select MATNR,SALES_ORG,BRANCH_NO,SORT,ifnull(HIDE,"N") HIDE  from  t_md_mara_sort where  BRANCH_NO= #{branchNo} 
+    	 order by SORT desc
+    </select>
+    
+    
+	
+	
+	
+</mapper>

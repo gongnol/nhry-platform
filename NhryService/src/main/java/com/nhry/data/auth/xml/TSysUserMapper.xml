@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.auth.dao.TSysUserMapper">
+	<cache type="org.mybatis.caches.redis.RedisCache"  /> 
+    <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysUser">
+        <id column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName"/>
+        <result column="DISPLAY_NAME" jdbcType="VARCHAR" property="displayName"/>
+         <result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+        <result column="DEPARTMENT_NUMBER" jdbcType="VARCHAR" property="departmentNumber"/>
+        <result column="DEPARTMENT_NAME" jdbcType="VARCHAR" property="departmentName"/>
+        <result column="CUSTOMIZED_POSITIONID" jdbcType="TIMESTAMP" property="customizedPositionid"/>
+        <result column="CUSTOMIZED_POSITIONNAME" jdbcType="VARCHAR" property="customizedPositionname"/>
+        <result column="LAST_MODIFIED" jdbcType="TIMESTAMP" property="lastModified"/>
+        <result column="CREATE_ON" jdbcType="TIMESTAMP" property="createOn"/>
+        <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo"/>
+        <result column="DEALER_ID" jdbcType="VARCHAR" property="dealerId"/>
+        <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg"/>
+        <result column="LAST_LOGIN" jdbcType="TIMESTAMP" property="lastLogin"/>
+        <result column="CUSTOMIZED_DUTYID" jdbcType="VARCHAR" property="customizedDutyid"/>
+        <result column="CUSTOMIZED_DUTYNAME" jdbcType="VARCHAR" property="customizedDutyname"/>
+        <result column="CUSTOMIZED_RESIDENCE" jdbcType="VARCHAR" property="customizedResidence"/>
+        <result column="CUSTOMIZED_PERSONAL_MAIL" jdbcType="VARCHAR" property="customizedPersonalMail"/>
+        <result column="MAIL" jdbcType="VARCHAR" property="mail"/>
+        <result column="MOBILE" jdbcType="VARCHAR" property="mobile"/>
+        <result column="CUSTOMIZED_JOININWORKDATE" jdbcType="TIMESTAMP" property="customizedJoininworkdate"/>
+        <result column="CUSTOMIZED_JOINSYSDATE" jdbcType="TIMESTAMP" property="customizedJoinsysdate"/>
+        <result column="CUSTOMIZED_RESIGNEDDATE" jdbcType="VARCHAR" property="customizedResigneddate"/>
+        <result column="CUSTOMIZED_LASTDEPARTMENTNAME" jdbcType="VARCHAR" property="customizedLastdepartmentname"/>
+        <result column="CUSTOMIZED_HRREGION" jdbcType="VARCHAR" property="customizedHrregion"/>
+        <result column="CUSTOMIZED_HRREGIONTXT" jdbcType="VARCHAR" property="customizedHrregiontxt"/>
+        <result column="CUSTOMIZED_SUBHRREGION" jdbcType="VARCHAR" property="customizedSubhrregion"/>
+        <result column="CUSTOMIZED_SUBHRREGIONTXT" jdbcType="VARCHAR" property="customizedSubhrregiontxt"/>
+        <result column="CUSTOMIZED_EMPTYPE" jdbcType="VARCHAR" property="customizedEmptype"/>
+        <result column="CUSTOMIZED_EMPTYPETXT" jdbcType="VARCHAR" property="customizedEmptypetxt"/>
+        <result column="CUSTOMIZED_SUBEMPTYPE" jdbcType="VARCHAR" property="customizedSubemptype"/>
+        <result column="CUSTOMIZED_SUBEMPTYPETXT" jdbcType="VARCHAR" property="customizedSubemptypetxt"/>
+        <result column="CUSTOMIZED_DEGREE" jdbcType="VARCHAR" property="customizedDegree"/>
+        <result column="CUSTOMIZED_MAJOR" jdbcType="VARCHAR" property="customizedMajor"/>
+        <result column="CUSTOMIZED_MANAGERCODE" jdbcType="VARCHAR" property="customizedManagercode"/>
+        <result column="CUSTOMIZED_MANAGERNAME" jdbcType="VARCHAR" property="customizedManagername"/>
+        <result column="SMART_IDCARDNUMBER" jdbcType="VARCHAR" property="smartIdcardnumber"/>
+        <result column="CUSTOMIZED_NATION" jdbcType="VARCHAR" property="customizedNation"/>
+        <result column="CUSTOMIZED_COUNTRY" jdbcType="VARCHAR" property="customizedCountry"/>
+        <result column="SMART_TYPE" jdbcType="VARCHAR" property="smartType"/>
+        <result column="SMART_CATEGORY" jdbcType="VARCHAR" property="smartCategory"/>
+        <result column="CUMSTOMIZED_VPATH" jdbcType="VARCHAR" property="cumstomizedVpath"/>
+        <result column="CUMSTOMIZED_RPATH" jdbcType="VARCHAR" property="cumstomizedRpath"/>
+        <result column="SMART_AUTHORITY" jdbcType="VARCHAR" property="smartAuthority"/>
+        <result column="DS_PWP_ACCOUNT_DISABLED" jdbcType="VARCHAR" property="dsPwpAccountDisabled"/>
+        <result column="GROUP_ID" jdbcType="VARCHAR" property="groupId"/>
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR"/>
+        <result column="ORG_NAME" property="orgName" jdbcType="VARCHAR"/>
+        <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR"/>
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    
+     <resultMap id="PassResultMap" type="com.nhry.data.auth.domain.TSysUser">
+        <id column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName"/>
+        <result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        LOGIN_NAME, DISPLAY_NAME, DEPARTMENT_NUMBER, DEPARTMENT_NAME, CUSTOMIZED_POSITIONID,
+        CUSTOMIZED_POSITIONNAME, LAST_MODIFIED, CREATE_ON, BRANCH_NO, DEALER_ID, SALES_ORG,
+        LAST_LOGIN, CUSTOMIZED_DUTYID, CUSTOMIZED_DUTYNAME, CUSTOMIZED_RESIDENCE, CUSTOMIZED_PERSONAL_MAIL,
+        MAIL, MOBILE, CUSTOMIZED_JOININWORKDATE, CUSTOMIZED_JOINSYSDATE, CUSTOMIZED_RESIGNEDDATE,
+        CUSTOMIZED_LASTDEPARTMENTNAME, CUSTOMIZED_HRREGION, CUSTOMIZED_HRREGIONTXT, CUSTOMIZED_SUBHRREGION,
+        CUSTOMIZED_SUBHRREGIONTXT, CUSTOMIZED_EMPTYPE, CUSTOMIZED_EMPTYPETXT, CUSTOMIZED_SUBEMPTYPE,
+        CUSTOMIZED_SUBEMPTYPETXT, CUSTOMIZED_DEGREE, CUSTOMIZED_MAJOR, CUSTOMIZED_MANAGERCODE,
+        CUSTOMIZED_MANAGERNAME, SMART_IDCARDNUMBER, CUSTOMIZED_NATION, CUSTOMIZED_COUNTRY,
+        SMART_TYPE, SMART_CATEGORY, CUMSTOMIZED_VPATH, CUMSTOMIZED_RPATH, SMART_AUTHORITY,
+        DS_PWP_ACCOUNT_DISABLED, GROUP_ID,
+        (SELECT i.ITEM_NAME FROM t_sys_code_item i where i.TYPE_CODE=
+        <include refid="mybaties.constant.SALES_ORG_CONSTANT"></include>
+        and i.ITEM_CODE=t_sys_user.SALES_ORG) ORG_NAME,
+        (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=t_sys_user.BRANCH_NO) BRANCH_NAME,
+        (select d.DEALER_NAME from t_md_dealer d where d.DEALER_NO=t_sys_user.DEALER_ID) DEALER_NAME,
+        (SELECT e.EMP_NO FROM t_md_branch_emp e where e.STATUS='1' and e.BRANCH_NO=IFNULL(t_sys_user.BRANCH_NO,'-1') and 
+         e.HR_EMP_NO=t_sys_user.LOGIN_NAME) EMP_NO
+    </sql>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from t_sys_user
+		where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+	</delete>
+    <update id="updateUser" parameterType="com.nhry.data.auth.domain.TSysUser">
+        update t_sys_user
+        <set>
+            <if test="displayName != null">
+                DISPLAY_NAME = #{displayName,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentNumber != null">
+                DEPARTMENT_NUMBER = #{departmentNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentName != null">
+                DEPARTMENT_NAME = #{departmentName,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedPositionid != null">
+                CUSTOMIZED_POSITIONID = #{customizedPositionid,jdbcType=TIMESTAMP},
+            </if>
+            <if test="customizedPositionname != null">
+                CUSTOMIZED_POSITIONNAME = #{customizedPositionname,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModified != null">
+                LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createOn != null">
+                CREATE_ON = #{createOn,jdbcType=TIMESTAMP},
+            </if>
+            <!-- 
+             <if test="branchNo != null">
+                BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+            </if>
+             -->
+             BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+             DEALER_ID = #{dealerId,jdbcType=VARCHAR},
+             SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+           <!-- 
+            <if test="dealerId != null">
+                DEALER_ID = #{dealerId,jdbcType=VARCHAR},
+            </if>
+            <if test="salesOrg != null">
+                SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+            </if>
+            -->
+            <if test="lastLogin != null">
+                LAST_LOGIN = #{lastLogin,jdbcType=TIMESTAMP},
+            </if>
+            <if test="customizedDutyid != null">
+                CUSTOMIZED_DUTYID = #{customizedDutyid,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedDutyname != null">
+                CUSTOMIZED_DUTYNAME = #{customizedDutyname,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedResidence != null">
+                CUSTOMIZED_RESIDENCE = #{customizedResidence,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedPersonalMail != null">
+                CUSTOMIZED_PERSONAL_MAIL = #{customizedPersonalMail,jdbcType=VARCHAR},
+            </if>
+            <if test="mail != null">
+                MAIL = #{mail,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                MOBILE = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedJoininworkdate != null">
+                CUSTOMIZED_JOININWORKDATE = #{customizedJoininworkdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="customizedJoinsysdate != null">
+                CUSTOMIZED_JOINSYSDATE = #{customizedJoinsysdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="customizedResigneddate != null">
+                CUSTOMIZED_RESIGNEDDATE = #{customizedResigneddate,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedLastdepartmentname != null">
+                CUSTOMIZED_LASTDEPARTMENTNAME = #{customizedLastdepartmentname,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedHrregion != null">
+                CUSTOMIZED_HRREGION = #{customizedHrregion,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedHrregiontxt != null">
+                CUSTOMIZED_HRREGIONTXT = #{customizedHrregiontxt,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedSubhrregion != null">
+                CUSTOMIZED_SUBHRREGION = #{customizedSubhrregion,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedSubhrregiontxt != null">
+                CUSTOMIZED_SUBHRREGIONTXT = #{customizedSubhrregiontxt,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedEmptype != null">
+                CUSTOMIZED_EMPTYPE = #{customizedEmptype,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedEmptypetxt != null">
+                CUSTOMIZED_EMPTYPETXT = #{customizedEmptypetxt,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedSubemptype != null">
+                CUSTOMIZED_SUBEMPTYPE = #{customizedSubemptype,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedSubemptypetxt != null">
+                CUSTOMIZED_SUBEMPTYPETXT = #{customizedSubemptypetxt,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedDegree != null">
+                CUSTOMIZED_DEGREE = #{customizedDegree,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedMajor != null">
+                CUSTOMIZED_MAJOR = #{customizedMajor,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedManagercode != null">
+                CUSTOMIZED_MANAGERCODE = #{customizedManagercode,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedManagername != null">
+                CUSTOMIZED_MANAGERNAME = #{customizedManagername,jdbcType=VARCHAR},
+            </if>
+            <if test="smartIdcardnumber != null">
+                SMART_IDCARDNUMBER = #{smartIdcardnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedNation != null">
+                CUSTOMIZED_NATION = #{customizedNation,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedCountry != null">
+                CUSTOMIZED_COUNTRY = #{customizedCountry,jdbcType=VARCHAR},
+            </if>
+            <if test="smartType != null">
+                SMART_TYPE = #{smartType,jdbcType=VARCHAR},
+            </if>
+            <if test="smartCategory != null">
+                SMART_CATEGORY = #{smartCategory,jdbcType=VARCHAR},
+            </if>
+            <if test="cumstomizedVpath != null">
+                CUMSTOMIZED_VPATH = #{cumstomizedVpath,jdbcType=VARCHAR},
+            </if>
+            <if test="cumstomizedRpath != null">
+                CUMSTOMIZED_RPATH = #{cumstomizedRpath,jdbcType=VARCHAR},
+            </if>
+            <if test="smartAuthority != null">
+                SMART_AUTHORITY = #{smartAuthority,jdbcType=VARCHAR},
+            </if>
+            <if test="dsPwpAccountDisabled != null">
+                DS_PWP_ACCOUNT_DISABLED = #{dsPwpAccountDisabled,jdbcType=VARCHAR},
+            </if>
+            <if test="groupId != null">
+                GROUP_ID = #{groupId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+    </update>
+    <select id="findUserByLoginName" parameterType="java.lang.String" resultMap="BaseResultMap">
+	    SELECT
+		u.LOGIN_NAME,
+		u.DISPLAY_NAME,
+		u.GROUP_ID,
+		u.CREATE_ON,
+		u.LAST_MODIFIED,
+		(select b.BRANCH_NAME from t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NO,
+		u.DEALER_ID,
+		u.SALES_ORG,
+		u.LAST_LOGIN
+	FROM
+		t_sys_user u 
+	WHERE
+		 LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+		 
+  </select>
+  
+  
+   <select id="findUserPass" parameterType="java.lang.String" resultMap="PassResultMap">
+	    SELECT
+		u.LOGIN_NAME,
+		u.PASSWORD
+	FROM
+		t_sys_user u 
+	WHERE
+		 LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findUserByLoginNameList"  parameterType="java.util.ArrayList"  resultMap="BaseResultMap">
+	    SELECT
+		u.LOGIN_NAME,
+		u.DISPLAY_NAME,
+		u.GROUP_ID,
+		u.CREATE_ON,
+		u.LAST_MODIFIED,
+		u.DEALER_ID,
+		u.SALES_ORG,
+		u.LAST_LOGIN
+	FROM
+		t_sys_user u 
+	WHERE
+		u.LOGIN_NAME in
+		  <foreach collection="list" item="loginName" index="index"
+            open="(" close=")" separator=",">
+          	 #{loginName,jdbcType=VARCHAR}
+       	 </foreach>
+			 order by u.CREATE_ON asc
+  </select>
+  
+  
+  
+  <select id="findUserByLoginName2" parameterType="java.lang.String" resultMap="BaseResultMap">
+	    SELECT
+		u.LOGIN_NAME,
+		u.DISPLAY_NAME,
+		u.GROUP_ID,
+		u.CREATE_ON,
+		u.LAST_MODIFIED,
+		u.BRANCH_NO,
+		u.DEALER_ID,
+		u.SALES_ORG,
+		u.LAST_LOGIN
+	FROM
+		t_sys_user u 
+	WHERE
+		 LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </select>
+    <insert id="addUser" parameterType="com.nhry.data.auth.domain.TSysUser">
+        insert into t_sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="loginName != null">
+                LOGIN_NAME,
+            </if>
+            <if test="password != null">
+                PASSWORD,
+            </if>
+            <if test="displayName != null">
+                DISPLAY_NAME,
+            </if>
+            <if test="departmentNumber != null">
+                DEPARTMENT_NUMBER,
+            </if>
+            <if test="departmentName != null">
+                DEPARTMENT_NAME,
+            </if>
+            <if test="customizedPositionid != null">
+                CUSTOMIZED_POSITIONID,
+            </if>
+            <if test="customizedPositionname != null">
+                CUSTOMIZED_POSITIONNAME,
+            </if>
+            <if test="lastModified != null">
+                LAST_MODIFIED,
+            </if>
+            <if test="createOn != null">
+                CREATE_ON,
+            </if>
+            <if test="branchNo != null">
+                BRANCH_NO,
+            </if>
+            <if test="dealerId != null">
+                DEALER_ID,
+            </if>
+            <if test="salesOrg != null">
+                SALES_ORG,
+            </if>
+            <if test="lastLogin != null">
+                LAST_LOGIN,
+            </if>
+            <if test="customizedDutyid != null">
+                CUSTOMIZED_DUTYID,
+            </if>
+            <if test="customizedDutyname != null">
+                CUSTOMIZED_DUTYNAME,
+            </if>
+            <if test="customizedResidence != null">
+                CUSTOMIZED_RESIDENCE,
+            </if>
+            <if test="customizedPersonalMail != null">
+                CUSTOMIZED_PERSONAL_MAIL,
+            </if>
+            <if test="mail != null">
+                MAIL,
+            </if>
+            <if test="mobile != null">
+                MOBILE,
+            </if>
+            <if test="customizedJoininworkdate != null">
+                CUSTOMIZED_JOININWORKDATE,
+            </if>
+            <if test="customizedJoinsysdate != null">
+                CUSTOMIZED_JOINSYSDATE,
+            </if>
+            <if test="customizedResigneddate != null">
+                CUSTOMIZED_RESIGNEDDATE,
+            </if>
+            <if test="customizedLastdepartmentname != null">
+                CUSTOMIZED_LASTDEPARTMENTNAME,
+            </if>
+            <if test="customizedHrregion != null">
+                CUSTOMIZED_HRREGION,
+            </if>
+            <if test="customizedHrregiontxt != null">
+                CUSTOMIZED_HRREGIONTXT,
+            </if>
+            <if test="customizedSubhrregion != null">
+                CUSTOMIZED_SUBHRREGION,
+            </if>
+            <if test="customizedSubhrregiontxt != null">
+                CUSTOMIZED_SUBHRREGIONTXT,
+            </if>
+            <if test="customizedEmptype != null">
+                CUSTOMIZED_EMPTYPE,
+            </if>
+            <if test="customizedEmptypetxt != null">
+                CUSTOMIZED_EMPTYPETXT,
+            </if>
+            <if test="customizedSubemptype != null">
+                CUSTOMIZED_SUBEMPTYPE,
+            </if>
+            <if test="customizedSubemptypetxt != null">
+                CUSTOMIZED_SUBEMPTYPETXT,
+            </if>
+            <if test="customizedDegree != null">
+                CUSTOMIZED_DEGREE,
+            </if>
+            <if test="customizedMajor != null">
+                CUSTOMIZED_MAJOR,
+            </if>
+            <if test="customizedManagercode != null">
+                CUSTOMIZED_MANAGERCODE,
+            </if>
+            <if test="customizedManagername != null">
+                CUSTOMIZED_MANAGERNAME,
+            </if>
+            <if test="smartIdcardnumber != null">
+                SMART_IDCARDNUMBER,
+            </if>
+            <if test="customizedNation != null">
+                CUSTOMIZED_NATION,
+            </if>
+            <if test="customizedCountry != null">
+                CUSTOMIZED_COUNTRY,
+            </if>
+            <if test="smartType != null">
+                SMART_TYPE,
+            </if>
+            <if test="smartCategory != null">
+                SMART_CATEGORY,
+            </if>
+            <if test="cumstomizedVpath != null">
+                CUMSTOMIZED_VPATH,
+            </if>
+            <if test="cumstomizedRpath != null">
+                CUMSTOMIZED_RPATH,
+            </if>
+            <if test="smartAuthority != null">
+                SMART_AUTHORITY,
+            </if>
+            <if test="dsPwpAccountDisabled != null">
+                DS_PWP_ACCOUNT_DISABLED,
+            </if>
+            <if test="groupId != null">
+                GROUP_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="loginName != null">
+                #{loginName,jdbcType=VARCHAR},
+            </if>
+             <if test="password != null">
+                 #{PASSWORD,jdbcType=VARCHAR},
+            </if>
+            <if test="displayName != null">
+                #{displayName,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentNumber != null">
+                #{departmentNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentName != null">
+                #{departmentName,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedPositionid != null">
+                #{customizedPositionid,jdbcType=TIMESTAMP},
+            </if>
+            <if test="customizedPositionname != null">
+                #{customizedPositionname,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModified != null">
+                #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createOn != null">
+                #{createOn,jdbcType=TIMESTAMP},
+            </if>
+            <if test="branchNo != null">
+                #{branchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="dealerId != null">
+                #{dealerId,jdbcType=VARCHAR},
+            </if>
+            <if test="salesOrg != null">
+                #{salesOrg,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLogin != null">
+                #{lastLogin,jdbcType=TIMESTAMP},
+            </if>
+            <if test="customizedDutyid != null">
+                #{customizedDutyid,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedDutyname != null">
+                #{customizedDutyname,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedResidence != null">
+                #{customizedResidence,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedPersonalMail != null">
+                #{customizedPersonalMail,jdbcType=VARCHAR},
+            </if>
+            <if test="mail != null">
+                #{mail,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedJoininworkdate != null">
+                #{customizedJoininworkdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="customizedJoinsysdate != null">
+                #{customizedJoinsysdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="customizedResigneddate != null">
+                #{customizedResigneddate,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedLastdepartmentname != null">
+                #{customizedLastdepartmentname,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedHrregion != null">
+                #{customizedHrregion,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedHrregiontxt != null">
+                #{customizedHrregiontxt,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedSubhrregion != null">
+                #{customizedSubhrregion,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedSubhrregiontxt != null">
+                #{customizedSubhrregiontxt,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedEmptype != null">
+                #{customizedEmptype,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedEmptypetxt != null">
+                #{customizedEmptypetxt,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedSubemptype != null">
+                #{customizedSubemptype,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedSubemptypetxt != null">
+                #{customizedSubemptypetxt,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedDegree != null">
+                #{customizedDegree,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedMajor != null">
+                #{customizedMajor,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedManagercode != null">
+                #{customizedManagercode,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedManagername != null">
+                #{customizedManagername,jdbcType=VARCHAR},
+            </if>
+            <if test="smartIdcardnumber != null">
+                #{smartIdcardnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedNation != null">
+                #{customizedNation,jdbcType=VARCHAR},
+            </if>
+            <if test="customizedCountry != null">
+                #{customizedCountry,jdbcType=VARCHAR},
+            </if>
+            <if test="smartType != null">
+                #{smartType,jdbcType=VARCHAR},
+            </if>
+            <if test="smartCategory != null">
+                #{smartCategory,jdbcType=VARCHAR},
+            </if>
+            <if test="cumstomizedVpath != null">
+                #{cumstomizedVpath,jdbcType=VARCHAR},
+            </if>
+            <if test="cumstomizedRpath != null">
+                #{cumstomizedRpath,jdbcType=VARCHAR},
+            </if>
+            <if test="smartAuthority != null">
+                #{smartAuthority,jdbcType=VARCHAR},
+            </if>
+            <if test="dsPwpAccountDisabled != null">
+                #{dsPwpAccountDisabled,jdbcType=VARCHAR},
+            </if>
+            <if test="groupId != null">
+                #{groupId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="login" parameterType="com.nhry.data.auth.domain.TSysUser" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_sys_user
+        where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+    </select>
+    
+     <select id="doLogin" parameterType="com.nhry.data.auth.domain.TSysUser" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_sys_user
+        where LOGIN_NAME = #{loginName,jdbcType=VARCHAR} and PASSWORD = #{password,jdbcType=VARCHAR}
+    </select>
+
+    <update id="deleteUserByLoginName" parameterType="com.nhry.data.auth.domain.TSysUser">
+        update t_sys_user
+        <set>
+            <if test="lastModified != null">
+                LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifiedBy != null">
+                LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifiedByTxt != null">
+                LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status},
+            </if>
+        </set>
+        where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+    </update>
+    <sql id="Ch_Column_List">
+        u.LOGIN_NAME, u.DISPLAY_NAME, u.DEPARTMENT_NUMBER, u.DEPARTMENT_NAME, u.CUSTOMIZED_POSITIONID,
+        u.CUSTOMIZED_POSITIONNAME, u.LAST_MODIFIED, u.CREATE_ON, u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,
+        u.LAST_LOGIN, u.CUSTOMIZED_DUTYID, u.CUSTOMIZED_DUTYNAME, u.CUSTOMIZED_RESIDENCE, u.CUSTOMIZED_PERSONAL_MAIL,
+        u.MAIL, u.MOBILE, u.CUSTOMIZED_JOININWORKDATE, u.CUSTOMIZED_JOINSYSDATE, u.CUSTOMIZED_RESIGNEDDATE,
+        u.CUSTOMIZED_LASTDEPARTMENTNAME, u.CUSTOMIZED_HRREGION, u.CUSTOMIZED_HRREGIONTXT, u.CUSTOMIZED_SUBHRREGION,
+        u.CUSTOMIZED_SUBHRREGIONTXT, u.CUSTOMIZED_EMPTYPE, u.CUSTOMIZED_EMPTYPETXT, u.CUSTOMIZED_SUBEMPTYPE,
+        u.CUSTOMIZED_SUBEMPTYPETXT, u.CUSTOMIZED_DEGREE, u.CUSTOMIZED_MAJOR, u.CUSTOMIZED_MANAGERCODE,
+        u.CUSTOMIZED_MANAGERNAME, u.SMART_IDCARDNUMBER, u.CUSTOMIZED_NATION, u.CUSTOMIZED_COUNTRY,
+        u.SMART_TYPE, u.SMART_CATEGORY, u.CUMSTOMIZED_VPATH, u.CUMSTOMIZED_RPATH, SMART_AUTHORITY,
+        u.DS_PWP_ACCOUNT_DISABLED, u.GROUP_ID,
+        (SELECT i.ITEM_NAME FROM t_sys_code_item i where i.TYPE_CODE=
+        <include refid="mybaties.constant.SALES_ORG_CONSTANT"></include>
+        and i.ITEM_CODE=u.SALES_ORG) ORG_NAME,
+        (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NAME
+    </sql>
+
+    <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultMap="BaseResultMap1" useCache="false">
+        SELECT
+        DISTINCT
+        u.LOGIN_NAME,
+        u.DISPLAY_NAME,
+        u.SMART_IDCARDNUMBER,
+        u.MOBILE,
+        u.CUSTOMIZED_EMPTYPETXT,
+        u.DEPARTMENT_NAME,
+        u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,
+        CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
+        (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
+        FROM T_SYS_USER u
+        <if test="isAll">
+            LEFT
+        </if>
+        JOIN T_SYS_USER_ROLE r
+        ON u.LOGIN_NAME = r.LOGIN_NAME
+        <if test="roleId != null">
+            and r.ID = #{roleId,jdbcType=VARCHAR}
+        </if>
+        <where>
+            <if test="uname != null and '' != uname">
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="salesOrg != null and ''!= salesOrg">
+                and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by u.CREATE_ON desc,u.LAST_MODIFIED desc
+    </select>
+
+    <select id="findPageByRoleId" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1" useCache="false">
+        SELECT
+        DISTINCT
+        u.LOGIN_NAME,
+        u.DISPLAY_NAME,
+        u.SMART_IDCARDNUMBER,
+        u.MOBILE,
+        u.CUSTOMIZED_EMPTYPETXT,
+        u.DEPARTMENT_NAME,
+        u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,de.DEALER_NAME,b.BRANCH_NAME,it.ITEM_NAME SALE_NAME,
+        CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
+        (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
+        FROM T_SYS_USER u
+        JOIN T_SYS_USER_ROLE r
+        ON u.LOGIN_NAME = r.LOGIN_NAME
+        LEFT JOIN T_MD_BRANCH b on b.BRANCH_NO = u.BRANCH_NO
+        LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
+        LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
+        <where>
+            <if test="roleId != null">
+                r.ID = #{roleId,jdbcType=VARCHAR}
+            </if>
+            <if test="uname != null and '' != uname">
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
+            </if>
+            <choose>
+               <when test="cmpCode != null and cmpCode != ''">
+                   <choose>
+                       <when test="salesOrg != null and salesOrg != '' ">
+                           and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR} or (u.CUSTOMIZED_HRREGION=#{cmpCode,jdbcType=VARCHAR} and (u.SALES_ORG is null or  u.SALES_ORG=''))
+                       </when>
+                       <otherwise>
+                          and u.CUSTOMIZED_HRREGION=#{cmpCode,jdbcType=VARCHAR}
+                       </otherwise>
+                   </choose>
+               </when>
+               <otherwise>
+                   <if test="salesOrg != null and salesOrg != '' ">
+                        and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+                  </if>
+               </otherwise>
+            </choose>
+        </where>
+        order by u.CREATE_ON desc,u.LAST_MODIFIED desc
+    </select>
+    <resultMap id="BaseResultMap1" type="com.nhry.data.auth.domain.TSysUser">
+        <id column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName"/>
+        <result column="DISPLAY_NAME" jdbcType="VARCHAR" property="displayName"/>
+        <result column="MOBILE" jdbcType="VARCHAR" property="mobile"/>
+        <result column="SMART_IDCARDNUMBER" jdbcType="VARCHAR" property="smartIdcardnumber"/>
+        <result column="roleIds" jdbcType="VARCHAR" property="roleIds"/>
+         <result column="roleNames" jdbcType="VARCHAR" property="roleNames"/>
+        <result column="CUSTOMIZED_EMPTYPETXT" jdbcType="VARCHAR" property="customizedEmptypetxt"/>
+        <result column="DEPARTMENT_NAME" jdbcType="VARCHAR" property="departmentName"/>
+        <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo"/>
+        <result column="DEALER_ID" jdbcType="VARCHAR" property="dealerId"/>
+        <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg"/>
+        <result column="BRANCH_NAME" jdbcType="VARCHAR" property="branchName"/>
+        <result column="DEALER_NAME" jdbcType="VARCHAR" property="dealerName"/>
+        <result column="SALE_NAME" jdbcType="VARCHAR" property="saleName"/>
+        <!--<collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">-->
+        <!--<id property="id" column="ID"/>-->
+        <!--</collection>-->
+    </resultMap>
+    <select id="findUserBack" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1" useCache="false">
+        SELECT
+        u.*,
+        r.id
+        FROM
+        T_SYS_USER u left join t_sys_user_role r
+        on u.LOGIN_NAME = r.LOGIN_NAME
+        <where>
+            <if test="uname != null">
+                (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
+                #{uname,jdbcType=VARCHAR} '%')
+            </if>
+            <if test="salesOrg != null">
+                and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by u.CREATE_ON desc,LAST_MODIFIED desc
+    </select>
+    <resultMap id="BaseResultMap2" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
+        <result property="roleIds" column="roleIds"/>
+    </resultMap>
+    <select id="findUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1" useCache="false">
+        SELECT
+        u.*,
+        b.BRANCH_NAME,
+        de.DEALER_NAME,
+        it.ITEM_NAME SALE_NAME,
+        (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds,
+        (select group_concat(role.ROLE_NAME) from t_sys_user_role r,t_sys_role role where r.LOGIN_NAME = u.LOGIN_NAME and r.ID = role.ID) as roleNames
+        FROM
+        T_SYS_USER u
+        LEFT JOIN T_MD_BRANCH b on b.BRANCH_NO = u.BRANCH_NO
+        LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
+        LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
+        <where>
+            <if test="uname != null and uname != ''">
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
+            </if>
+             <if test="roleId != null and roleId != ''">
+            		and u.LOGIN_NAME in(
+						select r.LOGIN_NAME  from t_sys_user_role r where r.ID= #{roleId,jdbcType=VARCHAR}
+					)
+			 </if>
+            <choose>
+               <when test="cmpCode != null and cmpCode != ''">
+                   <choose>
+                       <when test="salesOrg != null and salesOrg != '' ">
+                           and ( u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR} or (u.CUSTOMIZED_HRREGION=#{cmpCode,jdbcType=VARCHAR} and (u.SALES_ORG is null or  u.SALES_ORG='')))
+                       </when>
+                       <otherwise>
+                          and u.CUSTOMIZED_HRREGION=#{cmpCode,jdbcType=VARCHAR}
+                       </otherwise>
+                   </choose>
+               </when>
+               <otherwise>
+                 <if test="salesOrg != null and salesOrg != '' ">
+                        and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+                  </if>
+               </otherwise>
+            </choose>
+        </where>
+        order by u.CREATE_ON desc,LAST_MODIFIED desc
+    </select>
+    <select id="getUsersByRidandOrgs" resultMap="BaseResultMap" parameterType="java.util.HashMap" useCache="false">
+        SELECT
+        u.LOGIN_NAME,
+        u.BRANCH_NO,
+        u.SALES_ORG,
+        u.DEALER_ID
+        FROM
+        t_sys_user u,
+        t_sys_user_role r
+        WHERE
+        u.LOGIN_NAME = r.LOGIN_NAME
+        <if test="rid != null and rid != ''">
+            AND r.ID = #{rid}
+        </if>
+        <if test="salesOrg != null and salesOrg != ''">
+            AND u.SALES_ORG = #{salesOrg}
+        </if>
+        <if test="dealerNo != null and dealerNo != ''">
+            AND u.DEALER_ID = #{dealerNo}
+        </if>
+        <if test="branchNo != null and branchNo != ''">
+            AND u.BRANCH_NO = #{branchNo}
+        </if>
+    </select>
+    <select id="getloginNamesByOrgsandRid" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        SELECT
+        distinct u.LOGIN_NAME,
+        u.BRANCH_NO,
+        u.SALES_ORG,
+        u.DEALER_ID,
+        u.DISPLAY_NAME
+        FROM
+        t_sys_user u,
+        t_sys_user_role r,
+        t_md_branch b
+        WHERE
+        u.LOGIN_NAME = r.LOGIN_NAME
+        AND u.BRANCH_NO = b.BRANCH_NO
+        <if test="dealerNo != null and dealerNo != ''">
+            AND b.DEALER_NO NOT IN (${dealerNo})
+        </if>
+        <if test="branchGroup != null and branchGroup != ''">
+            AND b.BRANCH_GROUP = #{branchGroup}
+        </if>
+        <if test="salesOrg != null and salesOrg != ''">
+            AND b.SALES_ORG = #{salesOrg}
+            AND u.SALES_ORG = #{salesOrg}
+        </if>
+        <if test="rid != null and rid != ''">
+            AND r.ID = #{rid}
+        </if>
+    </select>
+    <select id="getloginNamesByOrgsandRid2" resultMap="BaseResultMap" parameterType="java.util.HashMap" useCache="false">
+        SELECT
+        distinct u.LOGIN_NAME,
+        u.BRANCH_NO,
+        u.SALES_ORG,
+        u.DEALER_ID,
+        u.DISPLAY_NAME
+        FROM
+        t_sys_user u,
+        t_sys_user_role r,
+        t_md_branch b
+        WHERE
+        u.LOGIN_NAME = r.LOGIN_NAME
+
+        <if test="dealerNo != null and dealerNo != ''">
+            AND u.DEALER_ID = b.DEALER_NO
+            AND b.DEALER_NO = #{dealerNo}
+        </if>
+        <if test="branchNo != null and branchNo != ''">
+            AND u.BRANCH_NO = b.BRANCH_NO
+            AND u.BRANCH_NO = #{branchNo}
+            AND b.BRANCH_NO = #{branchNo}
+        </if>
+        <if test="salesOrg != null and salesOrg != ''">
+            AND u.SALES_ORG = b.SALES_ORG
+            AND b.SALES_ORG = #{salesOrg}
+            AND u.SALES_ORG = #{salesOrg}
+        </if>
+        <if test="rid != null and rid != ''">
+            AND r.ID in (${rid})
+        </if>
+
+    </select>
+    <select id="findNotRoleUser" parameterType="com.nhry.model.auth.UserQueryModel3" resultMap="BaseResultMap1">
+        SELECT
+            u.LOGIN_NAME,
+            u.DISPLAY_NAME,
+            u.SMART_IDCARDNUMBER,
+            u.MOBILE,
+            u.CUSTOMIZED_EMPTYPETXT,
+            u.DEPARTMENT_NAME,
+            u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG
+        FROM
+            t_sys_user u
+        <where>
+            NOT EXISTS (SELECT 1 FROM t_sys_user_role r WHERE u.LOGIN_NAME = r.LOGIN_NAME )
+            <if test="uname != null">
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="salesOrg != null">
+                and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+            <if test="companyCode != null">
+                and u.CUSTOMIZED_HRREGION = #{companyCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    
+    
+    
+    <update id="updateUserPw" parameterType="com.nhry.data.auth.domain.TSysUser">
+        update t_sys_user
+        set password = #{newPassword,jdbcType=VARCHAR}
+        where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+    </update>
+</mapper>

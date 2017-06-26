@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMaraPriceRelMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMaraPriceRel" >
+    <id column="REL_NO" property="relNo" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="PRICE1" property="price1" jdbcType="DECIMAL" />
+    <result column="PRICE2" property="price2" jdbcType="DECIMAL" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    REL_NO, MATNR, ID, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+    LAST_MODIFIED_BY_TXT, PRICE1, PRICE2,SALES_ORG
+  </sql>
+  <select id="findMaraPriceByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mara_price_rel
+    where REL_NO = #{relNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="delMaraPriceByNo" parameterType="java.lang.String" >
+    delete from t_mara_price_rel
+    where REL_NO = #{relNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addMaraPrice" parameterType="com.nhry.data.basic.domain.TMaraPriceRel" >
+    insert into t_mara_price_rel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="relNo != null" >
+        REL_NO,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="price1 != null" >
+        PRICE1,
+      </if>
+      <if test="price2 != null" >
+        PRICE2,
+      </if>
+      <if test="salesOrg != null">
+          SALES_ORG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="relNo != null" >
+        #{relNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="price1 != null" >
+        #{price1,jdbcType=DECIMAL},
+      </if>
+      <if test="price2 != null" >
+        #{price2,jdbcType=DECIMAL},
+      </if>
+      <if test="salesOrg != null">
+          #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="uptMaraPricerel" parameterType="com.nhry.data.basic.domain.TMaraPriceRel" >
+     update t_mara_price_rel
+    <set >
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null" >
+        ID = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="price1 != null" >
+        PRICE1 = #{price1,jdbcType=DECIMAL},
+      </if>
+      <if test="price2 != null" >
+        PRICE2 = #{price2,jdbcType=DECIMAL},
+      </if>
+      <if test="salesOrg != null">
+          SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where REL_NO = #{relNo,jdbcType=VARCHAR}
+  </update>
+  <select id="findMaraPricesById" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+      SELECT
+		p.REL_NO,
+		p.MATNR,
+		p.ID,
+		p.CREATE_AT,
+		p.CREATE_BY,
+		p.CREATE_BY_TXT,
+		p.LAST_MODIFIED,
+		p.LAST_MODIFIED_BY,
+		p.LAST_MODIFIED_BY_TXT,
+		p.PRICE1,
+		p.PRICE2,
+		p.SALES_ORG,
+		m.MATNR_TXT
+	FROM
+		t_mara_price_rel p,
+		T_MD_MARA m
+	WHERE p.MATNR = m.MATNR and m.SALES_ORG=#{salesOrg} and p.sales_org=#{salesOrg}
+AND p.ID = #{id}
+  </select>
+  <delete id="delMaraPricesById" parameterType="String">
+      delete from t_mara_price_rel where ID=#{id}
+  </delete>
+</mapper>

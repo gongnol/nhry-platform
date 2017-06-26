@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.bill.dao.EmpBillMapper" >
+    <resultMap id="EmpDispResultMap" type="com.nhry.model.bill.EmpDispDetailModel" >
+        <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+        <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_Name" property="empName" jdbcType="VARCHAR" />
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+        <result column="QTY" property="qty" jdbcType="INTEGER" />
+        <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="EmpAccountResultMap" type="com.nhry.model.bill.EmpAccountReceAmount" >
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="RECEIPT_NO" property="receiptNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+        <result column="MP" property="mp" jdbcType="VARCHAR" />
+        <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+        <result column="CUST_ACCT_AMT" property="custAcctAmt" jdbcType="DECIMAL" />
+        <result column="ACCT_AMT" property="acctAmt" jdbcType="DECIMAL" />
+        <result column="ACCOUNT_RECE" property="amountRece" jdbcType="DECIMAL" />
+        <result column="ACCOUNT_REAL" property="amountReal" jdbcType="DECIMAL" />
+        <result column="ACCOUNT_GAP" property="amountGap" jdbcType="DECIMAL" />
+        <result column="PAYMENTMETHOD" property="paymentmethod" jdbcType="VARCHAR" />
+        <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
+        <result column="PAYMENT_DATE" property="paymentDate" jdbcType="DATE" />
+    </resultMap>
+
+    <resultMap id="EmpSalaryResultMap" type="com.nhry.model.bill.EmpSalaryBillModel" >
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="BASE_SALARY" property="baseSalary" jdbcType="INTEGER" />
+        <result column="SALARY_MET" property="salaryMet" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="EmpAccoDispFeeResultMap" type="com.nhry.model.bill.EmpAccoDispFeeByProduct" >
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="QTY" property="qty" jdbcType="INTEGER" />
+    </resultMap>
+
+    <select id="empDispDetialInfo" resultMap="EmpDispResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
+        SELECT
+        so.ORDER_DATE  DISP_DATE,
+        so.SAL_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.MATNR,
+        m.MATNR_TXT,
+        SUM(i.QTY) QTY,
+        so.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.INS_ORDER_NO ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '内部销售订单产品' from DUAL) TYPE
+        FROM t_mst_inside_sal_order_item i
+        LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
+        LEFT JOIN t_mst_disp_order di on so.DISP_ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_mara m on i.MATNR = m.MATNR
+        LEFT JOIN t_md_branch_emp e on so.SAL_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_branch b on so.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where 1=1
+        and m.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerNo!=null and ''!=dealerNo">
+            AND  b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND  so.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+         </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  so.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null">
+            AND so.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null">
+            AND so.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+        GROUP BY  so.ORDER_DATE,so.SAL_EMP_NO,i.MATNR
+
+
+        UNION ALL
+
+        SELECT
+        di.DISP_DATE,
+        di.DISP_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.CONFIRM_MATNR MATNR,
+        m.MATNR_TXT,
+        SUM(i.CONFIRM_QTY) QTY,
+        di.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '配送产品' from DUAL) TYPE
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_branch b on di.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where di.`STATUS` ='20'
+       /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR i.REASON IS NULL)*/
+        and i.GIFT_FLAG IS NULL
+        and i.CONFIRM_QTY is NOT NULL
+        and i.CONFIRM_QTY !=0
+        and b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and m.SALES_ORG=  #{salesOrg,jdbcType=VARCHAR}
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerNo!=null and ''!=dealerNo">
+            AND  b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            AND   di.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            AND  di.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+        GROUP BY di.DISP_DATE,di.DISP_EMP_NO,i.CONFIRM_MATNR
+
+        UNION ALL
+
+        SELECT
+        di.DISP_DATE,
+        di.DISP_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.CONFIRM_MATNR MATNR,
+        m.MATNR_TXT,
+        SUM(i.CONFIRM_QTY) QTY,
+        di.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '赠品' from DUAL) TYPE
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_branch b on di.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where di.`STATUS` ='20'
+       /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR  i.REASON IS NULL)*/
+        and i.GIFT_FLAG IS NOT NULL
+        and i.CONFIRM_QTY is NOT NULL
+        and i.CONFIRM_QTY !=0
+        and b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and m.SALES_ORG=  #{salesOrg,jdbcType=VARCHAR}
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerNo!=null and ''!=dealerNo">
+            AND  b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            AND   di.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            AND  di.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+        GROUP BY di.DISP_DATE,di.DISP_EMP_NO,i.CONFIRM_MATNR
+
+
+    </select>
+
+    <select id="empAccountReceAmount" resultMap="EmpAccountResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
+        SELECT
+        b.ORDER_NO,
+        o.PAYMENTMETHOD,
+        e.EMP_NAME,
+        c.VIP_NAME CUST_NAME,
+        br.BRANCH_NAME,
+        /*a.ACCT_AMT,*/
+        b.CUST_ACC_AMT CUST_ACCT_AMT,
+        b.ACC_AMT ACCT_AMT,
+        c.MP,
+        CONCAT(IFNULL(r.RESIDENTIAL_AREA_TXT,'') ,IFNULL(c.ADDRESS_TXT,'')) ADDRESS,
+        o.INIT_AMT ACCOUNT_RECE,
+        /* b.AMT+b.ACC_AMT ACCOUNT_REAL,*/
+        b.AMT  ACCOUNT_REAL,
+        (b.AMT+b.ACC_AMT-o.INIT_AMT) ACCOUNT_GAP,
+        (
+          SELECT i.ITEM_NAME
+          from t_sys_code_item i
+          WHERE i.TYPE_CODE= <include refid="mybaties.constant.payment_type"></include>
+          and i.ITEM_CODE = b.PAYMENT_TYPE
+        ) PAYMENT_TYPE,
+        b.RECEIPT_DATE PAYMENT_DATE
+        FROM t_mst_recv_bill b
+        LEFT JOIN t_preorder o  on  o.ORDER_NO = b.ORDER_NO
+        LEFT JOIN	t_md_branch_emp e on b.RECV_EMP = e.EMP_NO
+        LEFT JOIN t_vip_cust_info c on b.VIP_CUST_NO = c.VIP_CUST_NO
+        LEFT JOIN t_vip_acct a on b.VIP_CUST_NO = a.VIP_CUST_NO
+        LEFT JOIN t_md_branch br on o.BRANCH_NO = br.BRANCH_NO
+        LEFT JOIN t_md_residential_area r on c.SUBDIST = r.ID
+        WHERE 1= 1
+        and b.HAD_OFFSET = 'N'
+        and  b.RECEIPT_DATE IS  NOT  NULL
+            <if test="salesOrg!=null and ''!=salesOrg">
+                and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+            <if test="dealerNo!=null and ''!=dealerNo">
+                and br.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+            </if>
+            <if test="branchNo!=null and ''!=branchNo">
+                and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+            <if test="empNo!=null and ''!=empNo">
+               and  b.RECV_EMP = #{empNo,jdbcType=VARCHAR}
+            </if>
+            <if test="vipCustNo!=null and ''!=vipCustNo">
+                and  b.VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
+            </if>
+            <if test="startDate!=null and ''!=startDate">
+               and  b.RECEIPT_DATE &gt;= #{startDate,jdbcType=DATE}
+            </if>
+            <if test="endDate!=null and ''!=endDate">
+               and  b.RECEIPT_DATE &lt;= #{endDate,jdbcType=DATE}
+            </if>
+        ORDER  BY   b.RECEIPT_DATE DESC,b.VIP_CUST_NO
+    </select>
+
+    <select id="empSalaryRep" resultMap="EmpSalaryResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        select
+            e.BRANCH_NO,b.BRANCH_NAME,e.EMP_NO,e.EMP_NAME,e.BASE_SALARY,SALARY_MET
+        from t_md_branch_emp e LEFT JOIN t_md_branch b on e.BRANCH_NO = b.BRANCH_NO
+        where 1=1
+            <if test="branchNo!=null and branchNo!=''">
+                and e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+
+            <if test="empNo!=null and empNo!=''">
+                    and e. EMP_NO = #{empNo,jdbcType=VARCHAR}
+            </if>
+    </select>
+
+    <select id="empAccoDispFeeByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT t.MATNR,SUM(t.QTY) QTY
+        FROM
+        (
+        SELECT  MATNR,QTY
+        FROM  t_mst_order_daliy_plan_item  i LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+        WHERE 1 =1
+        <if test="branchNo!=null and ''!=branchNo">
+                and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+            <if test="empNo!=null and ''!=empNo">
+                and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            </if>
+            <if test="startDate!=null and ''!=startDate">
+                and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            </if>
+            <if test="endDate!=null and ''!=endDate">
+                and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            </if>
+        UNION  ALL
+
+        SELECT MATNR,QTY
+            FROM  t_mst_inside_sal_order_item s LEFT JOIN t_preorder o on s.ORG_ORDER_NO = o.ORDER_NO
+            WHERE 1 =1
+            <if test="branchNo!=null and ''!=branchNo">
+                and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+            <if test="empNo!=null and ''!=empNo">
+                and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            </if>
+            <if test="startDate!=null and ''!=startDate">
+                and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            </if>
+            <if test="endDate!=null and ''!=endDate">
+                and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            </if>
+        ) t
+        GROUP BY MATNR
+    </select>
+
+    <select id="empAccoDispFeeByNum" resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT SUM(t.QTY) QTY
+        FROM
+        (
+                    SELECT IFNULL(0,SUM(i.CONFIRM_QTY))  QTY
+                    FROM  t_mst_disp_order_item  i
+                    LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
+                    WHERE 1 =1
+                    and di.`STATUS` = '20'
+                    <if test="branchNo!=null and ''!=branchNo">
+                        and   di.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                    </if>
+                    <if test="empNo!=null and ''!=empNo">
+                        and  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+                    </if>
+                    <if test="startDate!=null and ''!=startDate">
+                        and  di.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+                    </if>
+                    <if test="endDate!=null and ''!=endDate">
+                        and  di.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+                    </if>
+
+        UNION  ALL
+
+                SELECT  IFNULL(0,SUM(QTY)) QTY
+                FROM  t_mst_inside_sal_order_item s
+                LEFT JOIN t_mst_inside_sal_order so on s.INS_ORDER_NO = so.INS_ORDER_NO
+                LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO
+                WHERE 1 =1
+                <if test="branchNo!=null and ''!=branchNo">
+                    and   o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                </if>
+                <if test="empNo!=null and ''!=empNo">
+                    and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+                </if>
+                <if test="startDate!=null and ''!=startDate">
+                    and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+                </if>
+                <if test="endDate!=null and ''!=endDate">
+                    and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+                </if>
+        ) t
+
+
+    </select>
+
+
+    <select id="empInDispFeeNum" resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT (case when SUM(s.QTY ) is null then 0 else SUM(s.QTY )  end)    QTY
+        FROM  t_mst_inside_sal_order_item s
+        LEFT JOIN t_mst_inside_sal_order so on s.INS_ORDER_NO = so.INS_ORDER_NO
+        LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO
+        WHERE 1 =1
+        <if test="branchNo!=null and ''!=branchNo">
+            and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and  so.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            and  so.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            and   so.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+    </select>
+
+    <select id="empDispFeeNum"  resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT  SUM(i.CONFIRM_QTY) QTY
+        FROM  t_mst_disp_order_item  i
+        LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+        WHERE 1 =1
+        and o.STATUS = '20'
+        and i.GIFT_FLAG IS  NULL
+       /* and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL )*/
+        <if test="branchNo!=null and ''!=branchNo">
+            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+    </select>
+
+    <select id="empFreeDispFeeNum"  resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT   (case when SUM(i.CONFIRM_QTY ) is null then 0 else SUM(i.CONFIRM_QTY )  end)    QTY
+        FROM  t_mst_disp_order_item  i
+        LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+        WHERE 1 =1
+        and o.STATUS = '20'
+       /* and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)*/
+        and i.GIFT_FLAG IS NOT NULL
+        <if test="branchNo!=null and ''!=branchNo">
+            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+    </select>
+
+
+
+
+
+    <select id="empDisByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT
+        i.CONFIRM_MATNR MATNR ,SUM(case when i.REASON = '40' OR i.REASON = '50' then i.QTY else i.CONFIRM_QTY end) QTY
+        from t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_preorder p  on i.ORG_ORDER_NO = p.ORDER_NO
+        WHERE 1=1
+        and i.GIFT_FLAG IS NULL
+        and o.STATUS = '20'
+       /* and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)*/
+        <if test="branchNo!=null and ''!=branchNo">
+            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+        GROUP BY i.CONFIRM_MATNR,o.DISP_EMP_NO
+    </select>
+
+    <select id="empFreeDispByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT
+        i.CONFIRM_MATNR MATNR ,SUM(i.CONFIRM_QTY) QTY
+        from t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_preorder p  on i.ORG_ORDER_NO = p.ORDER_NO
+        WHERE 1=1
+        and i.GIFT_FLAG IS NOT NULL
+        and o.STATUS = '20'
+        /*and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL)*/
+        <if test="branchNo!=null and ''!=branchNo">
+            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+        GROUP BY i.CONFIRM_MATNR,o.DISP_EMP_NO
+    </select>
+
+    <select id="empInDispByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT i.MATNR,SUM(i.QTY)
+        FROM  t_mst_inside_sal_order_item i
+        LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
+        LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO
+        WHERE 1 = 1
+        <if test="branchNo!=null and ''!=branchNo">
+            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and  so.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            and so.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            and  so.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+        GROUP BY i.MATNR
+    </select>
+
+
+</mapper>

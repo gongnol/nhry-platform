@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.auth.dao.TSysOrgsMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysOrgs" >
+    <id column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
+    <result column="SMART_PARENTID" property="smartParentid" jdbcType="VARCHAR" />
+    <result column="SMART_SHORTNAME" property="smartShortname" jdbcType="VARCHAR" />
+    <result column="CUSTOMIZED_ORGLEVEL" property="customizedOrglevel" jdbcType="INTEGER" />
+    <result column="SMART_TYPE" property="smartType" jdbcType="VARCHAR" />
+    <result column="DEPARTMENT_NAME" property="departmentName" jdbcType="VARCHAR" />
+    <result column="CUSTOMIZED_VPARENTID" property="customizedVparentid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ORG_ID, SMART_PARENTID, SMART_SHORTNAME, CUSTOMIZED_ORGLEVEL, SMART_TYPE, DEPARTMENT_NAME, 
+    CUSTOMIZED_VPARENTID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_orgs
+    where ORG_ID = #{orgId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_sys_orgs
+    where ORG_ID = #{orgId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.auth.domain.TSysOrgs" >
+    insert into t_sys_orgs (ORG_ID, SMART_PARENTID, SMART_SHORTNAME, 
+      CUSTOMIZED_ORGLEVEL, SMART_TYPE, DEPARTMENT_NAME, 
+      CUSTOMIZED_VPARENTID)
+    values (#{orgId,jdbcType=VARCHAR}, #{smartParentid,jdbcType=VARCHAR}, #{smartShortname,jdbcType=VARCHAR}, 
+      #{customizedOrglevel,jdbcType=INTEGER}, #{smartType,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, 
+      #{customizedVparentid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.data.auth.domain.TSysOrgs" >
+    insert into t_sys_orgs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orgId != null" >
+        ORG_ID,
+      </if>
+      <if test="smartParentid != null" >
+        SMART_PARENTID,
+      </if>
+      <if test="smartShortname != null" >
+        SMART_SHORTNAME,
+      </if>
+      <if test="customizedOrglevel != null" >
+        CUSTOMIZED_ORGLEVEL,
+      </if>
+      <if test="smartType != null" >
+        SMART_TYPE,
+      </if>
+      <if test="departmentName != null" >
+        DEPARTMENT_NAME,
+      </if>
+      <if test="customizedVparentid != null" >
+        CUSTOMIZED_VPARENTID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orgId != null" >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="smartParentid != null" >
+        #{smartParentid,jdbcType=VARCHAR},
+      </if>
+      <if test="smartShortname != null" >
+        #{smartShortname,jdbcType=VARCHAR},
+      </if>
+      <if test="customizedOrglevel != null" >
+        #{customizedOrglevel,jdbcType=INTEGER},
+      </if>
+      <if test="smartType != null" >
+        #{smartType,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentName != null" >
+        #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="customizedVparentid != null" >
+        #{customizedVparentid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.auth.domain.TSysOrgs" >
+    update t_sys_orgs
+    <set >
+      <if test="smartParentid != null" >
+        SMART_PARENTID = #{smartParentid,jdbcType=VARCHAR},
+      </if>
+      <if test="smartShortname != null" >
+        SMART_SHORTNAME = #{smartShortname,jdbcType=VARCHAR},
+      </if>
+      <if test="customizedOrglevel != null" >
+        CUSTOMIZED_ORGLEVEL = #{customizedOrglevel,jdbcType=INTEGER},
+      </if>
+      <if test="smartType != null" >
+        SMART_TYPE = #{smartType,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentName != null" >
+        DEPARTMENT_NAME = #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="customizedVparentid != null" >
+        CUSTOMIZED_VPARENTID = #{customizedVparentid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORG_ID = #{orgId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.auth.domain.TSysOrgs" >
+    update t_sys_orgs
+    set SMART_PARENTID = #{smartParentid,jdbcType=VARCHAR},
+      SMART_SHORTNAME = #{smartShortname,jdbcType=VARCHAR},
+      CUSTOMIZED_ORGLEVEL = #{customizedOrglevel,jdbcType=INTEGER},
+      SMART_TYPE = #{smartType,jdbcType=VARCHAR},
+      DEPARTMENT_NAME = #{departmentName,jdbcType=VARCHAR},
+      CUSTOMIZED_VPARENTID = #{customizedVparentid,jdbcType=VARCHAR}
+    where ORG_ID = #{orgId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"  
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+		default-lazy-init="true">
+	<bean id="userMapper" class="com.nhry.data.auth.impl.TSysUserMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="userService" class="com.nhry.service.auth.impl.UserServiceImpl">
+	   <property name="userMapper"  ref="userMapper"></property>
+	   <property name="roleMapper"  ref="roleMapper"></property>
+	   <property name="resService"  ref="resService"></property>
+	   <property name="codeItemMapper" ref="codeItemMapper"></property>
+	   <property name="objectRedisTemplate" ref="objectRedisTemplate"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
+	   <property name="branchEmpService" ref="branchEmpService"></property>
+	   <property name="accessKeyService" ref="isysAkService"></property>
+	   <property name="branchEmpMapper" ref="branchEmpMapper"></property>
+	   <property name="messageService" ref="messService"></property>
+	</bean>
+	<bean id="roleMapper" class="com.nhry.data.auth.impl.TSysRoleMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="roleService" class="com.nhry.service.auth.impl.RoleServiceImpl">
+	    <property name="roleMapper"  ref="roleMapper"></property>
+	    <property name="urMapper" ref="urMapper"></property>
+	    <property name="userSessionService" ref="userSessionService"></property>
+		<property name="resMapper" ref="resMapper"/>
+		<property name="userMapper" ref="userMapper"/>
+		<property name="empMapper" ref="branchEmpMapper"/>
+		<property name="messService" ref="messService"/>
+	</bean>
+	<!-- 用户组 -->
+	<bean id="ugMapper" class="com.nhry.data.auth.impl.TSysUserGroupMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="ugService" class="com.nhry.service.auth.impl.TSysUserGroupServiceImpl">
+	   <property name="ugMapper"  ref="ugMapper"></property>
+	</bean>
+	<!-- 用户角色关系 -->
+	<bean id="urMapper" class="com.nhry.data.auth.impl.TSysUserRoleMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<!-- 资源 -->
+	<bean id="resMapper" class="com.nhry.data.auth.impl.TSysResourceMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="resService" class="com.nhry.service.auth.impl.ResourceServiceImpl">
+	    <property name="resMapper" ref="resMapper"></property>
+	    <property name="userSessionService" ref="userSessionService"></property>
+	</bean>
+	<bean id="sysOrgMapper" class="com.nhry.data.auth.impl.TSysOrgsMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="ladpService" class="com.nhry.common.ladp.LadpService" init-method="init">
+	   <property name="userService" ref="userService"></property>
+	</bean>
+	<bean id="isysAkmapper" class="com.nhry.data.auth.impl.TSysAccesskeyMapperImpl">
+	  <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="isysAkService" class="com.nhry.service.auth.impl.TSysAccesskeyServiceImpl">
+		<property name="isysAkmapper" ref="isysAkmapper"></property>
+	</bean>
+</beans>

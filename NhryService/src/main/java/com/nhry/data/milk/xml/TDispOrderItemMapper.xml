@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milk.dao.TDispOrderItemMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.milk.domain.TDispOrderItem" >
+    <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <id column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <id column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR" property="confirmMatnr" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
+    <result column="QTY" property="qty" jdbcType="DECIMAL" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+    <result column="AMT" property="amt" jdbcType="DECIMAL" />
+    <result column="REMAIN_AMT" property="remainAmt" jdbcType="DECIMAL" />
+    <result column="CONFIRM_AMT" property="confirmAmt" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_NO" property="pickupOrderNo" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_ITEM_NO" property="pickupOrderItemNo" jdbcType="VARCHAR" />
+    <result column="REASON" property="reason" jdbcType="VARCHAR" />
+    <result column="REDISP_DATE" property="redispDate" jdbcType="DATE" />
+    <result column="WHOLESALE_PRICE" property="wholesalePrice" jdbcType="DECIMAL" />
+    <result column="WHOLESALE_PRICE_1" property="wholesalePrice1" jdbcType="DECIMAL" />
+    <result column="ADDRESS_NO" property="addressNo" jdbcType="VARCHAR" />
+    <result column="ORG_ITEM_NO" property="orgItemNo" jdbcType="VARCHAR" />
+    <result column="ORG_ORDER_NO" property="orgOrderNo" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
+    <result column="DISP_EMP_NO" property="dispEmpNo" jdbcType="VARCHAR" />
+    <result column="ADDRESS_TXT" property="addressTxt" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+    <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
+    <result column="RET_QTY_B" property="retQtyB" jdbcType="INTEGER" />
+    <result column="RET_QTY_S" property="retQtyS" jdbcType="INTEGER" />
+    <result column="RET_QTY_M" property="retQtyM" jdbcType="INTEGER" />
+    <result column="REPLACE_REASON" property="replaceReason" jdbcType="VARCHAR" />
+    <result column="GIFT_FLAG" property="giftFlag" jdbcType="VARCHAR" />
+    <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" />
+    <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
+    <result column="PRICE_DELIVER" property="priceDeliver" jdbcType="DECIMAL" />
+    <result column="PRICE_HOME" property="priceHome" jdbcType="DECIMAL" />
+    <result column="PRICE_NET_VALUE" property="priceNetValue" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="BaseChangeResultMap" type="com.nhry.service.milk.pojo.TDispOrderChangeItem" >
+    <result column="ORDER_NO1" property="orderNo1" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE1" property="orderDate1" jdbcType="DATE" />
+    <result column="ITEM_NO1" property="itemNo1" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR1" property="confirmMatnr1" jdbcType="VARCHAR" />
+    <result column="MATNR1" property="matnr1" jdbcType="VARCHAR" />
+    <result column="CONFIRM_QTY1" property="confirmQty1" jdbcType="DECIMAL" />
+    <result column="QTY1" property="qty1" jdbcType="DECIMAL" />
+    <result column="UNIT1" property="unit1" jdbcType="VARCHAR" />
+    <result column="PRICE1" property="price1" jdbcType="DECIMAL" />
+    <result column="AMT1" property="amt1" jdbcType="DECIMAL" />
+    <result column="CONFIRM_AMT1" property="confirmAmt1" jdbcType="DECIMAL" />
+    <result column="STATUS1" property="status1" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_NO1" property="pickupOrderNo1" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_ITEM_NO1" property="pickupOrderItemNo1" jdbcType="VARCHAR" />
+    <result column="REASON1" property="reason1" jdbcType="VARCHAR" />
+    <result column="REDISP_DATE1" property="redispDate1" jdbcType="DATE" />
+    <result column="WHOLESALE_PRICE1" property="wholesalePrice1" jdbcType="DECIMAL" />
+    <result column="WHOLESALE_PRICE_11" property="wholesalePrice11" jdbcType="DECIMAL" />
+    <result column="ADDRESS_NO1" property="addressNo1" jdbcType="VARCHAR" />
+    <result column="ORG_ITEM_NO1" property="orgItemNo1" jdbcType="VARCHAR" />
+    <result column="ORG_ORDER_NO1" property="orgOrderNo1" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE1" property="reachTimeType1" jdbcType="VARCHAR" />
+    <result column="DISP_EMP_NO1" property="dispEmpNo1" jdbcType="VARCHAR" />
+    <!--  -->
+    <result column="ORDER_NO2" property="orderNo2" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE2" property="orderDate2" jdbcType="DATE" />
+    <result column="ITEM_NO2" property="itemNo2" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR2" property="confirmMatnr2" jdbcType="VARCHAR" />
+    <result column="MATNR2" property="matnr2" jdbcType="VARCHAR" />
+    <result column="CONFIRM_QTY2" property="confirmQty2" jdbcType="DECIMAL" />
+    <result column="QTY2" property="qty2" jdbcType="DECIMAL" />
+    <result column="UNIT2" property="unit2" jdbcType="VARCHAR" />
+    <result column="PRICE2" property="price2" jdbcType="DECIMAL" />
+    <result column="AMT2" property="amt2" jdbcType="DECIMAL" />
+    <result column="CONFIRM_AMT2" property="confirmAmt2" jdbcType="DECIMAL" />
+    <result column="STATUS2" property="status2" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_NO2" property="pickupOrderNo2" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_ITEM_NO2" property="pickupOrderItemNo2" jdbcType="VARCHAR" />
+    <result column="REASON2" property="reason2" jdbcType="VARCHAR" />
+    <result column="REDISP_DATE2" property="redispDate2" jdbcType="DATE" />
+    <result column="WHOLESALE_PRICE2" property="wholesalePrice2" jdbcType="DECIMAL" />
+    <result column="WHOLESALE_PRICE_12" property="wholesalePrice12" jdbcType="DECIMAL" />
+    <result column="ADDRESS_NO2" property="addressNo2" jdbcType="VARCHAR" />
+    <result column="ORG_ITEM_NO2" property="orgItemNo2" jdbcType="VARCHAR" />
+    <result column="ORG_ORDER_NO2" property="orgOrderNo2" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE2" property="reachTimeType2" jdbcType="VARCHAR" />
+    <result column="DISP_EMP_NO2" property="dispEmpNo2" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="boxDetailMap" type="com.nhry.data.milktrans.domain.TRecBotDetail">
+      <result column="SPEC " property="spec" jdbcType="VARCHAR" />
+      <result column="EMP_NO " property="empNo" jdbcType="VARCHAR" />
+      <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+      <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+      <result column="DISP_ORDER_NO " property="dispOrderNo" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="UnDeliverResultMap" type="com.nhry.model.milktrans.UnDeliverProductModel" >
+    <result column="BRANCH_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="EMP_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR" property="confirmMatnr" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
+    <result column="QTY" property="qty" jdbcType="DECIMAL" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+    <result column="AMT" property="amt" jdbcType="DECIMAL" />
+    <result column="REMAIN_AMT" property="remainAmt" jdbcType="DECIMAL" />
+    <result column="CONFIRM_AMT" property="confirmAmt" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_NO" property="pickupOrderNo" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_ITEM_NO" property="pickupOrderItemNo" jdbcType="VARCHAR" />
+    <result column="REASON" property="reason" jdbcType="VARCHAR" />
+    <result column="REDISP_DATE" property="redispDate" jdbcType="DATE" />
+    <result column="WHOLESALE_PRICE" property="wholesalePrice" jdbcType="DECIMAL" />
+    <result column="WHOLESALE_PRICE_1" property="wholesalePrice1" jdbcType="DECIMAL" />
+    <result column="ADDRESS_NO" property="addressNo" jdbcType="VARCHAR" />
+    <result column="ORG_ITEM_NO" property="orgItemNo" jdbcType="VARCHAR" />
+    <result column="ORG_ORDER_NO" property="orgOrderNo" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+    ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT, CONFIRM_AMT, 
+    STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE,
+    WHOLESALE_PRICE_1, ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO,REACH_TIME_TYPE,REPLACE_REASON,GIFT_FLAG
+  </sql>
+  <select id="selectDispItemsChange" resultMap="BaseChangeResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
+    select distinct * from (
+		(select 
+       ORDER_NO ORDER_NO1,ORDER_DATE ORDER_DATE1,ITEM_NO ITEM_NO1,CONFIRM_MATNR CONFIRM_MATNR1, 
+       MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
+       ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
+       REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
+      from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE} and a.GIFT_FLAG is null
+      <if test="addressNo != null" >
+      	and a.ORDER_NO = #{addressNo,jdbcType=VARCHAR}
+      </if>
+      <if test="dispEmpNo != null" >
+      and a.DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+      </if>
+      ) a1
+		left outer join 
+		(select 
+		 ORDER_NO ORDER_NO2,ORDER_DATE ORDER_DATE2,ITEM_NO ITEM_NO2,CONFIRM_MATNR CONFIRM_MATNR2, 
+       MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
+       ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
+       REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE} and b.GIFT_FLAG is null
+		<if test="dispEmpNo != null" >
+      and b.DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+      </if>
+		) b1
+		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
+		)
+		where (a1.matnr1 != b1.matnr2 or a1.matnr1 is null or b1.matnr2 is null) 
+		or (a1.qty1 != b1.qty2 or a1.qty1 is null or b1.qty2 is null) 
+		or (a1.reach_time_type1 != b1.reach_time_type2 or a1.reach_time_type1 is null or b1.reach_time_type2 is null)
+		
+		union
+		
+		select distinct * from (
+		(select 
+		 ORDER_NO ORDER_NO1,ORDER_DATE ORDER_DATE1,ITEM_NO ITEM_NO1,CONFIRM_MATNR CONFIRM_MATNR1, 
+       MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
+       ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
+       REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
+		from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE} and a.GIFT_FLAG is null
+		<if test="addressNo != null" >
+			and a.ORDER_NO = #{addressNo,jdbcType=VARCHAR} 
+		</if>
+		<if test="dispEmpNo != null" >
+      and a.DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+      </if>
+		) a1
+		right outer join 
+		(select 
+		 ORDER_NO ORDER_NO2,ORDER_DATE ORDER_DATE2,ITEM_NO ITEM_NO2,CONFIRM_MATNR CONFIRM_MATNR2, 
+       MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
+       ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
+       REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE} and b.GIFT_FLAG is null
+		<if test="dispEmpNo != null" >
+      and b.DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+      </if>
+		) b1
+		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
+		)
+		where (a1.matnr1 != b1.matnr2 or a1.matnr1 is null or b1.matnr2 is null) 
+		or (a1.qty1 != b1.qty2 or a1.qty1 is null or b1.qty2 is null) 
+		or (a1.reach_time_type1 != b1.reach_time_type2 or a1.reach_time_type1 is null or b1.reach_time_type2 is null)
+  </select>
+  <select id="selectItemsByConfirmed" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order_item
+    where CONFIRM_AMT &gt; 0
+  </select>
+  <select id="selectItemsByOrgOrderAndItemNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order_item
+    where ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+          and ORG_ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+          and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </select>
+  <select id="selectDispOrderItemByKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order_item
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and i.ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      <if test="orderDate != null" >
+      and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+      </if>
+  </select>
+  <select id="selectNotDeliveryItemsByKeys" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >
+    delete from t_mst_disp_order_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectDispItemsByKeyForDeliver" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
+    SELECT
+    RESIDENTIAL_AREA,RESIDENTIAL_AREA_TXT as  ADDRESS_TXT,
+    GROUP_CONCAT(SHORT_TXT, '(', qty, ')') AS MATNR_TXT,
+    sum(qty) AS TOTAL_QTY
+    FROM
+    (
+    SELECT
+    a.RESIDENTIAL_AREA,
+    r.RESIDENTIAL_AREA_TXT,
+    p.SHORT_TXT,
+    ROUND(sum(i.qty)) AS qty
+    FROM
+    t_mst_disp_order_item i
+    LEFT JOIN t_preorder o ON o.ORDER_NO = i.ORG_ORDER_NO
+    LEFT JOIN t_md_mara_ex p ON p.MATNR = i.MATNR
+    AND p.SALES_ORG = o.SALES_ORG
+    LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+    LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+    where  i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDate != null" >
+      and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </if>
+    group by a.RESIDENTIAL_AREA,p.SHORT_TXT) t
+    GROUP BY RESIDENTIAL_AREA
+
+  </select>
+  <select id="selectDispItemsByKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
+  	 select 
+    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT, i.CONFIRM_AMT, 
+    i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
+    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.SHORT_TXT MATNR_TXT, concat( IFNULL(r.RESIDENTIAL_AREA_TXT,''),a.ADDRESS_TXT) ADDRESS_TXT
+    from t_mst_disp_order_item i 
+    left join t_preorder o on o.ORDER_NO = i.ORG_ORDER_NO
+    left join t_md_mara_ex p on p.MATNR = i.MATNR and p.SALES_ORG = o.SALES_ORG
+    left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
+    left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      <if test="orderDate != null" >
+      and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+      </if>
+      <if test="itemNo != null" >
+      and i.ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      </if>
+  </select>
+  <select id="selectRouteDetailsByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.milk.RouteOrderSearchModel">
+  	 select 
+    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT, i.CONFIRM_AMT, 
+    i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
+    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.MATNR_TXT MATNR_TXT, a.ADDRESS_TXT ADDRESS_TXT
+    from t_mst_disp_order_item i 
+    left join t_md_mara p on p.MATNR = i.MATNR 
+    left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectRouteDetailsAllforDeliver" resultMap="BaseResultMap" parameterType="java.lang.String">
+      SELECT
+          i.ORDER_NO,
+          CASE WHEN o.MEMO_TXT is not null then o.MEMO_TXT
+          ELSE info.MEMO_TXT END
+          as MEMO_TXT,
+          i.ORDER_DATE,
+          i.ITEM_NO,
+          i.CONFIRM_MATNR,
+          i.MATNR,
+          i.CONFIRM_QTY,
+          i.QTY,
+          i.UNIT,
+          i.PRICE,
+          i.AMT,
+          i.CONFIRM_AMT,
+          i. STATUS,
+          i.PICKUP_ORDER_NO,
+          i.PICKUP_ORDER_ITEM_NO,
+          i.REASON,
+          i.REDISP_DATE,
+          i.WHOLESALE_PRICE,
+          i.WHOLESALE_PRICE_1,
+          i.ADDRESS_NO,
+          i.ORG_ITEM_NO,
+          i.ORG_ORDER_NO,
+          CASE o.PAYMENTMETHOD
+          WHEN 10 THEN
+            min(i.REMAIN_AMT) - o.INIT_AMT
+          ELSE
+            min(i.REMAIN_AMT)
+          END AS REMAIN_AMT,
+          GROUP_CONCAT(i.REACH_TIME_TYPE) as REACH_TIME_TYPE,
+          GROUP_CONCAT(round(i.qty),'-',p.SHORT_TXT) as MATNR_TXT,
+          concat(
+               IFNULL(r.RESIDENTIAL_AREA_TXT,''),
+              a.ADDRESS_TXT
+          ) ADDRESS_TXT,
+          i.REPLACE_REASON,
+          i.GIFT_FLAG,
+          info.VIP_NAME CUST_NAME,
+          info.MP CUST_TEL
+      FROM
+          t_mst_disp_order_item i
+      LEFT JOIN t_preorder o ON o.ORDER_NO = i.ORG_ORDER_NO
+      LEFT JOIN t_vip_cust_info info on info.VIP_CUST_NO = o.MILKMEMBER_NO
+      LEFT JOIN t_md_mara_ex p ON p.MATNR = i.MATNR
+      AND p.SALES_ORG = o.SALES_ORG
+      LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+      LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+      WHERE
+          i.ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+       GROUP BY i.ORG_ORDER_NO
+
+      ORDER BY
+          r.RESIDENTIAL_AREA_TXT,
+          a.ADDRESS_TXT ASC
+  </select>
+  <select id="selectRouteDetailsAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	 select 
+    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT,i.REMAIN_AMT, i.CONFIRM_AMT,
+    i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
+    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.SHORT_TXT MATNR_TXT,concat(IFNULL(r.RESIDENTIAL_AREA_TXT,''),a.ADDRESS_TXT) ADDRESS_TXT,
+    i.REPLACE_REASON,i.GIFT_FLAG,
+    a.RECV_NAME CUST_NAME,a.MP CUST_TEL
+    from t_mst_disp_order_item i 
+    left join t_preorder o on o.ORDER_NO = i.ORG_ORDER_NO
+    left join t_md_mara_ex p on p.MATNR = i.MATNR and p.SALES_ORG = o.SALES_ORG
+    left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
+    <!-- left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO -->
+    left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    order by r.RESIDENTIAL_AREA_TXT, a.ADDRESS_TXT asc
+  </select>
+  <insert id="insertSelective" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
+    insert into t_mst_disp_order_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="itemNo != null" >
+        ITEM_NO,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="confirmQty != null" >
+        CONFIRM_QTY,
+      </if>
+      <if test="qty != null" >
+        QTY,
+      </if>
+      <if test="unit != null" >
+        UNIT,
+      </if>
+      <if test="price != null" >
+        PRICE,
+      </if>
+      <if test="amt != null" >
+        AMT,
+      </if>
+      <if test="confirmAmt != null" >
+        CONFIRM_AMT,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="pickupOrderNo != null" >
+        PICKUP_ORDER_NO,
+      </if>
+      <if test="pickupOrderItemNo != null" >
+        PICKUP_ORDER_ITEM_NO,
+      </if>
+      <if test="reason != null" >
+        REASON,
+      </if>
+      <if test="redispDate != null" >
+        REDISP_DATE,
+      </if>
+      <if test="wholesalePrice != null" >
+        WHOLESALE_PRICE,
+      </if>
+      <if test="wholesalePrice1 != null" >
+        WHOLESALE_PRICE_1,
+      </if>
+      <if test="addressNo != null" >
+        ADDRESS_NO,
+      </if>
+      <if test="replaceReason != null" >
+        REPLACE_REASON,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="itemNo != null" >
+        #{itemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="confirmQty != null" >
+        #{confirmQty,jdbcType=DECIMAL},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=DECIMAL},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="amt != null" >
+        #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmAmt != null" >
+        #{confirmAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="pickupOrderNo != null" >
+        #{pickupOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="pickupOrderItemNo != null" >
+        #{pickupOrderItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="redispDate != null" >
+        #{redispDate,jdbcType=DATE},
+      </if>
+      <if test="wholesalePrice != null" >
+        #{wholesalePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="wholesalePrice1 != null" >
+        #{wholesalePrice1,jdbcType=DECIMAL},
+      </if>
+      <if test="addressNo != null" >
+        #{addressNo,jdbcType=VARCHAR},
+      </if>
+      <if test="replaceReason != null" >
+        #{replaceReason,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="batchAddNewDispOrderItems" parameterType="java.util.List" >
+    insert into t_mst_disp_order_item
+    (ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE,PRICE_HOME,PRICE_NET_VALUE,PRICE_DELIVER, AMT,REMAIN_AMT, CONFIRM_AMT,
+    STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE,
+    WHOLESALE_PRICE_1,DISP_EMP_NO,ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO,REACH_TIME_TYPE,RET_QTY_S,RET_QTY_M,RET_QTY_B,GIFT_FLAG) values
+    <foreach collection="list" item="item" index="index"  
+        separator=",">  
+        ( #{item.orderNo}, #{item.orderDate}, #{item.itemNo},  
+        #{item.confirmMatnr}, #{item.matnr},  
+        #{item.confirmQty},#{item.qty}, #{item.unit},
+        #{item.price},#{item.priceHome},#{item.priceNetValue},#{item.priceDeliver},#{item.amt},#{item.remainAmt},
+        #{item.confirmAmt}, #{item.status}, #{item.pickupOrderNo},
+        #{item.pickupOrderItemNo}, #{item.reason}, #{item.redispDate},
+        #{item.wholesalePrice}, #{item.wholesalePrice1}, #{item.dispEmpNo}, #{item.addressNo}, #{item.orgItemNo}, #{item.orgOrderNo},#{item.reachTimeType},
+         #{item.retQtyS},#{item.retQtyM},#{item.retQtyB},#{item.giftFlag})  
+    </foreach> 
+  </insert>
+  <update id="updateDispOrderItem" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
+    update t_mst_disp_order_item
+    <set >
+      <if test="confirmMatnr != null" >
+        CONFIRM_MATNR = #{confirmMatnr,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="confirmQty != null" >
+        CONFIRM_QTY = #{confirmQty,jdbcType=DECIMAL},
+      </if>
+      <if test="qty != null" >
+        QTY = #{qty,jdbcType=DECIMAL},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="amt != null" >
+        AMT = #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmAmt != null" >
+        CONFIRM_AMT = #{confirmAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="pickupOrderNo != null" >
+        PICKUP_ORDER_NO = #{pickupOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="pickupOrderItemNo != null" >
+        PICKUP_ORDER_ITEM_NO = #{pickupOrderItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        REASON = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="redispDate != null" >
+        REDISP_DATE = #{redispDate,jdbcType=DATE},
+      </if>
+      <if test="wholesalePrice != null" >
+        WHOLESALE_PRICE = #{wholesalePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="wholesalePrice1 != null" >
+        WHOLESALE_PRICE_1 = #{wholesalePrice1,jdbcType=DECIMAL},
+      </if>
+      <if test="retQtyS != null" >
+        RET_QTY_S = #{retQtyS,jdbcType=INTEGER},
+      </if>
+      <if test="retQtyM != null" >
+        RET_QTY_M = #{retQtyM,jdbcType=INTEGER},
+      </if>
+      <if test="retQtyB != null" >
+        RET_QTY_B = #{retQtyB,jdbcType=INTEGER},
+      </if>
+      <if test="replaceReason != null" >
+        REPLACE_REASON = #{replaceReason,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      <!-- and ORDER_DATE = #{orderDate,jdbcType=DATE} -->
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
+    update t_mst_disp_order_item
+    set MATNR = #{matnr,jdbcType=VARCHAR},
+      CONFIRM_QTY = #{confirmQty,jdbcType=DECIMAL},
+      QTY = #{qty,jdbcType=DECIMAL},
+      UNIT = #{unit,jdbcType=VARCHAR},
+      PRICE = #{price,jdbcType=DECIMAL},
+      AMT = #{amt,jdbcType=DECIMAL},
+      CONFIRM_AMT = #{confirmAmt,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=VARCHAR},
+      PICKUP_ORDER_NO = #{pickupOrderNo,jdbcType=VARCHAR},
+      PICKUP_ORDER_ITEM_NO = #{pickupOrderItemNo,jdbcType=VARCHAR},
+      REASON = #{reason,jdbcType=VARCHAR},
+      REDISP_DATE = #{redispDate,jdbcType=DATE},
+      WHOLESALE_PRICE = #{wholesalePrice,jdbcType=DECIMAL},
+      WHOLESALE_PRICE_1 = #{wholesalePrice1,jdbcType=DECIMAL}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+
+  <select id="createRecBotByDispOrder" resultMap="boxDetailMap" parameterType="String">
+    SELECT
+	t.EMP_NO, SUM(t.RECEIVE_NUM) RECEIVE_NUM,t.SPEC,t.BRANCH_NO,t.DISP_ORDER_NO
+    from (
+        select
+        o.DISP_EMP_NO EMP_NO,(
+        CASE WHEN i.REASON = '40' OR i.REASON = '50' THEN i.QTY
+        ELSE  i.CONFIRM_QTY END
+        ) RECEIVE_NUM, ex.BOT_TYPE SPEC,o.BRANCH_NO,o.ORDER_NO DISP_ORDER_NO
+        from t_mst_disp_order_item  i
+        LEFT JOIN t_mst_disp_order o on  i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_mara_ex ex on i.CONFIRM_MATNR = ex.MATNR
+        LEFT JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        where 1=1
+        and o.ORDER_NO = #{dispOrderNo}
+        and ex.RET_BOT_FLAG = "Y"
+        and ex.SALES_ORG = b.SALES_ORG
+    )t
+    GROUP BY t.SPEC
+  </select>
+
+
+  <select id="searchUndeliverProduct" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.UnDeliverProductSearch">
+      select
+      o.BRANCH_NO,o.DISP_EMP_NO EMP_NO,i.ORDER_NO,i.ORDER_DATE,i.MATNR,i.QTY,i.UNIT,i.PRICE,i.CONFIRM_QTY,i.AMT,i.STATUS,i.REASON
+      from t_mst_disp_order_item  i,t_mst_disp_order o
+      where i.ORDER_NO = o.ORDER_NO
+        and ( i.REASON is not null  and i.REASON &lt;&gt; '30')
+        <if test="branchNo!=null and ''!=branchNo">
+          and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+          and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+
+        <if test="createDate!=null and ''!=createDate">
+          and o.CREAT_AT = #{createDate,jdbcType=DATE}
+        </if>
+        <if test="orderNo!=null and ''!=orderNo">
+          and o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        </if>
+
+  </select>
+
+	<!-- 检查该订单是否有项目生成了今日的路单 -->
+	<select id="selectCountOfTodayByOrgOrder" resultType="INTEGER" parameterType="com.nhry.data.milk.domain.TDispOrder">
+      select count(*) from t_mst_disp_order_item i
+		left join t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+		where i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+		and o.STATUS = '10'
+        <if test="dispDate!=null">
+          and i.ORDER_DATE = #{dispDate,jdbcType=DATE}
+        </if>
+   </select>
+   <!-- 检查该订单是否有项目生成了路单 -->
+	<select id="selectCountByOrgOrder" resultType="INTEGER" parameterType="com.nhry.data.milk.domain.TDispOrder">
+      select count(*) from t_mst_disp_order_item i
+		left join t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+		where i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+		<if test="dispDate!=null">
+          and i.ORDER_DATE = #{dispDate,jdbcType=DATE}
+        </if>
+   </select>
+   <!-- 检查某个行项目是否生成了路单 -->
+   <select id="selectCountByOrgOrderAndOrgItemNo" resultType="INTEGER" parameterType="com.nhry.data.milk.domain.TDispOrder">
+      select count(*) from t_mst_disp_order_item i
+		left join t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+		where i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+		and i.ORG_ITEM_NO = #{dispLineNo,jdbcType=VARCHAR}
+		<if test="branchName!=null and ''!=branchName">
+			and o.DISP_DATE = #{branchName,jdbcType=VARCHAR}
+		</if>
+   </select>
+  
+  <select id="selectItemsByOrderNo" resultMap="BaseResultMap" parameterType="String">
+    select
+   <include refid="Base_Column_List"/>
+    from t_mst_disp_order_item
+    where ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="updateDispOrderItemEmp" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+	    update t_mst_disp_order_item
+	    set DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}  
+	    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  	</update>
+
+  <select id="selectDispOrderNumByPreOrderNo" resultType="INTEGER" parameterType="String" >
+      SELECT
+    COUNT(*)
+    FROM t_mst_disp_order_item i
+    WHERE i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteDispOrderItemByOrderNo" >
+    delete from t_mst_disp_order_item
+    where ORDER_NO in 
+    <foreach item="codeStr" collection="list" separator="," open="(" close=")" index="">  
+      	#{codeStr} 
+    </foreach>  
+  </delete>
+
+  <select id="reportDispOrderItemByParams" parameterType="com.nhry.model.milktrans.DispOrderReportModel" resultType="com.nhry.model.milktrans.DispOrderReportEntityModel">
+    SELECT
+    e.EMP_NAME empName,
+    o.DISP_DATE dispDate,
+    (CASE o.REACH_TIME_TYPE WHEN '10' THEN '上午配送' WHEN '20' THEN '下午配送' END)  reachTimeType,
+    CONCAT(ar.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) addressTxt,
+    a.mp,
+    c.VIP_NAME vipName,
+    m1.SHORT_TXT matnrTxt,
+    i.QTY qty,
+    m2.SHORT_TXT confirmMatnrTxt,
+    i.CONFIRM_QTY confirmQty
+    FROM
+    t_mst_disp_order_item i
+    JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+    <if test="empNos!=null and empNos.size()>0">
+      and i.DISP_EMP_NO in
+      <foreach item="empNo" collection="empNos" separator="," open="(" close=")" index="">
+        #{empNo}
+      </foreach>
+    </if>
+    <if test="beginDate != null">
+      and o.DISP_DATE >= #{beginDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null">
+      and o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+    </if>
+    <if test="reachTimeType!=null and reachTimeType!=''">
+      and o.REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
+    </if>
+    <if test="confirmMatnrs!=null and confirmMatnrs.size()>0">
+      and i.CONFIRM_MATNR in
+      <foreach collection="confirmMatnrs" item="confirmMatnr" open="(" close=")" index="" separator=",">
+        #{confirmMatnr}
+      </foreach>
+    </if>
+    <if test="branchNo!=null and branchNo!=''">
+      and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    LEFT JOIN t_preorder p ON p.ORDER_NO = i.ORG_ORDER_NO
+    left JOIN t_md_branch_emp e ON e.EMP_NO = o.DISP_EMP_NO
+    LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+    LEFT JOIN t_md_residential_area ar ON a.RESIDENTIAL_AREA = ar.ID
+    LEFT JOIN t_md_mara_ex m1 ON m1.MATNR = i.MATNR and m1.SALES_ORG = p.SALES_ORG
+    LEFT JOIN t_md_mara_ex m2 ON m2.MATNR = i.CONFIRM_MATNR and m2.SALES_ORG = p.SALES_ORG
+    LEFT JOIN t_vip_cust_info c on c.VIP_CUST_NO = p.MILKMEMBER_NO
+    ORDER BY o.DISP_DATE,ar.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT
+  </select>
+
+
+  <select id="selectItemsByOrgOrderAndItemNoAndBeforeDate" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItem">
+    select
+    i.ORDER_NO, i.ORDER_DATE,i.MATNR, i.ITEM_NO,i.ORG_ORDER_NO,i.ORG_ITEM_NO,o.STATUS STATUS
+    from t_mst_disp_order_item i
+    LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+    where 1=1
+    <if test="orgOrderNo!=null">
+      and i.ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orgItemNo!=null">
+      and i.ORG_ITEM_NO = #{orgItemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orderDate!=null">
+     and i.ORDER_DATE &gt;=#{orderDate,jdbcType=DATE}
+    </if>
+    ORDER BY i.ORDER_DATE ASC
+  </select>
+  <select id="selectCountsByOrderNo" resultType="INTEGER" parameterType="java.lang.String">
+    SELECT
+        COUNT(DISTINCT t.ORDER_NO)
+    FROM
+        t_mst_disp_order t
+    INNER JOIN t_mst_disp_order_item t1 ON t1.ORDER_NO = t.ORDER_NO
+    AND t1.ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
+    WHERE
+        t.`STATUS` = '10'
+  </select>
+
+
+  <select id="selectItemsByOrgOrderByProm" resultMap="BaseResultMap" parameterType="java.lang.String">
+   select
+		i.ORDER_DATE,i.GIFT_FLAG,d.`STATUS`,e.SHORT_TXT MATNR
+    from t_mst_disp_order_item i
+		LEFT JOIN t_preorder o on i.ORG_ORDER_NO = o.ORDER_NO
+        LEFT  JOIN  t_mst_disp_order d on i.ORDER_NO = d.ORDER_NO
+		LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR and o.SALES_ORG = e.SALES_ORG
+    WHERE 1=1
+    and i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and (i.GIFT_FLAG IS not null OR i.GIFT_FLAG!='')
+  </select>
+</mapper>

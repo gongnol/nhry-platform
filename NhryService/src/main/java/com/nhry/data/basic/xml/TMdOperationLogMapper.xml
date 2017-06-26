@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdOperationLogMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdOperationLog" >
+    <result column="LOG_NO" property="logNo" jdbcType="VARCHAR" />
+    <result column="LOG_BRANCH" property="logBranch" jdbcType="VARCHAR" />
+    <result column="LOG_TYPE" property="logType" jdbcType="VARCHAR" />
+    <result column="LOG_EMP" property="logEmp" jdbcType="VARCHAR" />
+    <result column="DISP_ADDRESS" property="dispAddress" jdbcType="VARCHAR" />
+    <result column="ORIGINAL_VALUE" property="originalValue" jdbcType="VARCHAR" />
+    <result column="NEW_VALUE" property="newValue" jdbcType="VARCHAR" />
+    <result column="LOG_MATNR" property="logMatnr" jdbcType="VARCHAR" />
+    <result column="LOG_DISP_DATE" property="logDispDate" jdbcType="DATE" />
+    <result column="LOG_NAME" property="logName" jdbcType="VARCHAR" />
+    <result column="LOG_DATE" property="logDate" jdbcType="DATE" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LOG_NO,LOG_BRANCH, LOG_TYPE, ORIGINAL_VALUE, NEW_VALUE, LOG_MATNR, LOG_DISP_DATE, LOG_NAME, LOG_DATE, CREATE_AT,
+    CREATE_AT, CREATE_BY, CREATE_BY_TXT
+  </sql>
+  <insert id="save" parameterType="com.nhry.data.basic.domain.TMdOperationLog" >
+    insert into t_md_operation_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logNo != null" >
+        LOG_NO,
+      </if>
+      <if test="logBranch != null" >
+        LOG_BRANCH,
+      </if>
+      <if test="logType != null" >
+        LOG_TYPE,
+      </if>
+      <if test="logEmp != null" >
+        LOG_EMP,
+      </if>
+      <if test="dispAddress!= null" >
+        DISP_ADDRESS,
+      </if>
+      <if test="originalValue != null" >
+        ORIGINAL_VALUE,
+      </if>
+      <if test="newValue != null" >
+        NEW_VALUE,
+      </if>
+      <if test="logMatnr != null" >
+        LOG_MATNR,
+      </if>
+      <if test="logDispDate != null" >
+        LOG_DISP_DATE,
+      </if>
+      <if test="logName != null" >
+        LOG_NAME,
+      </if>
+      <if test="logDate != null" >
+        LOG_DATE,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logNo != null" >
+        #{logNo,jdbcType=VARCHAR},
+      </if>
+      <if test="logBranch != null" >
+        #{logBranch,jdbcType=VARCHAR},
+      </if>
+      <if test="logType != null" >
+        #{logType,jdbcType=VARCHAR},
+      </if>
+      <if test="logEmp != null" >
+        #{logEmp,jdbcType=VARCHAR},
+      </if>
+      <if test="dispAddress!= null" >
+        #{dispAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="originalValue != null" >
+        #{originalValue,jdbcType=VARCHAR},
+      </if>
+      <if test="newValue != null" >
+        #{newValue,jdbcType=VARCHAR},
+      </if>
+      <if test="logMatnr != null" >
+        #{logMatnr,jdbcType=VARCHAR},
+      </if>
+      <if test="logDispDate != null" >
+        #{logDispDate,jdbcType=DATE},
+      </if>
+      <if test="logName != null" >
+        #{logName,jdbcType=VARCHAR},
+      </if>
+      <if test="logDate != null" >
+        #{logDate,jdbcType=DATE},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="getCustOperationLog" resultType="hashmap" parameterType="com.nhry.model.basic.CustOperationQueryModel">
+  SELECT
+	l.LOG_NO,
+	i.VIP_NAME,
+    i.MP,
+	l.LOG_NAME,
+	l.ORIGINAL_VALUE,
+	l.NEW_VALUE,
+	l.CREATE_AT,
+	l.CREATE_BY_TXT
+FROM
+	t_md_operation_log l
+LEFT JOIN t_vip_cust_info i ON l.LOG_NO = i.VIP_CUST_NO
+WHERE
+	l.LOG_TYPE = '10'
+    <if test="branchNo!=null and ''!=branchNo">
+      and l.LOG_BRANCH = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dateStart!=null and ''!=dateStart">
+    and l.LOG_DATE &gt;= #{dateStart}
+    </if>
+    <if test="dateEnd!=null and ''!=dateEnd">
+     and  l.LOG_DATE &lt;= #{dateEnd}
+    </if>
+    <if test="search!=null and ''!=search">
+      and (i.VIP_NAME like '%${search}%' OR i.MP like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
+    </if>
+    ORDER BY CREATE_AT desc
+  </select>
+  <select id="getOrderOperationLog" resultType="hashmap" parameterType="com.nhry.model.basic.CustOperationQueryModel">
+    SELECT
+    l.LOG_NO,
+    l.LOG_MATNR,
+    l.LOG_NAME,
+    l.ORIGINAL_VALUE,
+    l.NEW_VALUE,
+    l.CREATE_AT,
+    l.CREATE_BY_TXT
+    FROM
+    t_md_operation_log l
+    WHERE
+    l.LOG_TYPE = '20'
+    <if test="branchNo!=null and ''!=branchNo">
+      and l.LOG_BRANCH  = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dateStart!=null and ''!=dateStart">
+      and l.LOG_DATE &gt;= #{dateStart}
+    </if>
+    <if test="dateEnd!=null and ''!=dateEnd">
+      and  l.LOG_DATE &lt;= #{dateEnd}
+    </if>
+    <if test="search!=null and ''!=search">
+      and (l.LOG_NO like '%${search}%' OR l.LOG_MATNR like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
+    </if>
+    ORDER BY CREATE_AT desc
+  </select>
+  <select id="getPlanOperationLog" resultType="hashmap" parameterType="com.nhry.model.basic.CustOperationQueryModel">
+    SELECT
+    l.LOG_NO,
+    l.LOG_MATNR,
+    l.LOG_NAME,
+    l.LOG_DISP_DATE,
+    l.ORIGINAL_VALUE,
+    l.NEW_VALUE,
+    l.CREATE_AT,
+    l.CREATE_BY_TXT
+    FROM
+    t_md_operation_log l
+    WHERE
+    l.LOG_TYPE = '30'
+    <if test="branchNo!=null and ''!=branchNo">
+      and l.LOG_BRANCH  = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dateStart!=null and ''!=dateStart">
+      and l.LOG_DATE &gt;= #{dateStart}
+    </if>
+    <if test="dateEnd!=null and ''!=dateEnd">
+      and  l.LOG_DATE &lt;= #{dateEnd,jdbcType=DATE}
+    </if>
+    <if test="dispDate!=null and ''!=dispDate">
+      and  l.LOG_DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    <if test="search!=null and ''!=search">
+      and (l.LOG_NO like '%${search}%' OR l.LOG_MATNR like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
+    </if>
+    ORDER BY CREATE_AT desc
+  </select>
+  <select id="getRouteOperationLog" resultType="hashmap" parameterType="com.nhry.model.basic.CustOperationQueryModel">
+    SELECT
+    l.LOG_NO,
+    l.LOG_MATNR,
+    l.LOG_NAME,
+    l.LOG_EMP,
+    l.DISP_ADDRESS,
+    l.LOG_DISP_DATE,
+    l.ORIGINAL_VALUE,
+    l.NEW_VALUE,
+    l.CREATE_AT,
+    l.CREATE_BY_TXT
+    FROM
+    t_md_operation_log l
+    WHERE
+    l.LOG_TYPE = '40'
+    <if test="branchNo!=null and ''!=branchNo">
+      and l.LOG_BRANCH = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dateStart!=null and ''!=dateStart">
+      and l.LOG_DATE &gt;= #{dateStart}
+    </if>
+    <if test="dateEnd!=null and ''!=dateEnd">
+      and  l.LOG_DATE &lt;= #{dateEnd}
+    </if>
+    <if test="dispDate!=null and ''!=dispDate">
+      and  l.LOG_DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    <if test="search!=null and ''!=search">
+      and (l.LOG_NO like '%${search}%' OR l.LOG_MATNR like '%${search}%' OR l.LOG_EMP like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
+    </if>
+    ORDER BY CREATE_AT desc
+  </select>
+</mapper>

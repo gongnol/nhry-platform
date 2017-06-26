@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TSsmSalOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TSsmSalOrder">
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="ORDER_DATE" property="orderDate" jdbcType="DATE"/>
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR"/>
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR"/>
+        <result column="REQUIRED_DATE" property="requiredDate" jdbcType="DATE"/>
+        <result column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR"/>
+        <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
+        <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR"/>
+        <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR"/>
+        <result column="BRANCH_GROUP" property="branchGroup" jdbcType="VARCHAR"/>
+        <result column="PROM_NO" property="promNo" jdbcType="VARCHAR"/>
+        <result column="FREE_FLAG" property="freeFlag" jdbcType="VARCHAR"/>
+        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR"/>
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP"/>
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR"/>
+        <result column="PREORDER_SOURCE" property="preorderSource" jdbcType="VARCHAR"/>
+        <result column="ONLINE_CODE" property="onlineCode" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ORDER_NO,ORDER_DATE,BRANCH_NO,REQUIRED_DATE,VOUCHER_NO,STATUS,MEMO_TXT,
+        SALES_ORG,DEALER_NO,BRANCH_GROUP,PROM_NO,
+        CREATE_AT,CREATE_BY,CREATE_BY_TXT,
+        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT,PREORDER_SOURCE,ONLINE_CODE
+    </sql>
+
+    <update id="uptVouCherNoByOrderNo" parameterType="java.util.Map">
+        UPDATE  t_ssm_sal_order
+        SET   VOUCHER_NO = #{voucherNo}
+        where ORDER_NO = #{orderNo}
+    </update>
+
+    <insert id="addsalOrder" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrder">
+        insert into t_ssm_sal_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                ORDER_NO,
+            </if>
+            <if test="orderDate != null">
+                ORDER_DATE,
+            </if>
+            <if test="branchNo != null">
+                BRANCH_NO,
+            </if>
+            <if test="requiredDate != null">
+                REQUIRED_DATE,
+            </if>
+            <if test="voucherNo != null">
+                VOUCHER_NO,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="memoTxt != null">
+                MEMO_TXT,
+            </if>
+            <if test="salesOrg != null">
+                SALES_ORG,
+            </if>
+            <if test="dealerNo != null">
+                DEALER_NO,
+            </if>
+            <if test="branchGroup != null">
+                BRANCH_GROUP,
+            </if>
+            <if test="promNo != null">
+                PROM_NO,
+            </if>
+            <if test="freeFlag != null">
+                FREE_FLAG,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+            <if test="lastModified != null">
+                LAST_MODIFIED,
+            </if>
+            <if test="lastModifiedBy != null">
+                LAST_MODIFIED_BY,
+            </if>
+            <if test="lastModifiedByTxt != null">
+                LAST_MODIFIED_BY_TXT,
+            </if>
+            <if test="preorderSource != null">
+                PREORDER_SOURCE,
+            </if>
+            <if test="onlineCode != null">
+                ONLINE_CODE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderDate != null">
+                #{orderDate,jdbcType=DATE},
+            </if>
+            <if test="branchNo != null">
+                #{branchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="requiredDate != null">
+                #{requiredDate,jdbcType=DATE},
+            </if>
+            <if test="voucherNo != null">
+                #{voucherNo,jdbcType=VARCHAR},
+            </if>
+
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="memoTxt != null">
+                #{memoTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="salesOrg != null">
+                #{salesOrg,jdbcType=VARCHAR},
+            </if>
+            <if test="dealerNo != null">
+                #{dealerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="branchGroup != null">
+                #{branchGroup,jdbcType=VARCHAR},
+            </if>
+            <if test="promNo != null">
+                #{promNo,jdbcType=VARCHAR},
+            </if>
+            <if test="freeFlag != null">
+                #{freeFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModified != null">
+                #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifiedBy != null">
+                #{lastModifiedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifiedByTxt != null">
+                #{lastModifiedByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="preorderSource != null">
+                #{preorderSource,jdbcType=VARCHAR},
+            </if>
+            <if test="onlineCode != null">
+                #{onlineCode,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectSalOrderByDateAndNo" resultMap="BaseResultMap"
+            parameterType="com.nhry.model.milktrans.SalOrderModel">
+        SELECT * FROM t_ssm_sal_order WHERE ORDER_DATE = #{orderDate,jdbcType=DATE} AND BRANCH_NO = #{branchNo}
+    </select>
+    <select id="selectSalOrderByRequiredDateAndNo" resultMap="BaseResultMap"
+            parameterType="com.nhry.model.milktrans.SalOrderModel">
+        SELECT * FROM t_ssm_sal_order WHERE REQUIRED_DATE = #{orderDate,jdbcType=DATE} AND BRANCH_NO = #{branchNo}
+    </select>
+
+    <select id="selectSalOrderByDateAndBranchNo" resultMap="BaseResultMap"  parameterType="com.nhry.model.milktrans.SalOrderModel">
+        SELECT
+        o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.STATUS,o.MEMO_TXT,
+        o.PROM_NO,b.BRANCH_NAME,b.DEALER_NO,d.DEALER_NAME,e.EMP_NAME ONLINE_CODE,o.PREORDER_SOURCE,o.FREE_FLAG
+        FROM
+           t_ssm_sal_order o
+        LEFT  JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        LEFT JOIN t_md_branch_emp e on e.SAPCODE != '' and e.SAPCODE is not null and e.SAPCODE = o.ONLINE_CODE
+        WHERE 1=1
+        and ORDER_DATE = #{orderDate,jdbcType=DATE}
+        <if test="branchNo!=null and ''!=branchNo">
+             AND o.BRANCH_NO = #{branchNo}
+        </if>
+    </select>
+
+    <delete id="delSalOrderByOrderNo"  parameterType="String">
+        DELETE
+        FROM
+        t_ssm_sal_order
+        WHERE 1=1
+        and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </delete>
+    <select id="findGidOrderByNotWBSTK" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM t_ssm_sal_order o WHERE o.IS_WBSTK = 'N' AND o.FREE_FLAG = 'N' AND o.VOUCHER_NO is not null and EXISTS (select 1 from t_md_branch t where t.branch_no = o.BRANCH_NO and t.branch_group = '01')
+    </select>
+    <update id="updateWBSTK" parameterType="string">
+        UPDATE t_ssm_sal_order SET IS_WBSTK = "Y" WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </update>
+
+
+
+    <select id="searchSalOrderByDealer" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+            select
+            o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.`STATUS`,o.MEMO_TXT,b.BRANCH_NAME
+            FROM t_ssm_sal_order o
+            JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+            WHERE 1=1
+            AND b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+            <if test="orderDate!=null">
+              AND o.ORDER_DATE = #{orderDate,jdbcType=DATE}
+            </if>
+            <if test="branchNo!=null">
+                AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+            ORDER BY o.BRANCH_NO
+    </select>
+</mapper>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milk.dao.TDispOrderChangeMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.milk.domain.TDispOrderChange" >
+    <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <id column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <id column="ORG_ORDER_NO" property="orgOrderNo" jdbcType="VARCHAR" />
+    <id column="ORG_ITEM_NO" property="orgItemNo" jdbcType="VARCHAR" />
+    <result column="YESTODAY_MATNR" property="yestodayMatnr" jdbcType="VARCHAR" />
+    <result column="TODAY_MATNR" property="todayMatnr" jdbcType="VARCHAR" />
+    <result column="YESTODAY_QTY" property="yestodayQty" jdbcType="DECIMAL" />
+    <result column="TODAY_QTY" property="todayQty" jdbcType="DECIMAL" />
+    <result column="YESTODAY_REACH_TIME_TYPE" property="yestodayReachTimeType" jdbcType="VARCHAR" />
+    <result column="TODAY_REACH_TIME_TYPE" property="todayReachTimeType" jdbcType="VARCHAR" />
+    <result column="REASON" property="reason" jdbcType="VARCHAR" />
+    <result column="MILKMEMBER_NO" property="milkmemberNo" jdbcType="VARCHAR" />
+    <result column="ADDRESS_NO" property="addressNo" jdbcType="VARCHAR" />
+    <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ORDER_NO, ORDER_DATE, ORG_ORDER_NO, ORG_ITEM_NO, YESTODAY_MATNR, TODAY_MATNR, YESTODAY_QTY, 
+    TODAY_QTY, YESTODAY_REACH_TIME_TYPE, TODAY_REACH_TIME_TYPE, REASON, MILKMEMBER_NO, 
+    ADDRESS_NO, EMP_NO
+  </sql>
+  <insert id="batchAddNewDispOrderChanges" parameterType="java.util.List" >
+    insert into t_mst_disp_order_change
+    (ORDER_NO, ORDER_DATE, ORG_ORDER_NO, ORG_ITEM_NO, YESTODAY_MATNR, TODAY_MATNR, YESTODAY_QTY, 
+    TODAY_QTY, YESTODAY_REACH_TIME_TYPE, TODAY_REACH_TIME_TYPE, REASON, MILKMEMBER_NO, 
+    ADDRESS_NO, EMP_NO) values
+    <foreach collection="list" item="item" index="index"  
+        separator=",">  
+        ( #{item.orderNo}, #{item.orderDate}, #{item.orgOrderNo},  
+        #{item.orgItemNo}, #{item.yestodayMatnr},  
+        #{item.todayMatnr},#{item.yestodayQty}, #{item.todayQty},  
+        #{item.yestodayReachTimeType}, #{item.todayReachTimeType},  
+        #{item.reason}, #{item.milkmemberNo}, #{item.addressNo},  
+        #{item.empNo} )  
+    </foreach> 
+  </insert>
+  <select id="searchRouteChangeOrder" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    c.ORDER_NO, c.ORDER_DATE, c.ORG_ORDER_NO, c.ORG_ITEM_NO,ex1.SHORT_TXT YESTODAY_MATNR,ex2.SHORT_TXT TODAY_MATNR, c.YESTODAY_QTY, 
+    c.TODAY_QTY, c.YESTODAY_REACH_TIME_TYPE, c.TODAY_REACH_TIME_TYPE, c.REASON, v.VIP_NAME MILKMEMBER_NO, 
+    concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADDRESS_NO,e.EMP_NAME  EMP_NO, v.MP CUST_TEL
+    from t_mst_disp_order_change c
+    left join t_preorder o on c.ORG_ORDER_NO = o.ORDER_NO
+    left join t_md_address a on c.ADDRESS_NO = a.ADDRESS_ID
+    left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+    left join t_vip_cust_info v on a.VIP_CUST_NO = v.VIP_CUST_NO
+	 left join t_md_branch_emp e on e.EMP_NO = c.EMP_NO
+	 left join t_md_mara_ex ex1 on ex1.MATNR = c.YESTODAY_MATNR and o.SALES_ORG = ex1.SALES_ORG
+	 left join t_md_mara_ex ex2 on ex2.MATNR = c.TODAY_MATNR and o.SALES_ORG = ex2.SALES_ORG
+    where c.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderChangeKey" >
+    delete from t_mst_disp_order_change
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
+      and ORG_ITEM_NO = #{orgItemNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.milk.domain.TDispOrderChange" >
+    insert into t_mst_disp_order_change (ORDER_NO, ORDER_DATE, ORG_ORDER_NO, 
+      ORG_ITEM_NO, YESTODAY_MATNR, TODAY_MATNR, 
+      YESTODAY_QTY, TODAY_QTY, YESTODAY_REACH_TIME_TYPE, 
+      TODAY_REACH_TIME_TYPE, REASON, MILKMEMBER_NO, 
+      ADDRESS_NO, EMP_NO)
+    values (#{orderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{orgOrderNo,jdbcType=VARCHAR}, 
+      #{orgItemNo,jdbcType=VARCHAR}, #{yestodayMatnr,jdbcType=VARCHAR}, #{todayMatnr,jdbcType=VARCHAR}, 
+      #{yestodayQty,jdbcType=DECIMAL}, #{todayQty,jdbcType=DECIMAL}, #{yestodayReachTimeType,jdbcType=VARCHAR}, 
+      #{todayReachTimeType,jdbcType=DECIMAL}, #{reason,jdbcType=VARCHAR}, #{milkmemberNo,jdbcType=VARCHAR}, 
+      #{addressNo,jdbcType=VARCHAR}, #{empNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.data.milk.domain.TDispOrderChange" >
+    insert into t_mst_disp_order_change
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="orgOrderNo != null" >
+        ORG_ORDER_NO,
+      </if>
+      <if test="orgItemNo != null" >
+        ORG_ITEM_NO,
+      </if>
+      <if test="yestodayMatnr != null" >
+        YESTODAY_MATNR,
+      </if>
+      <if test="todayMatnr != null" >
+        TODAY_MATNR,
+      </if>
+      <if test="yestodayQty != null" >
+        YESTODAY_QTY,
+      </if>
+      <if test="todayQty != null" >
+        TODAY_QTY,
+      </if>
+      <if test="yestodayReachTimeType != null" >
+        YESTODAY_REACH_TIME_TYPE,
+      </if>
+      <if test="todayReachTimeType != null" >
+        TODAY_REACH_TIME_TYPE,
+      </if>
+      <if test="reason != null" >
+        REASON,
+      </if>
+      <if test="milkmemberNo != null" >
+        MILKMEMBER_NO,
+      </if>
+      <if test="addressNo != null" >
+        ADDRESS_NO,
+      </if>
+      <if test="empNo != null" >
+        EMP_NO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="orgOrderNo != null" >
+        #{orgOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orgItemNo != null" >
+        #{orgItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="yestodayMatnr != null" >
+        #{yestodayMatnr,jdbcType=VARCHAR},
+      </if>
+      <if test="todayMatnr != null" >
+        #{todayMatnr,jdbcType=VARCHAR},
+      </if>
+      <if test="yestodayQty != null" >
+        #{yestodayQty,jdbcType=DECIMAL},
+      </if>
+      <if test="todayQty != null" >
+        #{todayQty,jdbcType=DECIMAL},
+      </if>
+      <if test="yestodayReachTimeType != null" >
+        #{yestodayReachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="todayReachTimeType != null" >
+        #{todayReachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="milkmemberNo != null" >
+        #{milkmemberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="addressNo != null" >
+        #{addressNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empNo != null" >
+        #{empNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.milk.domain.TDispOrderChange" >
+    update t_mst_disp_order_change
+    <set >
+      <if test="yestodayMatnr != null" >
+        YESTODAY_MATNR = #{yestodayMatnr,jdbcType=VARCHAR},
+      </if>
+      <if test="todayMatnr != null" >
+        TODAY_MATNR = #{todayMatnr,jdbcType=VARCHAR},
+      </if>
+      <if test="yestodayQty != null" >
+        YESTODAY_QTY = #{yestodayQty,jdbcType=DECIMAL},
+      </if>
+      <if test="todayQty != null" >
+        TODAY_QTY = #{todayQty,jdbcType=DECIMAL},
+      </if>
+      <if test="yestodayReachTimeType != null" >
+        YESTODAY_REACH_TIME_TYPE = #{yestodayReachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="todayReachTimeType != null" >
+        TODAY_REACH_TIME_TYPE = #{todayReachTimeType,jdbcType=DECIMAL},
+      </if>
+      <if test="reason != null" >
+        REASON = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="milkmemberNo != null" >
+        MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="addressNo != null" >
+        ADDRESS_NO = #{addressNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empNo != null" >
+        EMP_NO = #{empNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
+      and ORG_ITEM_NO = #{orgItemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderChange" >
+    update t_mst_disp_order_change
+    set YESTODAY_MATNR = #{yestodayMatnr,jdbcType=VARCHAR},
+      TODAY_MATNR = #{todayMatnr,jdbcType=VARCHAR},
+      YESTODAY_QTY = #{yestodayQty,jdbcType=DECIMAL},
+      TODAY_QTY = #{todayQty,jdbcType=DECIMAL},
+      YESTODAY_REACH_TIME_TYPE = #{yestodayReachTimeType,jdbcType=VARCHAR},
+      TODAY_REACH_TIME_TYPE = #{todayReachTimeType,jdbcType=DECIMAL},
+      REASON = #{reason,jdbcType=VARCHAR},
+      MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
+      ADDRESS_NO = #{addressNo,jdbcType=VARCHAR},
+      EMP_NO = #{empNo,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
+      and ORG_ITEM_NO = #{orgItemNo,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteDispOrderChangeByOrderNo" >
+    delete from t_mst_disp_order_change
+    where ORDER_NO in 
+    <foreach item="codeStr" collection="list" separator="," open="(" close=")" index="">  
+      	#{codeStr}
+    </foreach>  
+  </delete>
+</mapper>

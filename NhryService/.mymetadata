@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="NhryService"
+  id="myeclipse.1463366299424"
+  context-root="/NhryService"
+  j2ee-spec="5.0"
+  archive="NhryService.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

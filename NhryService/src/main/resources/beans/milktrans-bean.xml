@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"  
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+		default-lazy-init="true">
+	<!--销售订单-->
+	<bean id="tSsmSalOrderMapper" class="com.nhry.data.milktrans.impl.TSsmSalOrderMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tSsmSalOrderItemMapper" class="com.nhry.data.milktrans.impl.TSsmSalOrderItemMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<!--要货计划-->
+	<bean id="tSsmReqGoodsOrderItemMapper" class="com.nhry.data.milktrans.impl.TSsmReqGoodsOrderItemMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tSsmReqGoodsOrderMapper" class="com.nhry.data.milktrans.impl.TSsmReqGoodsOrderMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="requireOrderService" class="com.nhry.service.milktrans.impl.RequireOrderServiceImpl">
+	   <property name="tSsmReqGoodsOrderMapper"  ref="tSsmReqGoodsOrderMapper"></property>
+		<property name="tSsmReqGoodsOrderItemMapper"  ref="tSsmReqGoodsOrderItemMapper"></property>
+		<property name="tSsmSalOrderItemMapper"  ref="tSsmSalOrderItemMapper"></property>
+		<property name="tSsmSalOrderMapper"  ref="tSsmSalOrderMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
+		<property name="piRequireOrderService"  ref="piRequireOrderService"></property>
+		<property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
+		<property name="branchMapper"  ref="branchMapper"></property>
+		<property name="tMdMaraMapper"  ref="maraMapper"></property>
+		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
+		<property name="tSsmGiOrderMapper"  ref="ssmGiOrderMapper"></property>
+		<property name="tSsmGiOrderItemMapper"  ref="ssmGiOrderItemMapper"></property>
+		<property name="resendMapper"  ref="resendMapper"></property>
+		<property name="resendItemMapper"  ref="resendItemMapper"></property>
+		<property name="stockService"  ref="ssmStockService"></property>
+		<property name="dictionaryService" ref="dicService"/>
+		<property name="stringRedisTemplate" ref="stringRedisTemplate"/>
+		<property name="branchEmpMapper" ref="branchEmpMapper"/>
+	</bean>
+
+	<!--回瓶管理-->
+	<bean id="tRecBotDetailMapper" class="com.nhry.data.milktrans.impl.TRecBotDetailMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+
+	<bean id="returnBoxService" class="com.nhry.service.milktrans.impl.ReturnBoxServiceImpl">
+		<property name="urMapper"  ref="urMapper"></property>
+		<property name="tRecBotDetailMapper"  ref="tRecBotDetailMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
+		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
+		<property name="tDispOrderItemMapper"  ref="tDispOrderItemMapper"></property>
+		<property name="empMapper" ref="branchEmpMapper"></property>
+	</bean>
+	<!--内部销售单管理-->
+	<bean id="tMstInsideSalOrderMapper" class="com.nhry.data.milktrans.impl.TMstInsideSalOrderMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tMstInsideSalOrderItemMapper" class="com.nhry.data.milktrans.impl.TMstInsideSalOrderItemMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean class="com.nhry.service.milktrans.impl.OrderPointServiceImpl" id="orderPointService">
+		<property name="planOrderItemMapper" ref="tPlanOrderItemMapper"/>
+		<property name="preOrderMapper" ref="tPreOrderMapper"/>
+	</bean>
+	<!-- 出奶管理-->
+	<bean id="tSsmMilkmanAmtInitMapper" class="com.nhry.data.milktrans.impl.TSsmMilkmanAmtInitMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
+	</bean>
+	<bean id="tssmMilkmanAmtsMapper" class="com.nhry.data.milktrans.impl.TssmMilkmanAmtsMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="outMilkService" class="com.nhry.service.milktrans.impl.OutMilkServiceImpl">
+		<property name="tSsmMilkmanAmtInitMapper"  ref="tSsmMilkmanAmtInitMapper"></property>
+		<property name="tssmMilkmanAmtsMapper"  ref="tssmMilkmanAmtsMapper"></property>
+		<property name="customerBillMapper"  ref="customerBillMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
+		<property name="tDispOrderMapper" ref="tDispOrderMapper"></property>
+	</bean>
+	<bean class="com.nhry.data.milktrans.impl.TSsmRedateByTradeMapperImpl" id="tSsmRedateByTradeMapper">
+		<property name="sqlSessionFactory" ref="dynamicSqlSessionTemplate"/>
+	</bean>
+</beans>

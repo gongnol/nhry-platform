@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdAddressMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdAddress" >
+    <id column="ADDRESS_ID" property="addressId" jdbcType="VARCHAR" />
+    <result column="RECV_NAME" property="recvName" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="COUNTY" property="county" jdbcType="VARCHAR" />
+    <result column="MP" property="mp" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="ZIP" property="zip" jdbcType="VARCHAR" />
+    <result column="STREET" property="street" jdbcType="VARCHAR" />
+    <result column="ADDRESS_TXT" property="addressTxt" jdbcType="VARCHAR" />
+    <result column="RESIDENTIAL_AREA" property="residentialArea" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+    <result column="IS_DEFAULT" property="isDafault" jdbcType="VARCHAR" />
+    <result column="IS_DELETE" property="isDelete" jdbcType="VARCHAR" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+    <result column="COUNTY_NAME" property="countyName" jdbcType="VARCHAR" />
+    <result column="STREET_NAME" property="streetName" jdbcType="VARCHAR" />
+    <result column="RESIDENTIAL_AREA_NAME" property="residentialAreaName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ADDRESS_ID, RECV_NAME, PROVINCE, CITY, COUNTY, MP, TEL, ZIP, ADDRESS_TXT, RESIDENTIAL_AREA, 
+    CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
+    VIP_CUST_NO,IS_DEFAULT,STREET
+  </sql>
+  <select id="findAddressById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT
+		ADDRESS_ID,
+		RECV_NAME,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.PROVINCE
+		) PROVINCE_NAME,
+		d.PROVINCE,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.CITY
+		) CITY_NAME,d.CITY,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.COUNTY
+		) COUNTY_NAME,d.COUNTY,
+	    d.STREET,
+		MP,
+		TEL,
+		ZIP,
+		ADDRESS_TXT,
+		(
+			SELECT
+				a.RESIDENTIAL_AREA_TXT
+			FROM
+				T_MD_RESIDENTIAL_AREA a
+			WHERE
+				a.ID = d.RESIDENTIAL_AREA
+		) RESIDENTIAL_AREA_NAME,d.RESIDENTIAL_AREA,
+		CREATE_AT,
+		CREATE_BY,
+		CREATE_BY_TXT,
+		LAST_MODIFIED,
+		LAST_MODIFIED_BY,
+		LAST_MODIFIED_BY_TXT,
+		VIP_CUST_NO,
+		IS_DEFAULT,
+        IS_DELETE
+    from t_md_address d
+    where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
+  </select>
+  <insert id="addAddressForCust" parameterType="com.nhry.data.basic.domain.TMdAddress" >
+    insert into t_md_address
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="addressId != null" >
+        ADDRESS_ID,
+      </if>
+      <if test="recvName != null" >
+        RECV_NAME,
+      </if>
+      <if test="province != null" >
+        PROVINCE,
+      </if>
+      <if test="city != null" >
+        CITY,
+      </if>
+      <if test="county != null" >
+        COUNTY,
+      </if>
+      <if test="mp != null" >
+        MP,
+      </if>
+      <if test="tel != null" >
+        TEL,
+      </if>
+      <if test="zip != null" >
+        ZIP,
+      </if>
+      <if test="addressTxt != null" >
+        ADDRESS_TXT,
+      </if>
+      <if test="residentialArea != null" >
+        RESIDENTIAL_AREA,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="vipCustNo != null" >
+        VIP_CUST_NO,
+      </if>
+      <if test="street != null">
+          STREET,
+      </if>
+      <if test="isDafault != null">
+          IS_DEFAULT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="addressId != null" >
+        #{addressId,jdbcType=VARCHAR},
+      </if>
+      <if test="recvName != null" >
+        #{recvName,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null" >
+        #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="mp != null" >
+        #{mp,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="zip != null" >
+        #{zip,jdbcType=VARCHAR},
+      </if>
+      <if test="addressTxt != null" >
+        #{addressTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialArea != null" >
+        #{residentialArea,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="vipCustNo != null" >
+        #{vipCustNo,jdbcType=VARCHAR},
+      </if>
+       <if test="street != null">
+          #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="isDafault != null">
+          #{isDafault,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="uptCustAddress" parameterType="com.nhry.data.basic.domain.TMdAddress" >
+    update t_md_address
+    <set >
+      <if test="recvName != null" >
+        RECV_NAME = #{recvName,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null" >
+        COUNTY = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="mp != null" >
+        MP = #{mp,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="zip != null" >
+        ZIP = #{zip,jdbcType=VARCHAR},
+      </if>
+      <if test="addressTxt != null" >
+        ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialArea != null" >
+        RESIDENTIAL_AREA = #{residentialArea,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="vipCustNo != null" >
+        VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null">
+      	 STREET = #{street,jdbcType=VARCHAR},
+      </if>
+       <if test="isDelete != null" >
+        IS_DELETE = #{isDelete,jdbcType=VARCHAR},
+      </if>
+      <if test="isDafault != null">
+         IS_DEFAULT=#{isDafault,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
+  </update>
+  <select id="findCnAddressByCustNo" resultMap="BaseResultMap" parameterType="String">
+  SELECT
+		ADDRESS_ID,
+		RECV_NAME,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.PROVINCE
+		) PROVINCE_NAME,
+		d.PROVINCE,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.CITY
+		) CITY_NAME,d.CITY,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.COUNTY
+		) COUNTY_NAME,d.COUNTY,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.STREET
+		) STREET_NAME,d.STREET,
+		MP,
+		TEL,
+		ZIP,
+		ADDRESS_TXT,
+		(
+			SELECT
+				a.RESIDENTIAL_AREA_TXT
+			FROM
+				T_MD_RESIDENTIAL_AREA a
+			WHERE
+				a.ID = d.RESIDENTIAL_AREA
+		) RESIDENTIAL_AREA_NAME,d.RESIDENTIAL_AREA,
+		CREATE_AT,
+		CREATE_BY,
+		CREATE_BY_TXT,
+		LAST_MODIFIED,
+		LAST_MODIFIED_BY,
+		LAST_MODIFIED_BY_TXT,
+		VIP_CUST_NO,
+		IS_DEFAULT
+	FROM
+		T_MD_ADDRESS d
+	WHERE
+		d.IS_DELETE='N' AND d.VIP_CUST_NO = #{custNo} order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
+  </select>
+  <select id="findOriginAddressByCustNo" resultMap="BaseResultMap" parameterType="String">
+    SELECT <include refid="Base_Column_List" /> FROM t_md_address WHERE VIP_CUST_NO=#{custNo} and IS_DELETE='N' order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
+  </select>
+  <select id="findAddressDetailById" resultMap="BaseResultMap" parameterType="String">
+     SELECT
+		ADDRESS_ID,
+		RECV_NAME,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.PROVINCE
+		) PROVINCE,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.CITY
+		) CITY,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.COUNTY
+		) COUNTY,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.STREET
+		) STREET,
+		MP,
+		TEL,
+		ZIP,
+		ADDRESS_TXT,
+		(
+			SELECT
+				a.RESIDENTIAL_AREA_TXT
+			FROM
+				T_MD_RESIDENTIAL_AREA a
+			WHERE
+				a.ID = d.RESIDENTIAL_AREA
+		) RESIDENTIAL_AREA,
+		CREATE_AT,
+		CREATE_BY,
+		CREATE_BY_TXT,
+		LAST_MODIFIED,
+		LAST_MODIFIED_BY,
+		LAST_MODIFIED_BY_TXT,
+		VIP_CUST_NO,
+		IS_DEFAULT
+	FROM
+		T_MD_ADDRESS d
+	WHERE
+		IS_DELETE='N' and ADDRESS_ID = #{id}
+  </select>
+  <update id="uptCustAddressUnDefault" parameterType="com.nhry.data.basic.domain.TMdAddress">
+      update t_md_address
+    <set >
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+       IS_DEFAULT='N',
+    </set>
+    WHERE IS_DELETE='N' AND ADDRESS_ID &lt;&gt; #{addressId} AND VIP_CUST_NO=#{vipCustNo}
+  </update>
+  <select id="findAddressByMixedTerms" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+     select <include refid="Base_Column_List" /> from t_md_address d 
+    <where>
+        <if test="province != null and province != ''">
+           d.PROVINCE=#{province}
+        </if>
+         <if test="city != null and city != ''">
+           and d.CITY=#{city}
+        </if>
+         <if test="county != null and county != ''">
+           and d.COUNTY=#{county}
+        </if>
+         <if test="residentialArea != null and residentialArea != ''">
+           and d.RESIDENTIAL_AREA=#{residentialArea}
+        </if>
+        <if test="addressTxt != null and addressTxt != ''">
+           and d.ADDRESS_TXT=#{addressTxt}
+        </if>
+        <if test="custNo != null and custNo != ''">
+            and d.VIP_CUST_NO=#{custNo}
+        </if>
+    </where>
+  </select>
+  <delete id="deleteAddressByCustNo" parameterType="String">
+     delete from t_md_address where VIP_CUST_NO=#{custNo}
+  </delete>
+    <select id="findAddressByCustNoISDefault" resultMap="BaseResultMap" parameterType="String">
+           SELECT
+                t.ADDRESS_ID,
+                t.PROVINCE,
+                t.COUNTY,
+                t.CITY,
+                t.ADDRESS_TXT
+            FROM
+                t_md_address t
+            WHERE
+                t.VIP_CUST_NO = #{custNo,jdbcType=VARCHAR}
+            AND t.IS_DEFAULT = 'Y'
+         </select>
+
+
+
+<select id="findAddressTxtByMap" resultType="String" parameterType="java.util.HashMap" >
+    SELECT
+            CONCAT(
+                IFNULL(
+                    (
+                        SELECT
+                            ITEM_NAME
+                        FROM
+                            t_sys_code_item
+                        WHERE
+                            TYPE_CODE = '1001'
+                        AND ITEM_CODE = #{province}
+                    ),
+                    ''
+                ),
+                IFNULL(
+                    (
+                        SELECT
+                            ITEM_NAME
+                        FROM
+                            t_sys_code_item
+                        WHERE
+                            TYPE_CODE = '1001'
+                        AND ITEM_CODE = #{city}
+                    ),
+                    ''
+                ),
+                IFNULL(
+                    (
+                        SELECT
+                            ITEM_NAME
+                        FROM
+                            t_sys_code_item
+                        WHERE
+                            TYPE_CODE = '1001'
+                        AND ITEM_CODE = #{county}
+                    ),
+                    ''
+                ),
+                IFNULL(
+                    (
+                        SELECT
+                            a.RESIDENTIAL_AREA_TXT
+                        FROM
+                            T_MD_RESIDENTIAL_AREA a
+                        WHERE
+                            a.ID = #{residentialArea}
+                    ),
+                    ''
+                ),
+                IFNULL(
+                    (
+                        SELECT
+                            CONCAT(IFNULL(a.RESIDENTIAL_AREA_TXT,''),IFNULL(a.ADDRESS_TXT,''))
+                        FROM
+                            T_MD_RESIDENTIAL_AREA a
+                        WHERE
+                            a.ID = #{residentialArea}
+                    ),
+                    ''
+                )
+            ) ADDRESS_TXT
+        FROM
+            DUAL
+    </select>
+</mapper>

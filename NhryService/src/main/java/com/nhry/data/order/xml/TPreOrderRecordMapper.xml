@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.order.dao.TPreOrderRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TPreOrderRecord" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="OP_TYPE" property="opType" jdbcType="VARCHAR" />
+    <result column="OP_TXT" property="opTxt" jdbcType="VARCHAR" />
+    <result column="OP_USER" property="opUser" jdbcType="VARCHAR" />
+    <result column="OP_USER_TXT" property="opUserTxt" jdbcType="VARCHAR" />
+    <result column="OP_TIME" property="opTime" jdbcType="TIMESTAMP" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OP_TYPE, OP_TXT, OP_USER, OP_USER_TXT, OP_TIME, ORDER_NO, ORDER_DATE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_preorder_record
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_preorder_record
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.order.domain.TPreOrderRecord" >
+    insert into t_preorder_record (ID, OP_TYPE, OP_TXT, 
+      OP_USER, OP_USER_TXT, OP_TIME, 
+      ORDER_NO, ORDER_DATE)
+    values (#{id,jdbcType=VARCHAR}, #{opType,jdbcType=VARCHAR}, #{opTxt,jdbcType=VARCHAR}, 
+      #{opUser,jdbcType=VARCHAR}, #{opUserTxt,jdbcType=VARCHAR}, #{opTime,jdbcType=TIMESTAMP}, 
+      #{orderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.data.order.domain.TPreOrderRecord" >
+    insert into t_preorder_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="opType != null" >
+        OP_TYPE,
+      </if>
+      <if test="opTxt != null" >
+        OP_TXT,
+      </if>
+      <if test="opUser != null" >
+        OP_USER,
+      </if>
+      <if test="opUserTxt != null" >
+        OP_USER_TXT,
+      </if>
+      <if test="opTime != null" >
+        OP_TIME,
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="opType != null" >
+        #{opType,jdbcType=VARCHAR},
+      </if>
+      <if test="opTxt != null" >
+        #{opTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="opUser != null" >
+        #{opUser,jdbcType=VARCHAR},
+      </if>
+      <if test="opUserTxt != null" >
+        #{opUserTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="opTime != null" >
+        #{opTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.order.domain.TPreOrderRecord" >
+    update t_preorder_record
+    <set >
+      <if test="opType != null" >
+        OP_TYPE = #{opType,jdbcType=VARCHAR},
+      </if>
+      <if test="opTxt != null" >
+        OP_TXT = #{opTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="opUser != null" >
+        OP_USER = #{opUser,jdbcType=VARCHAR},
+      </if>
+      <if test="opUserTxt != null" >
+        OP_USER_TXT = #{opUserTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="opTime != null" >
+        OP_TIME = #{opTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE = #{orderDate,jdbcType=DATE},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.order.domain.TPreOrderRecord" >
+    update t_preorder_record
+    set OP_TYPE = #{opType,jdbcType=VARCHAR},
+      OP_TXT = #{opTxt,jdbcType=VARCHAR},
+      OP_USER = #{opUser,jdbcType=VARCHAR},
+      OP_USER_TXT = #{opUserTxt,jdbcType=VARCHAR},
+      OP_TIME = #{opTime,jdbcType=TIMESTAMP},
+      ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      ORDER_DATE = #{orderDate,jdbcType=DATE}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stock.dao.TSsmSalFactoryPriceMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stock.domain.TSsmSalFactoryPrice" >
+    <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <id column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="FACTORY_PRICE" property="factoryPrice" jdbcType="DECIMAL" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MATNR, ORDER_DATE, BRANCH_NO, FACTORY_PRICE, SALES_ORG
+  </sql>
+  <select id="selectFactoryPrice" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmSalFactoryPriceKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ssm_sal_factory_price
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
+  <insert id="insertFactoryPrice" parameterType="com.nhry.data.stock.domain.TSsmSalFactoryPrice" >
+    insert into t_ssm_sal_factory_price (MATNR, ORDER_DATE, BRANCH_NO, 
+      FACTORY_PRICE, SALES_ORG,CREATE_AT,CREATE_BY)
+    values (#{matnr,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{branchNo,jdbcType=VARCHAR}, 
+      #{factoryPrice,jdbcType=DECIMAL}, #{salesOrg,jdbcType=VARCHAR},#{createAt,jdbcType=VARCHAR},#{createBy,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateFactoryPriceKeySelective" parameterType="com.nhry.data.stock.domain.TSsmSalFactoryPrice" >
+    update t_ssm_sal_factory_price
+    <set >
+      <if test="factoryPrice != null" >
+        FACTORY_PRICE = #{factoryPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateFactoryPrice" parameterType="com.nhry.data.stock.domain.TSsmSalFactoryPrice" >
+    update t_ssm_sal_factory_price
+    set FACTORY_PRICE = #{factoryPrice,jdbcType=DECIMAL},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

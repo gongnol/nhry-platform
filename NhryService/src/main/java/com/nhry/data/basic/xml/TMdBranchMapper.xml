@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdBranchMapper" >
+  <!--<cache type="org.mybatis.caches.redis.RedisCache" />-->
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdBranch" >
+    <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="SALES_ORG_NAME" property="salesOrgName" jdbcType="VARCHAR" />
+    <result column="SALES_CHA" property="salesCha" jdbcType="VARCHAR" />
+    <result column="BRANCH_GROUP" property="branchGroup" jdbcType="VARCHAR" />
+    <result column="BRANCH_LEVEL" property="branchLevel" jdbcType="VARCHAR" />
+    <result column="CONTACT" property="contact" jdbcType="VARCHAR" />
+    <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="MP" property="mp" jdbcType="VARCHAR" />
+    <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+
+    <result column="TOTAL_CUS" property="totalCus" jdbcType="INTEGER" />
+    <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
+
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="COUNTY" property="county" jdbcType="VARCHAR" />
+
+      <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+      <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+      <result column="COUNTY_NAME" property="countyName" jdbcType="VARCHAR" />
+
+
+    <result column="WERKS" property="werks" jdbcType="VARCHAR" />
+    <result column="LGORT" property="lgort" jdbcType="VARCHAR" />
+
+    <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+    <result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="IS_VALID" property="isValid" jdbcType="VARCHAR" />
+    <result column="ONLINE_DATE" property="onlineDate" jdbcType="DATE" />
+    <result column="TARGET_PRESON" property="targetPerson" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="PAYEE" property="payee" jdbcType="VARCHAR" />
+    <result column="OPEN_BANK" property="openBank" jdbcType="VARCHAR" />
+    <result column="BANK_ACCOUNT" property="bankAccount" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    BRANCH_NO, BRANCH_NAME, SALES_ORG, SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, CONTACT,EMP_NO,
+    TEL, MP, DEALER_NO, ADDRESS, PROVINCE, CITY, COUNTY, WERKS, LGORT, CREATE_AT, CREATE_BY, 
+    CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,COMPANY_CODE,IS_VALID,ONLINE_DATE,REMARK,PAYEE,
+    OPEN_BANK,BANK_ACCOUNT
+  </sql>
+  <select id="selectBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+          select
+			b.BRANCH_NO, b.BRANCH_NAME, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,b.IS_VALID,b.ONLINE_DATE,b.TARGET_PRESON,
+            b.PAYEE,b.OPEN_BANK,b.BANK_ACCOUNT,
+			(
+				SELECT i.ITEM_NAME
+					from t_sys_code_item i
+				WHERE i.TYPE_CODE=<include refid="mybaties.constant.SALES_ORG_CONSTANT"/>
+                and i.ITEM_CODE = b.SALES_ORG
+			) SALES_ORG_NAME,
+			b.COMPANY_CODE,
+			(
+				SELECT i.ITEM_NAME
+				from t_sys_code_item i
+				WHERE i.TYPE_CODE=<include refid="mybaties.constant.comp_code"/>
+				and i.ITEM_CODE = b.COMPANY_CODE
+			) COMPANY_NAME,
+			b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO,d.DEALER_NAME, b.ADDRESS,
+           b.PROVINCE,  b.CITY, b.COUNTY,
+		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE_NAME,
+          (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
+         (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ATTR1 = b.LGORT and i.PARENT = b.WERKS) LGORT,
+          b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT,b.REMARK
+          from t_md_branch b LEFT JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+         where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteBranchByNo" parameterType="java.lang.String" >
+    delete from t_md_branch
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addBranch" parameterType="com.nhry.data.basic.domain.TMdBranch" >
+    insert into t_md_branch (BRANCH_NO, BRANCH_NAME, SALES_ORG, 
+      SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, 
+      CONTACT,EMP_NO, TEL, MP, DEALER_NO,
+      ADDRESS, PROVINCE, CITY, 
+      COUNTY, WERKS, LGORT, 
+      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,COMPANY_CODE
+      )
+    values (#{branchNo,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
+      #{salesCha,jdbcType=VARCHAR}, #{branchGroup,jdbcType=VARCHAR}, #{branchLevel,jdbcType=VARCHAR}, 
+      #{contact,jdbcType=VARCHAR}, #{empNo,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{mp,jdbcType=VARCHAR}, #{dealerNo,jdbcType=VARCHAR},
+      #{address,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{county,jdbcType=VARCHAR}, #{werks,jdbcType=VARCHAR}, #{lgort,jdbcType=VARCHAR}, 
+      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
+      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR},#{companyCode,jdbcType=VARCHAR}
+      )
+  </insert>
+
+    <update id="setBranchRemark" parameterType="com.nhry.data.basic.domain.TMdBranch">
+        update t_md_branch
+        set REMARK = #{remark,jdbcType=VARCHAR}
+        where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </update>
+
+  <update id="uptValidBranch" parameterType="com.nhry.data.basic.domain.TMdBranch">
+    update t_md_branch
+    set   IS_VALID = #{isValid,jdbcType=VARCHAR},
+           ONLINE_DATE = #{onlineDate,jdbcType=DATE}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+  <update id="uptTargetBranch" parameterType="com.nhry.data.basic.domain.TMdBranch">
+    update t_md_branch
+    set   TARGET_PRESON = #{targetPerson,jdbcType=VARCHAR}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+  <update id="uptBankBranch" parameterType="com.nhry.data.basic.domain.TMdBranch">
+    update t_md_branch
+    set   PAYEE = #{payee,jdbcType=VARCHAR},
+          OPEN_BANK = #{openBank,jdbcType=VARCHAR},
+          BANK_ACCOUNT = #{bankAccount,jdbcType=VARCHAR}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+  <update id="uptBranch" parameterType="com.nhry.data.basic.domain.TMdBranch" >
+    update t_md_branch
+    set BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      SALES_CHA = #{salesCha,jdbcType=VARCHAR},
+      BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR},
+      BRANCH_LEVEL = #{branchLevel,jdbcType=VARCHAR},
+      CONTACT = #{contact,jdbcType=VARCHAR},
+      EMP_NO = #{empNo,jdbcType=VARCHAR},
+      TEL = #{tel,jdbcType=VARCHAR},
+      MP = #{mp,jdbcType=VARCHAR},
+      DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      COUNTY = #{county,jdbcType=VARCHAR},
+      WERKS = #{werks,jdbcType=VARCHAR},
+      LGORT = #{lgort,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      IS_VALID = #{isValid,jdbcType=VARCHAR},
+      ONLINE_DATE = #{onlineDate,jdbcType=DATE},
+      TARGET_PRESON = #{targetPerson,jdbcType=VARCHAR}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+  <select id="findBranchListByOrg" resultMap="BaseResultMap" parameterType="String">
+    select
+    b.BRANCH_NO, b.BRANCH_NAME<!--, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,
+    (
+    SELECT i.ITEM_NAME
+    from t_sys_code_item i
+    WHERE i.TYPE_CODE=<include refid="mybaties.constant.SALES_ORG_CONSTANT"/>
+    and i.ITEM_CODE = b.SALES_ORG
+    ) SALES_ORG_NAME,
+    b.COMPANY_CODE,
+    (
+    SELECT i.ITEM_NAME
+    from t_sys_code_item i
+    WHERE i.TYPE_CODE=<include refid="mybaties.constant.comp_code"/>
+    and i.ITEM_CODE = b.COMPANY_CODE
+    ) COMPANY_NAME,
+    b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO,d.DEALER_NAME, b.ADDRESS,
+    b.PROVINCE, b.CITY,b.COUNTY,
+   &lt;!&ndash; (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY,&ndash;&gt;
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
+    b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT-->
+
+    from t_md_branch b 
+    <!-- LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO*/  -->
+    where b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="branchNo!=null and branchNo!=''">
+      and  b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerNo!=null and dealerNo!=''">
+     and  b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
+    ORDER BY b.BRANCH_NAME
+  </select>
+  <select id="searchBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.BranchQueryModel">
+    SELECT
+    b.BRANCH_NO,b.BRANCH_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and i.ITEM_CODE = b.SALES_ORG)
+    SALES_ORG,b.SALES_CHA,
+    BRANCH_GROUP,b.BRANCH_LEVEL,b.DEALER_NO,d.DEALER_NAME,
+   /* (select count(t.VIP_CUST_NO) from t_vip_cust_info t where t.BRANCH_NO=b.BRANCH_NO) TOTAL_CUS,*/
+    b.MP,b.TEL,b.IS_VALID,b.ONLINE_DATE
+    from T_MD_BRANCH b LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+    where 1=1
+      <if test="branchN !=null and ''!=branchN">
+          and ( b.BRANCH_NO like '%${branchN}%' or b.BRANCH_NAME like '%${branchN}%')
+      </if>
+      <if test="branchNo != null and branchNo != ''">
+        and  b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      </if>
+      <if test="dealerNo != null and dealerNo != ''">
+        AND b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+      </if>
+      <if test="branchGroup != null and branchGroup != ''">
+        AND b.BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR}
+      </if>
+      <if test="salesOrg != null and salesOrg != ''">
+        AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      </if>
+    ORDER BY b.CREATE_AT desc
+  </select>
+
+  <select id="getBranchByCodeOrName" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_md_branch
+    where 1=1
+    and SALES_ORG=#{salesOrg}
+    AND ( BRANCH_NO LIKE '%${branchNo}%' OR BRANCH_NAME like  '%${branchName}%' )
+
+  </select>
+
+
+  <select id="findBranchListByOrgAndAuto" resultMap="BaseResultMap" parameterType="String">
+    select
+    <include refid="Base_Column_List" />
+    from t_md_branch
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and BRANCH_GROUP= '01'
+  </select>
+  <select id="findBranchByDno" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+      select
+    <include refid="Base_Column_List" />
+    from t_md_branch
+    <where>
+        <if test="salesOrg != null and salesOrg != ''">
+           SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+       <if test="dealerNo != null and dealerNo !=''">
+             <choose>
+                 <when test="dealerNo == '-1'">
+                     <!-- 查询自有奶站 -->
+           			and BRANCH_GROUP= '01' 
+                 </when>
+                 <otherwise>
+                    <!-- 经销商奶站 -->
+                    and BRANCH_GROUP= '02' and DEALER_NO = #{dealerNo} 
+                 </otherwise>
+             </choose>
+          </if>
+    </where>
+  </select>
+  <select id="getBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="Base_Column_List"/> from t_md_branch where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="selectBranchInfoByBranchNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+       SELECT
+        b.BRANCH_NAME,
+        b.TEL,
+        concat(
+            (
+                SELECT
+                    i.ITEM_NAME
+                FROM
+                    t_sys_code_item i
+                WHERE
+                    i.TYPE_CODE = '2006'
+                AND i.ITEM_CODE = b.PROVINCE
+            ),
+            b.CITY,
+            IFNULL(b.COUNTY, ''),
+            IFNULL(b.ADDRESS, '')
+        ) ADDRESS,
+        (
+		SELECT
+			item.ITEM_NAME
+		FROM
+			t_sys_code_item item
+		WHERE
+			item.TYPE_CODE = '1002'
+		AND item.ITEM_CODE = b.SALES_ORG
+	) SALES_ORG_NAME
+    FROM
+        t_md_branch b
+    WHERE
+        1 = 1
+        AND BRANCH_NO = #{branchNo}
+
+  </select>
+    <resultMap id="SendModeResultMap" type="com.nhry.data.basic.domain.TMdBranchSendMode" >
+        <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="FLAG" property="flag" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getSendMode" resultType="com.nhry.data.basic.domain.TMdBranchSendMode">
+        select BRANCH_NO,FLAG,SALES_ORG from t_md_branch_send_mode where branch_no = #{branchNo}
+    </select>
+    <select id="selectBranchSendMode" resultMap="SendModeResultMap">
+        select b.BRANCH_NO,b.BRANCH_NAME,	CASE
+        WHEN m.FLAG IS NULL THEN '0'
+        ELSE '1'
+        END FLAG from t_md_branch b left join t_md_branch_send_mode m ON b.branch_no = m.branch_no WHERE b.is_valid = '20' AND b.SALES_ORG = #{salesOrg}
+    </select>
+    <insert id="insertSendMode" parameterType="com.nhry.data.basic.domain.TMdBranchSendMode">
+        insert into t_md_branch_send_mode (BRANCH_NO, FLAG,SALES_ORG)
+        values (#{branchNo,jdbcType=VARCHAR},#{flag,jdbcType=VARCHAR},#{salesOrg,jdbcType=VARCHAR})
+    </insert>
+    <delete id="delSendMode" parameterType="com.nhry.data.basic.domain.TMdBranchSendMode">
+        DELETE FROM t_md_branch_send_mode WHERE sales_org = #{salesOrg,jdbcType=VARCHAR}
+    </delete>
+    
+    
+    
+    
+    
+     <select id="getBranchsByPromNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select b.BRANCH_NO,b.BRANCH_NAME
+        from t_md_branch b ,t_prom_scope_item i
+         where b.BRANCH_NO = i.BRANCH_NO 
+         and i.PROM_NO = #{promNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

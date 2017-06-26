@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stud.dao.TMdSchoolMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchool" >
+    <id column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
+    <result column="SCHOOL_CODE_TXT" property="schoolCodeTxt" jdbcType="VARCHAR" />
+    <result column="SCHOOL_NAME" property="schoolName" jdbcType="VARCHAR" />
+    <result column="ERP_CODE" property="erpCode" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="MOBILE_PHONE" property="mobilePhone" jdbcType="VARCHAR" />
+    <result column="CONTACT" property="contact" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="VISIABLE" property="visiable" jdbcType="VARCHAR" />
+    <result column="chekbox" property="chekbox" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="DISPATCHING" property="dispatching" jdbcType="VARCHAR" />
+    <result column="DISPATCHING_NAME" property="dispatchingName" jdbcType="VARCHAR" />
+    <result column="UNLOAD" property="unload" jdbcType="VARCHAR" />
+    <result column="UNLOAD_NAME" property="unloadName" jdbcType="VARCHAR" />
+    <result column="WERKS" property="werks" jdbcType="VARCHAR" />
+    <result column="LGORT" property="lgort" jdbcType="VARCHAR" />
+    <result column="ERP_CODE_SALES" property="erpCodeSales" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  <sql id="Base_Column_List" >
+    SCHOOL_CODE,SCHOOL_CODE_TXT ,SCHOOL_NAME, ERP_CODE, TEL, MOBILE_PHONE, CONTACT, ADDRESS, 
+    VISIABLE,if(VISIABLE='10',false,true) chekbox, SALES_ORG,WERKS,LGORT,ERP_CODE_SALES, DISPATCHING, UNLOAD, DISPATCHING_NAME, UNLOAD_NAME
+  </sql>
+  
+  
+  <select id="findSchoolListForBuildBatchOrder" resultType="com.nhry.data.stud.domain.TMdSchool" parameterType="java.lang.String">
+  	SELECT a.SCHOOL_CODE schoolCode, a.SCHOOL_CODE_TXT schoolCodeTxt, a.SCHOOL_NAME schoolName, a.SALES_ORG salesOrg
+  	,ERP_CODE erpCode
+	FROM t_md_school a
+	LEFT JOIN t_md_school_rule b ON a.SCHOOL_CODE=b.SCHOOL_CODE AND a.SALES_ORG=b.SALES_ORG
+	WHERE a.VISIABLE='10'
+	AND b.VISIABLE='10'
+	AND a.SALES_ORG=#{salesOrg}
+	AND b.MID IS NOT NULL
+	AND b.MID != ''
+  </select>
+  
+  <select id="serchSchoolList" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolQueryModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_school
+    where 1=1 
+    <if test="keyWord != null and keyWord != '' " >
+        and (SCHOOL_CODE_TXT like '%${keyWord}%' or SCHOOL_NAME  like '%${keyWord}%')
+    </if>
+    
+     <if test="visiable != null and visiable !='' " >
+        and VISIABLE=#{visiable}
+     </if>
+     
+     <if test="salesOrg != null and salesOrg !='' " >
+        and SALES_ORG=#{salesOrg}
+     </if>
+     
+     order by SCHOOL_CODE
+  </select>
+  
+  
+  
+  <select id="selectOne" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolQueryModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_school
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR} and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByEmpCode" resultMap="BaseResultMap" parameterType="java.util.Map" >
+   select 
+    <include refid="Base_Column_List" />
+    from t_md_school
+    where ERP_CODE = #{erpCode,jdbcType=VARCHAR} and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  
+  
+  <update id="updateStatusByTMdSchool" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+    update t_md_school
+    <set >
+      <if test="visiable != null" >
+        VISIABLE = #{visiable,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR} and  SALES_ORG=#{salesOrg}
+  </update>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_md_school
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  <insert id="saveSchool" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+    insert into t_md_school
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="schoolCode != null" >
+        SCHOOL_CODE,
+      </if>
+      <if test="schoolCodeTxt != null" >
+        SCHOOL_CODE_TXT,
+      </if>
+      <if test="schoolName != null" >
+        SCHOOL_NAME,
+      </if>
+      <if test="erpCode != null" >
+        ERP_CODE,
+      </if>
+      <if test="tel != null" >
+        TEL,
+      </if>
+      <if test="mobilePhone != null" >
+        MOBILE_PHONE,
+      </if>
+      <if test="contact != null" >
+        CONTACT,
+      </if>
+      <if test="address != null" >
+        ADDRESS,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="visiable != null" >
+        VISIABLE,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      
+      <if test="werks != null" >
+        WERKS,
+      </if>
+      
+       <if test="lgort != null" >
+        LGORT,
+      </if>
+      
+      
+       <if test="erpCodeSales != null" >
+        ERP_CODE_SALES,
+      </if>
+      
+      
+      <if test="dispatching != null" >
+        DISPATCHING,
+      </if>
+        
+      <if test="dispatchingName != null" >
+        DISPATCHING_NAME,
+      </if>
+        
+      <if test="unload != null" >
+        UNLOAD,
+      </if>
+        
+      <if test="unloadName != null" >
+        UNLOAD_NAME,
+      </if>
+      
+      
+      
+      
+      
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+   	  <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolCodeTxt != null" >
+        #{schoolCodeTxt,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="schoolName != null" >
+        #{schoolName,jdbcType=VARCHAR},
+      </if>
+      <if test="erpCode != null" >
+        #{erpCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null" >
+        #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="visiable != null" >
+        #{visiable,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      
+       <if test="werks != null" >
+     	  #{werks,jdbcType=VARCHAR},
+      </if>
+      
+       <if test="lgort != null" >
+         #{lgort,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="erpCodeSales != null" >
+         #{erpCodeSales,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="dispatching != null" >
+        #{dispatching,jdbcType=VARCHAR},
+      </if>
+        
+      <if test="dispatchingName != null" >
+        #{dispatchingName,jdbcType=VARCHAR},
+      </if>
+        
+      <if test="unload != null" >
+        #{unload,jdbcType=VARCHAR},
+      </if>
+        
+      <if test="unloadName != null" >
+        #{unloadName,jdbcType=VARCHAR},
+      </if>
+      
+    </trim>
+  </insert>
+  
+ <update id="updateByTMdSchool" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+    update t_md_school
+    <set >
+      <if test="schoolName != null" >
+        SCHOOL_NAME = #{schoolName,jdbcType=VARCHAR},
+      </if>
+      <if test="erpCode != null" >
+        ERP_CODE = #{erpCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null" >
+        MOBILE_PHONE = #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        CONTACT = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="visiable != null" >
+        VISIABLE = #{visiable,jdbcType=VARCHAR},
+      </if>
+      <if test="werks != null" >
+        WERKS = #{werks,jdbcType=VARCHAR},
+      </if>
+      <if test="lgort != null" >
+        LGORT = #{lgort,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="erpCodeSales != null" >
+        ERP_CODE_SALES = #{erpCodeSales,jdbcType=VARCHAR},
+      </if>
+      
+      
+      <if test="dispatching != null" >
+        DISPATCHING = #{dispatching,jdbcType=VARCHAR},
+      </if>
+        
+      <if test="dispatchingName != null" >
+        DISPATCHING_NAME = #{dispatchingName,jdbcType=VARCHAR},
+      </if>
+        
+      <if test="unload != null" >
+        UNLOAD = #{unload,jdbcType=VARCHAR},
+      </if>
+        
+      <if test="unloadName != null" >
+        UNLOAD_NAME = #{unloadName,jdbcType=VARCHAR}, 
+      </if>
+      
+    </set>
+    
+    
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+    update t_md_school
+    set SCHOOL_NAME = #{schoolName,jdbcType=VARCHAR},
+      ERP_CODE = #{erpCode,jdbcType=VARCHAR},
+      TEL = #{tel,jdbcType=VARCHAR},
+      MOBILE_PHONE = #{mobilePhone,jdbcType=VARCHAR},
+      CONTACT = #{contact,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      VISIABLE = #{visiable,jdbcType=VARCHAR}
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

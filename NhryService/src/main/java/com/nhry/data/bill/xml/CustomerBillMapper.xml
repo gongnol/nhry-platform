@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.bill.dao.CustomerBillMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.bill.domain.TMstRecvBill" >
+        <id column="RECEIPT_NO" property="receiptNo" jdbcType="VARCHAR" />
+        <result column="RECEIPT_DATE" property="receiptDate" jdbcType="DATE" />
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
+        <result column="HAD_OFFSET" property="hadOffset" jdbcType="VARCHAR" />
+        <result column="STATUS" property="status" jdbcType="VARCHAR" />
+        <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+        <result column="AMT" property="amt" jdbcType="DECIMAL" />
+        <result column="DISCOUNT_AMT" property="discountAmt" jdbcType="DECIMAL" />
+        <result column="SUPP_AMT" property="suppAmt" jdbcType="DECIMAL" />
+        <result column="ACC_AMT" property="accAmt" jdbcType="DECIMAL" />
+        <result column="CUST_ACC_AMT" property="custAccAmt" jdbcType="DECIMAL" />
+        <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+        <result column="VIP_CUST_NAME" property="vipCustName" jdbcType="VARCHAR" />
+        <result column="START_TIME" property="startTime" jdbcType="DATE" />
+        <result column="END_TIME" property="endTime" jdbcType="DATE" />
+        <result column="PAYMENT_YEAR_MONTH" property="paymentYearMonth" jdbcType="VARCHAR" />
+        <result column="RECV_EMP" property="recvEmp" jdbcType="VARCHAR" />
+        <result column="RECV_EMP_NAME" property="recvEmpName" jdbcType="VARCHAR" />
+        <result column="CREATE_AT" property="createAt" jdbcType="DATE" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="BillResultMap" type="com.nhry.data.bill.domain.TMstRecvBill" extends="BaseResultMap">
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="OFFSET_AMT" property="offsetAmt" jdbcType="DECIMAL" />
+    </resultMap>
+
+    <resultMap id="CollectResultMap" type="com.nhry.model.bill.CollectOrderBillModel" >
+        <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="BRANCH_TEL" property="branchTel" jdbcType="VARCHAR" />
+        <result column="BRANCH_ADDRESS" property="branchAddress" jdbcType="VARCHAR" />
+        <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+        <result column="VIP_NAME" property="vipName" jdbcType="VARCHAR" />
+        <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
+        <result column="CUST_ADDRESS" property="custAddress" jdbcType="VARCHAR" />
+        <result column="CUST_ADDRESS_SHORT" property="custAddressShort" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="EMP_TEL" property="empTel" jdbcType="VARCHAR" />
+        <result column="PROM_DESCRIBE" property="promDescribe" jdbcType="VARCHAR" />
+        <result column="ORDER_AMT" property="orderAmt" jdbcType="DECIMAL" />
+        <result column="ACC_AMT" property="accAmt" jdbcType="DECIMAL" />
+        <result column="CUST_ACC_AMT" property="custAccAmt" jdbcType="DECIMAL" />
+        <result column="START_DATE" property="startDate" jdbcType="DATE" />
+        <result column="END_DATE" property="endDate" jdbcType="DATE" />
+        <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL"/>
+        <result column="SALES_ORG_NAME" property="salesOrgName" jdbcType="VARCHAR" />
+        <collection property="entries" resultMap="MARAMAP"></collection>
+    </resultMap>
+
+    <resultMap id="MARAMAP" type="com.nhry.model.order.ProductItem" >
+        <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+        <result column="QTY" property="qty" jdbcType="INTEGER" />
+        <result column="BASE_PRICE" property="basePrice" jdbcType="DECIMAL" />
+        <result column="TOTAL_PRICE" property="totalPrice" jdbcType="DECIMAL" />
+    </resultMap>
+
+
+    <sql id="Base_Column_List" >
+        RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,REMARK,HAD_OFFSET,
+       PAYMENT_YEAR_MONTH,RECV_EMP,CREATE_AT,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+    </sql>
+    <sql id="Full_Column_List" >
+       RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,HAD_OFFSET,
+       PAYMENT_YEAR_MONTH,RECV_EMP,CREATE_AT,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+    </sql>
+    <select id="getCustomerOrderByCode" resultMap="BaseResultMap" parameterType="String">
+        select
+           b.RECV_EMP,e.EMP_NAME RECV_EMP_NAME,b.RECEIPT_NO,b.RECEIPT_DATE,b.ORDER_NO,b.PAYMENT_TYPE,b.STATUS,b.AMT,
+           b.VIP_CUST_NO,cust.VIP_NAME VIP_CUST_NAME,b.START_TIME,b.END_TIME,b.REMARK,b.PAYMENT_YEAR_MONTH,b.CREATE_AT,
+           b.CREATE_BY,b.CREATE_BY_TXT,b.LAST_MODIFIED,b.LAST_MODIFIED_BY,b.LAST_MODIFIED_BY_TXT,b.CUST_ACC_AMT,b.ACC_AMT,b.SUPP_AMT,
+           b.DISCOUNT_AMT
+        FROM t_mst_recv_bill b
+              LEFT JOIN t_vip_cust_info cust on b.VIP_CUST_NO = cust.VIP_CUST_NO
+              LEFT JOIN t_md_branch_emp e on b.RECV_EMP = e.EMP_NO
+	    WHERE 1=1
+	          and HAD_OFFSET = 'N'
+              and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </select>
+    <insert id="customerPayment" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+        insert into t_mst_recv_bill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="receiptNo != null">
+                RECEIPT_NO,
+            </if>
+            <if test="hadOffset != null">
+                HAD_OFFSET,
+            </if>
+            <if test="hadOffsetNo != null">
+                HAD_OFFSET_NO,
+            </if>
+            <if test="receiptDate != null">
+                RECEIPT_DATE,
+            </if>
+            <if test="orderNo != null">
+                ORDER_NO,
+            </if>
+            <if test="endTime != null">
+                END_TIME,
+            </if>
+            <if test="amt != null">
+                AMT,
+            </if>
+            <if test="suppAmt != null">
+                SUPP_AMT,
+            </if>
+            <if test="accAmt != null">
+                ACC_AMT,
+            </if>
+            <if test="custAccAmt != null">
+                CUST_ACC_AMT,
+            </if>
+            <if test="discountAmt != null">
+                DISCOUNT_AMT,
+            </if>
+            <if test="recvEmp != null">
+                RECV_EMP,
+            </if>
+            <if test="paymentType != null">
+                PAYMENT_TYPE,
+            </if>
+            <if test="vipCustNo != null">
+                VIP_CUST_NO,
+            </if>
+            <if test="paymentYearMonth != null">
+                PAYMENT_YEAR_MONTH,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="receiptNo != null">
+                #{receiptNo,jdbcType=VARCHAR},
+            </if>
+            <if test="hadOffset != null">
+               #{hadOffset,jdbcType=VARCHAR},
+            </if>
+            <if test="hadOffsetNo != null">
+               #{hadOffsetNo,jdbcType=VARCHAR},
+            </if>
+            <if test="receiptDate != null">
+                #{receiptDate,jdbcType=DATE},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=DATE},
+            </if>
+            <if test="amt!= null">
+                #{amt,jdbcType=DECIMAL},
+            </if>
+            <if test="suppAmt != null">
+                #{suppAmt,jdbcType=DECIMAL},
+            </if>
+            <if test="accAmt != null">
+              #{accAmt,jdbcType=DECIMAL},
+            </if>
+            <if test="custAccAmt != null">
+                #{custAccAmt,jdbcType=DECIMAL},
+            </if>
+            <if test="discountAmt != null">
+                #{discountAmt,jdbcType=DECIMAL},
+            </if>
+            <if test="recvEmp != null">
+                #{recvEmp,jdbcType=VARCHAR},
+            </if>
+            <if test="paymentType != null">
+                #{paymentType,jdbcType=VARCHAR},
+            </if>
+            <if test="vipCustNo != null">
+                #{vipCustNo,jdbcType=VARCHAR},
+            </if>
+            <if test="paymentYearMonth != null">
+                #{paymentYearMonth,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateCustomerBillrPayment" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+        update t_mst_recv_bill
+        <set>
+            <if test="receiptDate != null">
+               RECEIPT_DATE =  #{receiptDate,jdbcType=DATE},
+            </if>
+            <if test="orderNo != null">
+                ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null">
+              END_TIME =   #{endTime,jdbcType=DATE},
+            </if>
+            <if test="amt != null">
+               AMT =  #{amt,jdbcType=DECIMAL},
+            </if>
+            <if test="recvEmp != null">
+               RECV_EMP =  #{recvEmp,jdbcType=VARCHAR},
+            </if>
+            <if test="paymentType != null">
+               PAYMENT_TYPE =  #{paymentType,jdbcType=VARCHAR},
+            </if>
+            <if test="hadOffset != null">
+                HAD_OFFSET =  #{hadOffset,jdbcType=VARCHAR},
+            </if>
+            <if test="hadOffsetNo != null">
+                HAD_OFFSET_NO = #{hadOffsetNo,jdbcType=VARCHAR},
+            </if>
+            <if test="vipCustNo != null">
+               VIP_CUST_NO =  #{vipCustNo,jdbcType=VARCHAR},
+            </if>
+            <if test="paymentYearMonth != null">
+               PAYMENT_YEAR_MONTH =  #{paymentYearMonth,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+               STATUS =  #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+               REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModified != null" >
+                LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifiedBy != null" >
+                LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifiedByTxt != null" >
+                LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE  RECEIPT_NO = #{receiptNo,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getRecBillByReceoptNo" resultMap="BaseResultMap" parameterType="String">
+        select
+        b.RECV_EMP,e.EMP_NAME RECV_EMP_NAME,b.RECEIPT_NO,b.RECEIPT_DATE,b.ORDER_NO,b.PAYMENT_TYPE,b.STATUS,b.AMT,
+        b.VIP_CUST_NO,cust.VIP_NAME VIP_CUST_NAME,b.START_TIME,b.END_TIME,b.REMARK,b.PAYMENT_YEAR_MONTH,b.CREATE_AT,
+        b.CREATE_BY,b.CREATE_BY_TXT,b.LAST_MODIFIED,b.LAST_MODIFIED_BY,b.LAST_MODIFIED_BY_TXT,b.CUST_ACC_AMT,b.ACC_AMT,b.HAD_OFFSET
+        FROM t_mst_recv_bill b
+        LEFT JOIN t_vip_cust_info cust on b.VIP_CUST_NO = cust.VIP_CUST_NO
+        LEFT JOIN t_md_branch_emp e on b.RECV_EMP = e.EMP_NO
+        WHERE 1=1
+        and RECEIPT_NO = #{receiptNo,jdbcType=VARCHAR}
+    </select>
+
+
+    <insert id="addOffset" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+        insert into t_mst_recv_offset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="offsetNo != null">
+                OFFSET_NO,
+            </if>
+            <if test="offsetDate != null">
+                OFFSET_DATE,
+            </if>
+            <if test="receiptNo != null">
+                RECEIPT_NO,
+            </if>
+            <if test="orderNo != null">
+                ORDER_NO,
+            </if>
+            <if test="amt != null">
+                AMT,
+            </if>
+            <if test="accAmt != null">
+                ACC_AMT,
+            </if>
+            <if test="vipCustNo != null">
+                VIP_CUST_NO,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="offsetNo != null">
+                #{offsetNo,jdbcType=VARCHAR},
+            </if>
+            <if test="offsetDate != null">
+                #{offsetDate,jdbcType=DATE},
+            </if>
+            <if test="receiptNo != null">
+                #{receiptNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="amt!= null">
+                #{amt,jdbcType=DECIMAL},
+            </if>
+            <if test="accAmt != null">
+                #{accAmt,jdbcType=DECIMAL},
+            </if>
+            <if test="vipCustNo != null">
+                #{vipCustNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="addRefund" parameterType="com.nhry.data.bill.domain.TMstRefund" >
+        insert into t_mst_refund
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="refundNo != null">
+                REFUND_NO,
+            </if>
+            <if test="amt != null">
+                AMT,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="vipCustNo != null">
+                VIP_CUST_NO,
+            </if>
+            <if test="vipName != null">
+                VIP_NAME,
+            </if>
+            <if test="branchNo != null">
+                BRANCH_NO,
+            </if>
+            <if test="dealerNo != null">
+                DEALER_NO,
+            </if>
+            <if test="salesOrg != null">
+                SALES_ORG,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="refundNo != null">
+                #{refundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="amt != null">
+                #{amt,jdbcType=DECIMAL},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="vipCustNo != null">
+                #{vipCustNo,jdbcType=VARCHAR},
+            </if>
+            <if test="vipName != null">
+                #{vipName,jdbcType=VARCHAR},
+            </if>
+            <if test="branchNo != null">
+                #{branchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="dealerNo != null">
+                #{dealerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="salesOrg != null">
+                #{salesOrg,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+
+
+    <select id="selectNoItemsCollectByOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
+        SELECT
+        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
+        c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
+        bill.SUPP_AMT  ORDER_AMT,
+        bill.CUST_ACC_AMT,
+        (SELECT MIN(START_DISP_DATE) FROM t_mst_plan_order_item WHERE ORDER_NO=o.ORDER_NO) START_DATE,o.END_DATE,
+        (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
+
+        concat(
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE
+        ),b.CITY,IFNULL(b.COUNTY,''),b.ADDRESS
+        ) BRANCH_ADDRESS,
+
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+
+
+        concat(
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS_SHORT
+
+        ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,i.DISP_TOTAL QTY,i.SALES_PRICE BASE_PRICE,(i.DISP_TOTAL * i.SALES_PRICE) TOTAL_PRICE
+        from t_preorder o
+        LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
+        LEFT JOIN  t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
+        LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_plan_order_item i on o.ORDER_NO = i.ORDER_NO
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
+        WHERE 1=1
+        and b.SALES_ORG = o.SALES_ORG
+        and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
+        GROUP BY o.ORDER_NO,i.MATNR
+        ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
+    </select>
+
+
+    <select id="selectNoItemsCollectByOrders2" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CustBatchBillQueryModel">
+        SELECT
+        o.ORDER_NO,
+        (
+            CASE
+            WHEN o.DISCOUNT_AMT > 0 THEN CONCAT('折扣',o.DISCOUNT_AMT,'元')
+            ELSE ''
+            END
+        ) PROM_DESCRIBE,
+        o.BRANCH_NO,
+        o.EMP_NO,
+        e.MP EMP_TEL,
+        e.EMP_NAME,
+        c.VIP_NAME,
+        c.MP CUST_TEL,
+        o.INIT_AMT,
+        bill.SUPP_AMT  ORDER_AMT,
+        bill.CUST_ACC_AMT,
+        (SELECT MIN(START_DISP_DATE) FROM t_mst_plan_order_item WHERE ORDER_NO=o.ORDER_NO)  START_DATE,
+        o.END_DATE,
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+        concat(
+
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS_SHORT
+        ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,sum(i.DISP_TOTAL) QTY,i.SALES_PRICE BASE_PRICE,(sum(i.DISP_TOTAL) * i.SALES_PRICE) TOTAL_PRICE
+        from t_preorder o
+        left JOIN t_promotion p on o.PROMOTION = p.PROM_NO
+        LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
+        LEFT JOIN  t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
+        left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_plan_order_item i on o.ORDER_NO = i.ORDER_NO
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and ex.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+        WHERE 1=1
+        and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50'OR  o.PREORDER_SOURCE ='70' )
+        and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
+        and ( p.PROM_SUB_TYPE!='Z017' OR p.PROM_NO='' OR p.PROM_NO is null)
+        and o.INIT_AMT > 0
+        and  o.PAYMENTMETHOD ='20'
+        <if test="orderNo !=null and orderNo!=''">
+            and  o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo !=null and empNo!=''">
+            and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo !=null and branchNo!=''">
+            and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="status !=null and status!=''">
+            and  o.PAYMENT_STAT = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="orderStartDate !=null and ''!=orderStartDate">
+            and o.END_DATE &gt;= #{orderStartDate,jdbcType=DATE}
+        </if>
+        <if test="orderEndDate !=null and ''!=orderEndDate">
+            and   o.END_DATE &lt;= #{orderEndDate,jdbcType=DATE}
+        </if>
+        <if test="search !=null and '' !=search" >
+            and  ( o.ORDER_NO like '%${search}%'
+            or  e.EMP_NAME like'%${search}%'
+            or c.VIP_NAME like '%${search}%'
+            or c.MP like '%${search}%'
+            or r.RESIDENTIAL_AREA_TXT like '%${search}%'
+            or a.ADDRESS_TXT like '%${search}%'
+            or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${search}%'
+            )
+        </if>
+        GROUP BY o.ORDER_NO,i.MATNR
+        ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
+    </select>
+
+    <select id="selectHasItemsCollectByOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
+        SELECT
+        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.MP EMP_TEL,e.EMP_NAME,c.VIP_NAME,
+        c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
+        bill.SUPP_AMT  ORDER_AMT,
+        bill.CUST_ACC_AMT,
+        o.END_DATE,
+        (SELECT MIN(DISP_DATE) FROM t_mst_order_daliy_plan_item WHERE ORDER_NO=o.ORDER_NO) START_DATE,
+        (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/>  and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
+
+        concat(
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE
+        ),b.CITY,IFNULL(b.COUNTY,''),b.ADDRESS
+        ) BRANCH_ADDRESS,
+
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+
+        concat(
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS_SHORT
+        ,i.ORDER_NO,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,SUM(i.QTY) QTY,i.PRICE BASE_PRICE,sum(i.AMT) TOTAL_PRICE
+        from t_preorder o
+
+        LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
+        LEFT JOIN  t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
+        LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
+        WHERE 1=1
+        and o.MILKBOX_STAT !="20"
+        and b.SALES_ORG = o.SALES_ORG
+        and i.STATUS !='30'
+        and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
+        GROUP BY o.ORDER_NO,i.MATNR
+        ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
+    </select>
+
+
+    <select id="selectHasItemsCollectByOrders2" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CustBatchBillQueryModel">
+        SELECT
+        o.ORDER_NO,
+        o.BRANCH_NO,
+        o.EMP_NO,
+        e.MP EMP_TEL,
+        e.EMP_NAME,
+        c.VIP_NAME,
+        c.MP CUST_TEL,
+        o.INIT_AMT,
+        bill.SUPP_AMT  ORDER_AMT,
+        bill.CUST_ACC_AMT,
+        o.END_DATE,
+        (SELECT MIN(DISP_DATE) FROM t_mst_order_daliy_plan_item WHERE ORDER_NO=o.ORDER_NO) START_DATE,
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+        concat(
+
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS_SHORT
+        ,i.ORDER_NO,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,SUM(i.QTY) QTY,i.PRICE BASE_PRICE,sum(i.AMT) TOTAL_PRICE
+        from t_preorder o
+        LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
+        LEFT JOIN  t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
+        left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO AND (i.STATUS ='10' OR i.`STATUS` ='20')
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and  ex.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        WHERE 1=1
+        and o.INIT_AMT > 0
+        and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50'OR  o.PREORDER_SOURCE ='70' )
+        and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
+        and o.INIT_AMT > 0
+
+        and  o.PAYMENTMETHOD ='10'
+        <if test="orderNo !=null and orderNo!=''">
+            and  o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo !=null and empNo!=''">
+            and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo !=null and branchNo!=''">
+            and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="status !=null and status!=''">
+            and  o.PAYMENT_STAT = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="orderStartDate !=null and ''!=orderStartDate">
+            and o.END_DATE &gt;= #{orderStartDate,jdbcType=DATE}
+        </if>
+        <if test="orderEndDate !=null and ''!=orderEndDate">
+            and   o.END_DATE &lt;= #{orderEndDate,jdbcType=DATE}
+        </if>
+        <if test="search !=null and '' !=search" >
+            and  ( o.ORDER_NO like '%${search}%'
+            or  e.EMP_NAME like'%${search}%'
+            or c.VIP_NAME like '%${search}%'
+            or c.MP like '%${search}%'
+            or r.RESIDENTIAL_AREA_TXT like '%${search}%'
+            or a.ADDRESS_TXT like '%${search}%'
+            or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${search}%'
+            )
+        </if>
+        GROUP BY o.ORDER_NO,i.MATNR
+        ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
+    </select>
+
+    <select id="queryCollectByAfterOrderNo" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
+        SELECT
+        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.MP EMP_TEL,e.EMP_NAME,c.VIP_NAME,
+        c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
+        (
+        CASE
+        WHEN bill.CUST_ACC_AMT >=0 and o.INIT_AMT - bill.CUST_ACC_AMT >0 THEN  o.INIT_AMT-bill.CUST_ACC_AMT
+        ELSE 0 END
+        ) ORDER_AMT,
+        bill.CUST_ACC_AMT,
+        o.END_DATE,MIN(i.DISP_DATE) START_DATE,
+        (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/>  and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
+
+        concat(
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE
+        ),b.CITY,IFNULL(b.COUNTY,''),b.ADDRESS
+        ) BRANCH_ADDRESS,
+
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
+        IFNULL(c.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+
+        concat(
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
+        IFNULL(c.ADDRESS_TXT,'')
+        )CUST_ADDRESS_SHORT
+        ,i.ORDER_NO,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,SUM(i.QTY) QTY,i.PRICE BASE_PRICE,sum(i.AMT) TOTAL_PRICE
+        from t_preorder o
+        LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
+        LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
+        WHERE 1=1
+        and b.SALES_ORG = o.SALES_ORG
+        and o.ORDER_NO = #{o.ORDER_NO,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectNoItemsCollectByOrder" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
+        SELECT
+        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
+        c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
+        (
+        CASE
+        WHEN bill.CUST_ACC_AMT >=0 and o.INIT_AMT - bill.CUST_ACC_AMT >0 THEN  o.INIT_AMT-bill.CUST_ACC_AMT
+        ELSE 0 END
+        )ORDER_AMT,
+        bill.CUST_ACC_AMT,
+        MIN(i.START_DISP_DATE)  START_DATE,o.END_DATE,
+        (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
+
+        concat(
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE
+        ),b.CITY,IFNULL(b.COUNTY,''),b.ADDRESS
+        ) BRANCH_ADDRESS,
+
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
+        IFNULL(c.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+
+
+        concat(
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
+        IFNULL(c.ADDRESS_TXT,'')
+        )CUST_ADDRESS_SHORT
+
+        ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,i.DISP_TOTAL QTY,i.SALES_PRICE BASE_PRICE,(i.DISP_TOTAL * i.SALES_PRICE) TOTAL_PRICE
+        from t_preorder o
+        LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
+        LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_plan_order_item i on o.ORDER_NO = i.ORDER_NO
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
+        WHERE 1=1
+        and b.SALES_ORG = o.SALES_ORG
+        and o.ORDER_NO = #{o.ORDER_NO,jdbcType=VARCHAR}
+    </select>
+    <delete id="delReceipt" parameterType="string">
+        DELETE  FROM  t_mst_recv_bill WHERE  RECEIPT_NO = #{receiptNo}
+    </delete>
+    <select id="getBranchEmpPayment" resultMap="BillResultMap" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+        SELECT
+        o.BRANCH_NO,
+        o.EMP_NO ,
+        sum(b.AMT)  AMT,
+        b.RECEIPT_DATE,
+        b.HAD_OFFSET,
+        sum(f.AMT) OFFSET_AMT
+        FROM t_preorder  o
+        LEFT JOIN t_mst_recv_bill  b on o.ORDER_NO = b.ORDER_NO
+        LEFT JOIN t_mst_recv_offset f on b.RECEIPT_NO = f.RECEIPT_NO
+        WHERE b.`STATUS`='20'
+        and o.BRANCH_NO= #{branchNo,jdbcType=VARCHAR}
+        <if test="receiptDate != null" >
+            and b.RECEIPT_DATE = #{receiptDate,jdbcType=DATE}
+        </if>
+        GROUP BY b.RECEIPT_DATE,o.EMP_NO
+        ORDER BY o.ORDER_NO,o.EMP_NO
+    </select>
+    <select id="getBranchEmpPaymentByEmpNo" resultMap="BillResultMap" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+        SELECT
+        o.BRANCH_NO,
+        o.EMP_NO ,
+        sum(b.AMT)  AMT,
+        b.RECEIPT_DATE,
+        b.HAD_OFFSET,
+        sum(f.AMT) OFFSET_AMT
+        FROM t_preorder  o
+        LEFT JOIN t_mst_recv_bill  b on o.ORDER_NO = b.ORDER_NO
+        LEFT JOIN t_mst_recv_offset f on b.RECEIPT_NO = f.RECEIPT_NO
+        WHERE b.`STATUS`='20'
+        and o.BRANCH_NO= #{branchNo,jdbcType=VARCHAR}
+        <if test="empNo != null" >
+            and o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="receiptDate != null" >
+            and b.RECEIPT_DATE = #{receiptDate,jdbcType=DATE}
+        </if>
+        GROUP BY b.RECEIPT_DATE,o.EMP_NO
+        ORDER BY o.ORDER_NO,o.EMP_NO
+    </select>
+</mapper>

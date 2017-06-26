@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stud.dao.TMdSchoolMaraRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchoolMaraRule" >
+    <id column="MID" property="mid" jdbcType="VARCHAR" />
+    <result column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
+     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="MATNR_QTY" property="matnrQty" jdbcType="INTEGER" />
+    <result column="FIXED_QTY" property="fixedQty" jdbcType="INTEGER" />
+    <result column="FIXED_SCALE" property="fixedScale" jdbcType="INTEGER" />
+    <result column="FIXED_MAX_QTY" property="fixedMaxQty" jdbcType="INTEGER" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR" />
+   
+  </resultMap>
+  
+  <select id="findSchoolMaraRule" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    ru.MID, ru.SCHOOL_CODE, ru.MATNR, ru.MATNR_QTY, ru.FIXED_QTY,ru.FIXED_SCALE, ru.FIXED_MAX_QTY, 
+	ru.SALES_ORG ,
+	(CASE WHEN(sc.SHORT_TXT IS NULL OR sc.SHORT_TXT='')THEN sc.MATNR_TXT ELSE sc.SHORT_TXT  END) MATNR_TXT
+	,sc.SPEC_UNIT
+    from t_md_school_mara_rule ru left join t_md_mara_stud sc  on ru.MATNR=sc.MATNR and ru.SALES_ORG=sc.SALES_ORG
+    where  ru.SCHOOL_CODE= #{schoolCode,jdbcType=VARCHAR} and ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findSchoolMaraRuleForMatnr" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    ru.MID, ru.SCHOOL_CODE, ru.MATNR, ru.MATNR_QTY, ru.FIXED_QTY,ru.FIXED_SCALE, ru.FIXED_MAX_QTY, 
+	ru.SALES_ORG ,
+	(CASE WHEN(sc.SHORT_TXT IS NULL OR sc.SHORT_TXT='')THEN sc.MATNR_TXT ELSE sc.SHORT_TXT  END) MATNR_TXT
+	,sc.SPEC_UNIT
+    from t_md_school_mara_rule ru left join t_md_mara_stud sc  on ru.MATNR=sc.MATNR and ru.SALES_ORG=sc.SALES_ORG
+    where  ru.SCHOOL_CODE= #{schoolCode,jdbcType=VARCHAR} 
+    and ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
+    and ru.MATNR=#{matnr}
+  </select>
+  
+  
+  <delete id="deleteByModel" parameterType="com.nhry.model.stud.SchoolMaraRuleModel" >
+    delete from t_md_school_mara_rule 
+    	where SCHOOL_CODE= #{schoolCode,jdbcType=VARCHAR} and SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  <insert id="intsertinfo" parameterType="com.nhry.data.stud.domain.TMdSchoolMaraRule" >
+    insert into t_md_school_mara_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        MID,
+      </if>
+      <if test="schoolCode != null" >
+        SCHOOL_CODE,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="matnrQty != null" >
+        MATNR_QTY,
+      </if>
+      <if test="fixedQty != null" >
+        FIXED_QTY,
+      </if>
+      <if test="fixedScale != null" >
+        FIXED_SCALE,
+      </if>
+      <if test="fixedMaxQty != null" >
+        FIXED_MAX_QTY,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="matnrQty != null" >
+        #{matnrQty,jdbcType=INTEGER},
+      </if>
+      <if test="fixedQty != null" >
+        #{fixedQty,jdbcType=INTEGER},
+      </if>
+      <if test="fixedScale != null" >
+        #{fixedScale,jdbcType=INTEGER},
+      </if>
+      <if test="fixedMaxQty != null" >
+        #{fixedMaxQty,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+</mapper>

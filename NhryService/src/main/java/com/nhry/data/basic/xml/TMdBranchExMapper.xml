@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdBranchExMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdBranchEx" >
+    <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="COMP_CODE" property="compCode" jdbcType="VARCHAR" />
+    <result column="DOC_TYPE" property="docType" jdbcType="VARCHAR" />
+    <result column="PURCH_ORG" property="purchOrg" jdbcType="VARCHAR" />
+    <result column="PURCH_GROUP" property="purchGroup" jdbcType="VARCHAR" />
+    <result column="SUPPL_PLNT" property="supplPlnt" jdbcType="VARCHAR" />
+    <result column="RESLO" property="reslo" jdbcType="VARCHAR"/>
+    <result column="KOSTL" property="kostl" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    BRANCH_NO, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+    LAST_MODIFIED_BY_TXT, COMP_CODE, DOC_TYPE, PURCH_ORG, PURCH_GROUP, SUPPL_PLNT,RESLO,KOSTL
+  </sql>
+  <select id="getBranchEx" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_branch_ex
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteBranchEx" parameterType="java.lang.String" >
+    delete from t_md_branch_ex
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertBranchEx" parameterType="com.nhry.data.basic.domain.TMdBranchEx" >
+    insert into t_md_branch_ex (BRANCH_NO, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT, COMP_CODE, DOC_TYPE, 
+      PURCH_ORG, PURCH_GROUP, SUPPL_PLNT,RESLO
+      )
+    values (#{branchNo,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR}, #{compCode,jdbcType=VARCHAR}, #{docType,jdbcType=VARCHAR}, 
+      #{purchOrg,jdbcType=VARCHAR}, #{purchGroup,jdbcType=VARCHAR}, #{supplPlnt,jdbcType=VARCHAR},#{reslo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertBranchExSelective" parameterType="com.nhry.data.basic.domain.TMdBranchEx" >
+    insert into t_md_branch_ex
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="compCode != null" >
+        COMP_CODE,
+      </if>
+      <if test="docType != null" >
+        DOC_TYPE,
+      </if>
+      <if test="purchOrg != null" >
+        PURCH_ORG,
+      </if>
+      <if test="purchGroup != null" >
+        PURCH_GROUP,
+      </if>
+      <if test="supplPlnt != null" >
+        SUPPL_PLNT,
+      </if>
+      <if test="reslo != null">
+        RESLO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="compCode != null" >
+        #{compCode,jdbcType=VARCHAR},
+      </if>
+      <if test="docType != null" >
+        #{docType,jdbcType=VARCHAR},
+      </if>
+      <if test="purchOrg != null" >
+        #{purchOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="purchGroup != null" >
+        #{purchGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="supplPlnt != null" >
+        #{supplPlnt,jdbcType=VARCHAR},
+      </if>
+      <if test="reslo != null">
+        #{reslo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateBranchExSelective" parameterType="com.nhry.data.basic.domain.TMdBranchEx" >
+    update t_md_branch_ex
+    <set >
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="compCode != null" >
+        COMP_CODE = #{compCode,jdbcType=VARCHAR},
+      </if>
+      <if test="docType != null" >
+        DOC_TYPE = #{docType,jdbcType=VARCHAR},
+      </if>
+      <if test="purchOrg != null" >
+        PURCH_ORG = #{purchOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="purchGroup != null" >
+        PURCH_GROUP = #{purchGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="supplPlnt != null" >
+        SUPPL_PLNT = #{supplPlnt,jdbcType=VARCHAR},
+      </if>
+      <if test="reslo != null">
+        RESLO = #{reslo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateBranchEx" parameterType="com.nhry.data.basic.domain.TMdBranchEx" >
+    update t_md_branch_ex
+    set CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      COMP_CODE = #{compCode,jdbcType=VARCHAR},
+      DOC_TYPE = #{docType,jdbcType=VARCHAR},
+      PURCH_ORG = #{purchOrg,jdbcType=VARCHAR},
+      PURCH_GROUP = #{purchGroup,jdbcType=VARCHAR},
+      SUPPL_PLNT = #{supplPlnt,jdbcType=VARCHAR},
+      RESLO = #{reslo,jdbcType=VARCHAR},
+      KOSTL = #{kostl,jdbcType=VARCHAR}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateBranchKostl" parameterType="com.nhry.model.basic.BranchExkostlModel">
+    update t_md_branch_ex
+    set KOSTL = #{kostl,jdbcType=VARCHAR}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

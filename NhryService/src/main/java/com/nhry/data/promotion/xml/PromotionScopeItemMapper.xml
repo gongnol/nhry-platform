@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.promotion.dao.PromotionScopeItemMapper">
+  <resultMap id="BaseResultMap" type="com.nhry.data.promotion.domain.PromotionScopeItem">
+    <id column="PROM_NO" jdbcType="VARCHAR" property="promNo" />
+    <id column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    PROM_NO, BRANCH_NO
+  </sql>
+  <select id="selectScopeItem" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_prom_scope_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteScopeItem" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem">
+    delete from t_prom_scope_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </delete>
+  
+  
+
+
+  <insert id="insertScopeItem" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem">
+    insert into t_prom_scope_item (PROM_NO,BRANCH_NO
+      )
+    values (#{promNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertScopeItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem">
+    insert into t_prom_scope_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="promNo != null">
+        PROM_NO,
+      </if>
+
+      <if test="branchNo != null">
+        BRANCH_NO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="promNo != null">
+        #{promNo,jdbcType=VARCHAR},
+      </if>
+
+      <if test="branchNo != null">
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  
+    <delete id="delPromScopeByNo" parameterType="java.lang.String">
+    delete from t_prom_scope_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+  </delete>
+  
+  
+    <select id="selectScopeItemsByKey" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_prom_scope_item
+    where 1=1
+    <if test="promNo!=null">
+     and  PROM_NO = #{promNo,jdbcType=VARCHAR}
+    </if>
+      <if test="branchNo!=null">
+     and  BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  
+  
+    <delete id="delPromScopeByPromScope" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem" >
+    delete from t_prom_scope_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+    and  BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </delete>
+</mapper>

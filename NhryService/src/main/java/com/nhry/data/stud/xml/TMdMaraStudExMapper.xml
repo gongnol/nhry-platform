@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stud.dao.TMdMaraStudExMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdMaraStudEx" >
+    <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <id column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="SALES_FLAG" property="salesFlag" jdbcType="VARCHAR" />
+    <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+    <result column="PRE_DAYS" property="preDays" jdbcType="INTEGER" />
+    <result column="BOT_TYPE" property="botType" jdbcType="VARCHAR" />
+    <result column="RET_BOT_FLAG" property="retBotFlag" jdbcType="CHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="WERKS" property="werks" jdbcType="VARCHAR" />
+    <result column="RESLO" property="reslo" jdbcType="VARCHAR" />
+    <result column="RATE" property="rate" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MATNR, SALES_ORG, SALES_FLAG, SHORT_TXT, PRE_DAYS, BOT_TYPE, RET_BOT_FLAG, CREATE_AT, 
+    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
+    WERKS, RESLO, RATE
+  </sql>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.promotion.dao.PromotionConItemMapper">
+  <resultMap id="BaseResultMap" type="com.nhry.data.promotion.domain.PromotionConItem">
+    <id column="PROM_NO" jdbcType="VARCHAR" property="promNo" />
+    <id column="ITEM_NO" jdbcType="VARCHAR" property="itemNo" />
+    <result column="CON_TYPE" jdbcType="VARCHAR" property="conType" />
+    <result column="OPT" jdbcType="VARCHAR" property="opt" />
+    <result column="HIGH" jdbcType="DECIMAL" property="high" />
+    <result column="LOW" jdbcType="DECIMAL" property="low" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    PROM_NO, ITEM_NO, CON_TYPE, OPT, HIGH, LOW
+  </sql>
+  <select id="selectConItem" parameterType="com.nhry.data.promotion.domain.PromotionConItemKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_con_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteConItem" parameterType="com.nhry.data.promotion.domain.PromotionConItemKey">
+    delete from t_promotion_con_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </delete>
+
+  <update id="updateConItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionConItem">
+    update t_promotion_con_item
+    <set>
+      <if test="conType != null">
+        CON_TYPE = #{conType,jdbcType=VARCHAR},
+      </if>
+      <if test="opt != null">
+        OPT = #{opt,jdbcType=VARCHAR},
+      </if>
+      <if test="high != null">
+        HIGH = #{high,jdbcType=DECIMAL},
+      </if>
+      <if test="low != null">
+        LOW = #{low,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateConItem" parameterType="com.nhry.data.promotion.domain.PromotionConItem">
+    update t_promotion_con_item
+    set CON_TYPE = #{conType,jdbcType=VARCHAR},
+      OPT = #{opt,jdbcType=VARCHAR},
+      HIGH = #{high,jdbcType=DECIMAL},
+      LOW = #{low,jdbcType=DECIMAL}
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+  <insert id="insertConItem" parameterType="com.nhry.data.promotion.domain.PromotionConItem">
+    insert into t_promotion_con_item (PROM_NO, ITEM_NO, CON_TYPE, 
+      OPT, HIGH, LOW)
+    values (#{promNo,jdbcType=VARCHAR}, #{itemNo,jdbcType=VARCHAR}, #{conType,jdbcType=VARCHAR}, 
+      #{opt,jdbcType=VARCHAR}, #{high,jdbcType=DECIMAL}, #{low,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertConItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionConItem">
+    insert into t_promotion_con_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="promNo != null">
+        PROM_NO,
+      </if>
+      <if test="itemNo != null">
+        ITEM_NO,
+      </if>
+      <if test="conType != null">
+        CON_TYPE,
+      </if>
+      <if test="opt != null">
+        OPT,
+      </if>
+      <if test="high != null">
+        HIGH,
+      </if>
+      <if test="low != null">
+        LOW,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="promNo != null">
+        #{promNo,jdbcType=VARCHAR},
+      </if>
+      <if test="itemNo != null">
+        #{itemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="conType != null">
+        #{conType,jdbcType=VARCHAR},
+      </if>
+      <if test="opt != null">
+        #{opt,jdbcType=VARCHAR},
+      </if>
+      <if test="high != null">
+        #{high,jdbcType=DECIMAL},
+      </if>
+      <if test="low != null">
+        #{low,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  
+  
+   <delete id="delConPromByNo" parameterType="java.lang.String">
+    delete from t_promotion_con_item
+    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+  </delete>
+  
+</mapper>

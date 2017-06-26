@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.bill.dao.TMdDispRateMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.bill.domain.TMdDispRate" >
+        <id column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+        <result column="SALES_ORG_NAME" property="salesOrgName" jdbcType="VARCHAR" />
+        <result column="SALARY_MET" property="salaryMet" jdbcType="VARCHAR" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+       SALES_ORG,SALARY_MET,SALARY_MET,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+    </sql>
+    <select id="getDispRateBySaleOrg" resultMap="BaseResultMap" parameterType="String">
+        SELECT  SALES_ORG,SALARY_MET,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT,
+        (
+        SELECT
+        i.ITEM_NAME
+        from t_sys_code_item i
+        WHERE i.TYPE_CODE= <include refid="mybaties.constant.SALES_ORG_CONSTANT"></include>
+        and i.ITEM_CODE = SALES_ORG
+        ) SALES_ORG_NAME
+        from t_md_disp_rate
+       where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </select>
+
+
+
+    <update id="uptDispRateTypeBySaleOrg"   parameterType="com.nhry.data.bill.domain.TMdDispRate" >
+         UPDATE  t_md_disp_rate
+         SET
+          SALARY_MET = #{salaryMet,jdbcType=VARCHAR},
+          LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+          LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+          LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
+         WHERE   SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </update>
+
+    <insert id="addDispRateSalOrg"   parameterType="com.nhry.data.bill.domain.TMdDispRate" >
+        INSERT INTO  t_md_disp_rate
+        (SALES_ORG,SALARY_MET,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT)
+        values( #{salesOrg,jdbcType=VARCHAR},#{salaryMet,jdbcType=VARCHAR},#{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR},
+        #{lastModified,jdbcType=TIMESTAMP},#{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>

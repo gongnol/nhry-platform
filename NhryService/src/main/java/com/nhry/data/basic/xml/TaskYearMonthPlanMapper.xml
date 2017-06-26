@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TaskYearMonthPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TaskYearMonthPlan" >
+    <id column="BRANCK_NO" property="branckNo" jdbcType="VARCHAR" />
+    <id column="TASK_YEAR" property="taskYear" jdbcType="VARCHAR" />
+    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+    <result column="TASK_JAN" property="taskJan" jdbcType="DECIMAL" />
+    <result column="TASK_FEB" property="taskFeb" jdbcType="DECIMAL" />
+    <result column="TASK_MAR" property="taskMar" jdbcType="DECIMAL" />
+    <result column="TASK_APR" property="taskApr" jdbcType="DECIMAL" />
+    <result column="TASK_MAY" property="taskMay" jdbcType="DECIMAL" />
+    <result column="TASK_JUN" property="taskJun" jdbcType="DECIMAL" />
+    <result column="TASK_JUL" property="taskJul" jdbcType="DECIMAL" />
+    <result column="TASK_AUG" property="taskAug" jdbcType="DECIMAL" />
+    <result column="TASK_SEP" property="taskSep" jdbcType="DECIMAL" />
+    <result column="TASK_OCT" property="taskOct" jdbcType="DECIMAL" />
+    <result column="TASK_NOV" property="taskNov" jdbcType="DECIMAL" />
+    <result column="TASK_DEV" property="taskDev" jdbcType="DECIMAL" />
+    <result column="TASK_YEAR_PLAN" property="taskYearPlan" jdbcType="DECIMAL" />
+    <result column="CREATER_BY" property="createrBy" jdbcType="VARCHAR" />
+    <result column="CREATER_AT" property="createrAt" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_AT" property="updateAt" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    BRANCK_NO, TASK_YEAR, BRANCH_NAME, TASK_JAN, TASK_FEB, TASK_MAR, TASK_APR, TASK_MAY, 
+    TASK_JUN, TASK_JUL, TASK_AUG, TASK_SEP, TASK_OCT, TASK_NOV, TASK_DEV, TASK_YEAR_PLAN, 
+    CREATER_BY, CREATER_AT, UPDATE_AT, UPDATE_BY
+  </sql>
+  <select id="selectPlan" resultMap="BaseResultMap" parameterType="com.nhry.data.basic.domain.TaskYearMonthPlanKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_task_year_month_plan
+    where BRANCK_NO = #{branckNo,jdbcType=VARCHAR}
+      and TASK_YEAR = #{taskYear,jdbcType=VARCHAR}
+  </select>
+  <delete id="deletePlan" parameterType="com.nhry.data.basic.domain.TaskYearMonthPlanKey" >
+    delete from t_task_year_month_plan
+    where BRANCK_NO = #{branckNo,jdbcType=VARCHAR}
+      and TASK_YEAR = #{taskYear,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertPlan" parameterType="com.nhry.data.basic.domain.TaskYearMonthPlan" >
+    insert into t_task_year_month_plan (BRANCK_NO, TASK_YEAR, BRANCH_NAME, 
+      TASK_JAN, TASK_FEB, TASK_MAR, 
+      TASK_APR, TASK_MAY, TASK_JUN, 
+      TASK_JUL, TASK_AUG, TASK_SEP, 
+      TASK_OCT, TASK_NOV, TASK_DEV, 
+      TASK_YEAR_PLAN, CREATER_BY, CREATER_AT, 
+      UPDATE_AT, UPDATE_BY)
+    values (#{branckNo,jdbcType=VARCHAR}, #{taskYear,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, 
+      #{taskJan,jdbcType=DECIMAL}, #{taskFeb,jdbcType=DECIMAL}, #{taskMar,jdbcType=DECIMAL}, 
+      #{taskApr,jdbcType=DECIMAL}, #{taskMay,jdbcType=DECIMAL}, #{taskJun,jdbcType=DECIMAL}, 
+      #{taskJul,jdbcType=DECIMAL}, #{taskAug,jdbcType=DECIMAL}, #{taskSep,jdbcType=DECIMAL}, 
+      #{taskOct,jdbcType=DECIMAL}, #{taskNov,jdbcType=DECIMAL}, #{taskDev,jdbcType=DECIMAL}, 
+      #{taskYearPlan,jdbcType=DECIMAL}, #{createrBy,jdbcType=VARCHAR}, #{createrAt,jdbcType=TIMESTAMP}, 
+      #{updateAt,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updatePlanSelective" parameterType="com.nhry.data.basic.domain.TaskYearMonthPlan" >
+    update t_task_year_month_plan
+    <set >
+      <if test="branchName != null" >
+        BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskJan != null" >
+        TASK_JAN = #{taskJan,jdbcType=DECIMAL},
+      </if>
+      <if test="taskFeb != null" >
+        TASK_FEB = #{taskFeb,jdbcType=DECIMAL},
+      </if>
+      <if test="taskMar != null" >
+        TASK_MAR = #{taskMar,jdbcType=DECIMAL},
+      </if>
+      <if test="taskApr != null" >
+        TASK_APR = #{taskApr,jdbcType=DECIMAL},
+      </if>
+      <if test="taskMay != null" >
+        TASK_MAY = #{taskMay,jdbcType=DECIMAL},
+      </if>
+      <if test="taskJun != null" >
+        TASK_JUN = #{taskJun,jdbcType=DECIMAL},
+      </if>
+      <if test="taskJul != null" >
+        TASK_JUL = #{taskJul,jdbcType=DECIMAL},
+      </if>
+      <if test="taskAug != null" >
+        TASK_AUG = #{taskAug,jdbcType=DECIMAL},
+      </if>
+      <if test="taskSep != null" >
+        TASK_SEP = #{taskSep,jdbcType=DECIMAL},
+      </if>
+      <if test="taskOct != null" >
+        TASK_OCT = #{taskOct,jdbcType=DECIMAL},
+      </if>
+      <if test="taskNov != null" >
+        TASK_NOV = #{taskNov,jdbcType=DECIMAL},
+      </if>
+      <if test="taskDev != null" >
+        TASK_DEV = #{taskDev,jdbcType=DECIMAL},
+      </if>
+      <if test="taskYearPlan != null" >
+        TASK_YEAR_PLAN = #{taskYearPlan,jdbcType=DECIMAL},
+      </if>
+      <if test="createrBy != null" >
+        CREATER_BY = #{createrBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createrAt != null" >
+        CREATER_AT = #{createrAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAt != null" >
+        UPDATE_AT = #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where BRANCK_NO = #{branckNo,jdbcType=VARCHAR}
+      and TASK_YEAR = #{taskYear,jdbcType=VARCHAR}
+  </update>
+  <update id="updatePlan" parameterType="com.nhry.data.basic.domain.TaskYearMonthPlan" >
+    update t_task_year_month_plan
+    set BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
+      TASK_JAN = #{taskJan,jdbcType=DECIMAL},
+      TASK_FEB = #{taskFeb,jdbcType=DECIMAL},
+      TASK_MAR = #{taskMar,jdbcType=DECIMAL},
+      TASK_APR = #{taskApr,jdbcType=DECIMAL},
+      TASK_MAY = #{taskMay,jdbcType=DECIMAL},
+      TASK_JUN = #{taskJun,jdbcType=DECIMAL},
+      TASK_JUL = #{taskJul,jdbcType=DECIMAL},
+      TASK_AUG = #{taskAug,jdbcType=DECIMAL},
+      TASK_SEP = #{taskSep,jdbcType=DECIMAL},
+      TASK_OCT = #{taskOct,jdbcType=DECIMAL},
+      TASK_NOV = #{taskNov,jdbcType=DECIMAL},
+      TASK_DEV = #{taskDev,jdbcType=DECIMAL},
+      TASK_YEAR_PLAN = #{taskYearPlan,jdbcType=DECIMAL},
+      CREATER_BY = #{createrBy,jdbcType=VARCHAR},
+      CREATER_AT = #{createrAt,jdbcType=TIMESTAMP},
+      UPDATE_AT = #{updateAt,jdbcType=TIMESTAMP},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR}
+    where BRANCK_NO = #{branckNo,jdbcType=VARCHAR}
+      and TASK_YEAR = #{taskYear,jdbcType=VARCHAR}
+  </update>
+
+  <select id="findPlanByYear" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.MonthPlanModel">
+      SELECT
+          b.BRANCH_NO BRANCK_NO,
+          b.BRANCH_NAME,
+          p.TASK_YEAR, p.TASK_JAN, p.TASK_FEB, p.TASK_MAR, p.TASK_APR, p.TASK_MAY,
+          p.TASK_JUN, p.TASK_JUL, p.TASK_AUG, p.TASK_SEP, p.TASK_OCT, p.TASK_NOV, p.TASK_DEV, p.TASK_YEAR_PLAN
+      FROM
+          t_md_branch b
+      LEFT JOIN t_task_year_month_plan p ON p.BRANCK_NO = b.BRANCH_NO AND p.TASK_YEAR = #{taskYear,jdbcType=VARCHAR}
+      WHERE
+          b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+          AND b.BRANCH_GROUP = '01'
+  </select>
+</mapper>

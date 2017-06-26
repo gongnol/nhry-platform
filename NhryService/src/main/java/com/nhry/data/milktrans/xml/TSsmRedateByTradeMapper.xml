@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TSsmRedateByTradeMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TSsmRedateByTrade">
+        <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR"/>
+        <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
+        <result column="PROM_NO" property="promNo" jdbcType="VARCHAR"/>
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR"/>
+        <result column="REDATE" property="redate" jdbcType="DECIMAL"/>
+        <result column="WERKS" property="werks" jdbcType="VARCHAR"/>
+        <result column="LGORT" property="lgort" jdbcType="VARCHAR"/>
+        <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="insertRedateByTrade">
+        INSERT INTO t_ssm_redate_by_trade (
+            ORDER_NO,BRANCH_NO,SALES_ORG,PROM_NO,ORDER_DATE,MATNR,REDATE,CRM_NO,DH_NO,CREATE_AT,LAST_MODIFIED,WERKS,LGORT,DEALER_NO
+        )
+        VALUES (
+        #{orderNo,jdbcType=VARCHAR},
+        #{branchNo,jdbcType=VARCHAR},
+        #{salesOrg,jdbcType=VARCHAR},
+        #{promNo,jdbcType=VARCHAR},
+        #{orderDate,jdbcType=DATE},
+        #{matnr,jdbcType=VARCHAR},
+        #{redate,jdbcType=DECIMAL},
+        #{crmNo,jdbcType=VARCHAR},
+        #{dhNo,jdbcType=VARCHAR},
+        #{createDate,jdbcType=TIMESTAMP},
+        #{lastModified,jdbcType=TIMESTAMP},
+        #{werks,jdbcType=VARCHAR},
+        #{lgort,jdbcType=VARCHAR},
+        #{dealerNo,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="updateRedateByTrade" parameterType="com.nhry.data.milktrans.domain.TSsmRedateByTrade">
+        UPDATE t_ssm_redate_by_trade SET CRM_NO = #{crmNo,jdbcType=VARCHAR},LAST_MODIFIED=#{lastModified,jdbcType=TIMESTAMP},DH_NO=#{dhNo,jdbcType=VARCHAR} WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </update>
+    <select id="findNoSendRedateByTrade" resultMap="BaseResultMap">
+        SELECT ORDER_NO,BRANCH_NO,SALES_ORG,PROM_NO,MATNR,REDATE,WERKS,LGORT,DEALER_NO FROM t_ssm_redate_by_trade where CRM_NO is null or CRM_NO = '' LIMIT 5
+    </select>
+</mapper>

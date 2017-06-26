@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stock.dao.TSsmVoucherMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stock.domain.TSsmVoucher" >
+    <id column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR" />
+    <id column="VOUCHER_DATE" property="voucherDate" jdbcType="DATE" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="REVERT_VOUCHER_NO" property="revertVoucherNo" jdbcType="VARCHAR" />
+    <result column="VOUCHER_TYPE" property="voucherType" jdbcType="VARCHAR" />
+    <result column="REVERT_STATUS" property="revertStatus" jdbcType="CHAR" />
+    <result column="ACCT_DATE" property="acctDate" jdbcType="DATE" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="SAP_ACCT_STATUS" property="sapAcctStatus" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    VOUCHER_NO, VOUCHER_DATE, BRANCH_NO, ORDER_TYPE, ORDER_NO, REVERT_VOUCHER_NO, VOUCHER_TYPE, 
+    REVERT_STATUS, ACCT_DATE, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+    LAST_MODIFIED_BY_TXT, SAP_ACCT_STATUS
+  </sql>
+  <select id="getVoucher" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmVoucherKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ssm_voucher
+    where VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR}
+      and VOUCHER_DATE = #{voucherDate,jdbcType=DATE}
+  </select>
+  <delete id="deleteVoucher" parameterType="com.nhry.data.stock.domain.TSsmVoucherKey" >
+    delete from t_ssm_voucher
+    where VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR}
+      and VOUCHER_DATE = #{voucherDate,jdbcType=DATE}
+  </delete>
+  <insert id="insertVoucher" parameterType="com.nhry.data.stock.domain.TSsmVoucher" >
+    insert into t_ssm_voucher (VOUCHER_NO, VOUCHER_DATE, BRANCH_NO, 
+      ORDER_TYPE, ORDER_NO, REVERT_VOUCHER_NO, 
+      VOUCHER_TYPE, REVERT_STATUS, ACCT_DATE, 
+      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
+      SAP_ACCT_STATUS)
+    values (#{voucherNo,jdbcType=VARCHAR}, #{voucherDate,jdbcType=DATE}, #{branchNo,jdbcType=VARCHAR}, 
+      #{orderType,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{revertVoucherNo,jdbcType=VARCHAR}, 
+      #{voucherType,jdbcType=VARCHAR}, #{revertStatus,jdbcType=CHAR}, #{acctDate,jdbcType=DATE}, 
+      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
+      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}, 
+      #{sapAcctStatus,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertVoucherSelective" parameterType="com.nhry.data.stock.domain.TSsmVoucher" >
+    insert into t_ssm_voucher
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="voucherNo != null" >
+        VOUCHER_NO,
+      </if>
+      <if test="voucherDate != null" >
+        VOUCHER_DATE,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="orderType != null" >
+        ORDER_TYPE,
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="revertVoucherNo != null" >
+        REVERT_VOUCHER_NO,
+      </if>
+      <if test="voucherType != null" >
+        VOUCHER_TYPE,
+      </if>
+      <if test="revertStatus != null" >
+        REVERT_STATUS,
+      </if>
+      <if test="acctDate != null" >
+        ACCT_DATE,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="sapAcctStatus != null" >
+        SAP_ACCT_STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="voucherNo != null" >
+        #{voucherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherDate != null" >
+        #{voucherDate,jdbcType=DATE},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="revertVoucherNo != null" >
+        #{revertVoucherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherType != null" >
+        #{voucherType,jdbcType=VARCHAR},
+      </if>
+      <if test="revertStatus != null" >
+        #{revertStatus,jdbcType=CHAR},
+      </if>
+      <if test="acctDate != null" >
+        #{acctDate,jdbcType=DATE},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="sapAcctStatus != null" >
+        #{sapAcctStatus,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateVoucherSelective" parameterType="com.nhry.data.stock.domain.TSsmVoucher" >
+    update t_ssm_voucher
+    <set >
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        ORDER_TYPE = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="revertVoucherNo != null" >
+        REVERT_VOUCHER_NO = #{revertVoucherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherType != null" >
+        VOUCHER_TYPE = #{voucherType,jdbcType=VARCHAR},
+      </if>
+      <if test="revertStatus != null" >
+        REVERT_STATUS = #{revertStatus,jdbcType=CHAR},
+      </if>
+      <if test="acctDate != null" >
+        ACCT_DATE = #{acctDate,jdbcType=DATE},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="sapAcctStatus != null" >
+        SAP_ACCT_STATUS = #{sapAcctStatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR}
+      and VOUCHER_DATE = #{voucherDate,jdbcType=DATE}
+  </update>
+  <update id="updateVoucher" parameterType="com.nhry.data.stock.domain.TSsmVoucher" >
+    update t_ssm_voucher
+    set BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      ORDER_TYPE = #{orderType,jdbcType=VARCHAR},
+      ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      REVERT_VOUCHER_NO = #{revertVoucherNo,jdbcType=VARCHAR},
+      VOUCHER_TYPE = #{voucherType,jdbcType=VARCHAR},
+      REVERT_STATUS = #{revertStatus,jdbcType=CHAR},
+      ACCT_DATE = #{acctDate,jdbcType=DATE},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      SAP_ACCT_STATUS = #{sapAcctStatus,jdbcType=VARCHAR}
+    where VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR}
+      and VOUCHER_DATE = #{voucherDate,jdbcType=DATE}
+  </update>
+</mapper>

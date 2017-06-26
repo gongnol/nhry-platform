@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stock.dao.TSsmGiOrderItemMapper">
+    <resultMap id="BaseResultMap" type="com.nhry.data.stock.domain.TSsmGiOrderItem">
+        <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR"/>
+        <id column="ITEM_NO" property="itemNo" jdbcType="VARCHAR"/>
+        <id column="ORDER_DATE" property="orderDate" jdbcType="DATE"/>
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR"/>
+        <result column="UNIT" property="unit" jdbcType="VARCHAR"/>
+        <result column="QTY" property="qty" jdbcType="DECIMAL"/>
+        <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL"/>
+        <result column="ITEM_TYPE" property="itemType" jdbcType="VARCHAR"/>
+        <result column="FACTORY_PRICE" property="factoryPrice" jdbcType="DECIMAL"/>
+        <result column="REMARK" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="OrderDaliyResultMap" type="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR"/>
+        <result column="CONFIRM_MATNR" property="confirmMatnr" jdbcType="VARCHAR"/>
+        <result column="UNIT" property="unit" jdbcType="VARCHAR"/>
+        <result column="QTY" property="qty" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <resultMap id="ShowResultMap" extends="BaseResultMap" type="com.nhry.data.stock.domain.TSsmGiOrderItem">
+            <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR"/>
+            <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ORDER_NO, ITEM_NO, ORDER_DATE, MATNR, UNIT, QTY, CONFIRM_QTY, ITEM_TYPE, FACTORY_PRICE, REMARK
+  </sql>
+    <select id="selectGiOrderItemByNo" resultMap="BaseResultMap"
+            parameterType="com.nhry.data.stock.domain.TSsmGiOrderItemKey">
+        select
+        <include refid="Base_Column_List"/>
+        from t_ssm_gi_order_item
+        where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+        and ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </select>
+    <delete id="deleteGiOrderItemByNo" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItemKey">
+    delete from t_ssm_gi_order_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </delete>
+    <insert id="insertGiOrderItem" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem">
+    insert into t_ssm_gi_order_item (ORDER_NO, ITEM_NO, ORDER_DATE, 
+      MATNR, UNIT, QTY, CONFIRM_QTY, FACTORY_PRICE,
+      ITEM_TYPE,REMARK)
+    values (#{orderNo,jdbcType=VARCHAR}, #{itemNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, 
+      #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{qty,jdbcType=DECIMAL}, #{confirmQty,jdbcType=DECIMAL}, 
+      #{factoryPrice,jdbcType=DECIMAL},#{itemType,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertGiOrderItemSelective" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem">
+        insert into t_ssm_gi_order_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                ORDER_NO,
+            </if>
+            <if test="itemNo != null">
+                ITEM_NO,
+            </if>
+            <if test="orderDate != null">
+                ORDER_DATE,
+            </if>
+            <if test="matnr != null">
+                MATNR,
+            </if>
+            <if test="unit != null">
+                UNIT,
+            </if>
+            <if test="qty != null">
+                QTY,
+            </if>
+            <if test="confirmQty != null">
+                CONFIRM_QTY,
+            </if>
+            <if test="factoryPrice != null">
+                FACTORY_PRICE,
+            </if>
+            <if test="itemType != null">
+                ITEM_TYPE,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="itemNo != null">
+                #{itemNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderDate != null">
+                #{orderDate,jdbcType=DATE},
+            </if>
+            <if test="matnr != null">
+                #{matnr,jdbcType=VARCHAR},
+            </if>
+            <if test="unit != null">
+                #{unit,jdbcType=VARCHAR},
+            </if>
+            <if test="qty != null">
+                #{qty,jdbcType=DECIMAL},
+            </if>
+            <if test="confirmQty != null">
+                #{confirmQty,jdbcType=DECIMAL},
+            </if>
+            <if test="factoryPrice != null">
+                #{factoryPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="itemType != null">
+                #{itemType,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateGiOrderItemSelective" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem">
+        update t_ssm_gi_order_item
+        <set>
+            <if test="matnr != null">
+                MATNR = #{matnr,jdbcType=VARCHAR},
+            </if>
+            <if test="unit != null">
+                UNIT = #{unit,jdbcType=VARCHAR},
+            </if>
+            <if test="qty != null">
+                QTY = #{qty,jdbcType=DECIMAL},
+            </if>
+            <if test="confirmQty != null">
+                CONFIRM_QTY = #{confirmQty,jdbcType=DECIMAL},
+            </if>
+            <if test="factoryPrice != null">
+                FACTORY_PRICE = #{factoryPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="itemType != null">
+                ITEM_TYPE = #{itemType,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+        and ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </update>
+    <update id="updateGiOrderItemByNo" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem">
+    update t_ssm_gi_order_item
+    set MATNR = #{matnr,jdbcType=VARCHAR},
+      UNIT = #{unit,jdbcType=VARCHAR},
+      QTY = #{qty,jdbcType=DECIMAL},
+      CONFIRM_QTY = #{confirmQty,jdbcType=DECIMAL},
+      FACTORY_PRICE = #{factoryPrice,jdbcType=DECIMAL},
+      ITEM_TYPE = #{itemType,jdbcType=VARCHAR}, REMARK = #{remark,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </update>
+
+    <select id="findGiOrderItem" resultMap="ShowResultMap" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem">
+    SELECT i.*,m.MATNR_TXT,m.BASE_UNIT FROM t_ssm_gi_order_item i left join t_md_mara m ON i.MATNR = m.MATNR and m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR} WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+
+    <select id="selectProximalFactoryPrice" resultType="BigDecimal" parameterType="java.util.Map">
+        SELECT
+        IFNULL((SELECT i.FACTORY_PRICE from t_ssm_gi_order_item i WHERE i.ORDER_DATE = MAX(gi.ORDER_DATE) and i.ORDER_NO = gi.ORDER_NO and i.MATNR = gi.MATNR),0) FACTORY_PRICE
+        FROM t_ssm_gi_order_item gi
+        LEFT JOIN t_ssm_gi_order go on go.ORDER_NO = gi.ORDER_NO
+        WHERE  1=1
+        and go.BRANCH_NO = #{branchNo}
+        and gi.MATNR =#{matnr}
+        and gi.ORDER_DATE &lt; curdate()
+    </select>
+
+
+    <select id="selectNoProDayPlanOfSelfBranch2" resultMap="OrderDaliyResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+        SELECT
+        i.MATNR CONFIRM_MATNR,SUM(i.CONFIRM_QTY) QTY
+        from t_ssm_gi_order_item i
+        LEFT JOIN t_ssm_gi_order  o on i.ORDER_NO = o.ORDER_NO
+        WHERE 1=1
+        and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+        and o.`STATUS`= '30'
+        and o.REQ_ORDER_NO =  #{reqOrderNo,jdbcType=VARCHAR}
+        GROUP BY i.MATNR
+    </select>
+
+    <select id="sumGiOrderItemByReqOrderNo" resultType="BigDecimal">
+        SELECT
+            SUM(i.CONFIRM_QTY)
+        FROM
+            t_ssm_gi_order o
+        JOIN t_ssm_gi_order_item i ON o.ORDER_NO = i.ORDER_NO
+        AND o.REQ_ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdMaraExMapper">
+	<!-- <cache type="org.mybatis.caches.redis.RedisCache" /> -->
+	<resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMaraEx">
+		<id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+		<result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+		<result column="SALES_FLAG" property="salesFlag" jdbcType="VARCHAR" />
+		<result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+		<result column="PRE_DAYS" property="preDays" jdbcType="INTEGER" />
+		<result column="RATE" property="rate" jdbcType="DECIMAL" />
+		<result column="BOT_TYPE" property="botType" jdbcType="VARCHAR" />
+		<result column="RET_BOT_FLAG" property="retBotFlag" jdbcType="CHAR" />
+		<result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+		<result column="RATE" property="rate" jdbcType="DECIMAL" />
+		<result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+		<result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+		<result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+		<result column="LAST_MODIFIED" property="lastModified"
+			jdbcType="TIMESTAMP" />
+		<result column="LAST_MODIFIED_BY" property="lastModifiedBy"
+			jdbcType="VARCHAR" />
+		<result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		MATNR, SALES_FLAG, SHORT_TXT, PRE_DAYS, BOT_TYPE,
+		RET_BOT_FLAG,SALES_ORG,RATE, CREATE_AT, CREATE_BY,
+		CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+	</sql>
+	<select id="findProductExByCode" resultMap="BaseResultMap"
+		parameterType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_md_mara_ex
+		where SALES_ORG=#{salesOrg,jdbcType=VARCHAR} and MATNR =
+		#{matnr,jdbcType=VARCHAR}
+	</select>
+	<insert id="addMaraEx" parameterType="com.nhry.data.basic.domain.TMdMaraEx">
+		insert into t_md_mara_ex
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="matnr != null">
+				MATNR,
+			</if>
+			<if test="salesFlag != null">
+				SALES_FLAG,
+			</if>
+			<if test="shortTxt != null">
+				SHORT_TXT,
+			</if>
+			<if test="preDays != null">
+				PRE_DAYS,
+			</if>
+			<if test="botType != null">
+				BOT_TYPE,
+			</if>
+			<if test="retBotFlag != null">
+				RET_BOT_FLAG,
+			</if>
+			<if test="createAt != null">
+				CREATE_AT,
+			</if>
+			<if test="createBy != null">
+				CREATE_BY,
+			</if>
+			<if test="createByTxt != null">
+				CREATE_BY_TXT,
+			</if>
+			<if test="lastModified != null">
+				LAST_MODIFIED,
+			</if>
+			<if test="lastModifiedBy != null">
+				LAST_MODIFIED_BY,
+			</if>
+			<if test="lastModifiedByTxt != null">
+				LAST_MODIFIED_BY_TXT,
+			</if>
+			<if test="rate != null">
+				RATE,
+			</if>
+			<if test="salesOrg != null">
+				SALES_ORG,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="matnr != null">
+				#{matnr,jdbcType=VARCHAR},
+			</if>
+			<if test="salesFlag != null">
+				#{salesFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="shortTxt != null">
+				#{shortTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="preDays != null">
+				#{preDays,jdbcType=INTEGER},
+			</if>
+			<if test="botType != null">
+				#{botType,jdbcType=VARCHAR},
+			</if>
+			<if test="retBotFlag != null">
+				#{retBotFlag,jdbcType=CHAR},
+			</if>
+			<if test="createAt != null">
+				CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createBy != null">
+				CREATE_BY = #{createBy,jdbcType=VARCHAR},
+			</if>
+			<if test="createByTxt != null">
+				CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModified != null">
+				LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastModifiedBy != null">
+				LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModifiedByTxt != null">
+				LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="rate != null">
+				#{rate,jdbcType=DECIMAL},
+			</if>
+			<if test="salesOrg != null">
+				#{salesOrg,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="uptProductExByCode" parameterType="com.nhry.data.basic.domain.TMdMaraEx">
+		update t_md_mara_ex
+		<set>
+			<if test="salesFlag != null">
+				SALES_FLAG = #{salesFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="shortTxt != null">
+				SHORT_TXT = #{shortTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="preDays != null">
+				PRE_DAYS = #{preDays,jdbcType=INTEGER},
+			</if>
+			<if test="botType != null">
+				BOT_TYPE = #{botType,jdbcType=VARCHAR},
+			</if>
+			<if test="retBotFlag != null">
+				RET_BOT_FLAG = #{retBotFlag,jdbcType=CHAR},
+			</if>
+			<if test="rate != null">
+				RATE = #{rate,jdbcType=DECIMAL},
+			</if>
+			<if test="salesOrg != null">
+				SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+			</if>
+			<if test="createAt != null">
+				CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createBy != null">
+				CREATE_BY = #{createBy,jdbcType=VARCHAR},
+			</if>
+			<if test="createByTxt != null">
+				CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModified != null">
+				LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastModifiedBy != null">
+				LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModifiedByTxt != null">
+				LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where SALES_ORG =#{salesOrg,jdbcType=VARCHAR} AND MATNR =
+		#{matnr,jdbcType=VARCHAR}
+	</update>
+
+	<select id="getProductTransRateByCode" resultMap="BaseResultMap"
+		parameterType="com.nhry.data.basic.domain.TMdMaraEx">
+		select
+		e.MATNR, e.RATE,e.SALES_ORG,m.MATNR_TXT,e.SHORT_TXT
+		from t_md_mara_ex e LEFT JOIN t_md_mara m ON (e.MATNR = m.MATNR AND
+		e.SALES_ORG = m.SALES_ORG)
+		where e.MATNR =  #{matnr,jdbcType=VARCHAR}
+		and	 m.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getProductsBySalesOrg" resultMap="BaseResultMap"
+		parameterType="String">
+		select
+		<include refid="Base_Column_List" />
+		from t_md_mara_ex
+		where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+	</select>
+	<update id="uptProductExByCodeAndSalesOrg" parameterType="com.nhry.data.basic.domain.TMdMaraEx">
+		update t_md_mara_ex
+		set RATE = #{rate,jdbcType=DECIMAL}
+		where MATNR = #{matnr,jdbcType=VARCHAR}
+		and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+	</update>
+	<select id="getMataBotTypes" parameterType="String"
+		resultType="com.nhry.service.basic.pojo.BotType">
+		select e.MATNR,e.BOT_TYPE botType from t_md_mara_ex e where
+		e.SALES_ORG=#{salesOrg} and e.RET_BOT_FLAG='Y';
+	</select>
+</mapper>

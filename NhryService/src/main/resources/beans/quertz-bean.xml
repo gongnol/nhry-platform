@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd"
+	   default-lazy-init="true">
+
+	<bean id="scheduledJobDetail1"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="piProductService"/>
+		</property>
+		<property name="targetMethod">
+			<value>matHandler</value>
+		</property>
+	</bean>
+	<bean id="scheduledJobDetail2"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="piProductService"/>
+		</property>
+		<property name="targetMethod">
+			<value>customerDataHandle</value>
+		</property>
+	</bean>
+	<bean id="scheduledJobDetail3"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="piProductService"/>
+		</property>
+		<property name="targetMethod">
+			<value>salesQueryHandler</value>
+		</property>
+	</bean>
+	<bean id="scheduledJobDetail4"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<bean class="com.nhry.service.external.EcBaseService">
+				<property name="messLogMapper" ref="messLogMapper"></property>
+			</bean>
+		</property>
+		<property name="targetMethod">
+			<value>resendMessage2Ec</value>
+		</property>
+	</bean>
+	<bean id="scheduledJobDetail5"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="ladpService"/>
+		</property>
+		<property name="targetMethod">
+			<value>syncSysUsersForUpt</value>
+		</property>
+	</bean>
+	<bean id="scheduledJobDetail6" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="isysAkService"/>
+		</property>
+		<property name="targetMethod">
+			<value>deleteExpiredAccesskey</value>
+		</property>
+	</bean>
+	<bean id="scheduledJobDetail7" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref bean="piRequireOrderService"/>
+		</property>
+		<property name="targetMethod">
+			<value>saveFactoryPrice</value>
+		</property>
+	</bean>
+	<bean id="sendMessageToCustomer" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref bean="orderService"/>
+		</property>
+		<property name="targetMethod">
+			<value>selectOrdersAndSendMessage</value>
+		</property>
+	</bean>
+	<bean id="scheduledJobDetail9"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="piProductService"/>
+		</property>
+		<property name="targetMethod">
+			<value>matWHWHandler</value>
+		</property>
+	</bean>
+
+	<bean id="scheduledJobDetail10"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref bean="piRedateByTradeService"/>
+		</property>
+		<property name="targetMethod">
+			<value>sendRedateByTradeToCRM</value>
+		</property>
+	</bean>
+
+	<bean id="scheduledJobDetail11"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref bean="outMilkService"/>
+		</property>
+		<property name="targetMethod">
+			<value>createAmtsdayByday</value>
+		</property>
+	</bean>
+	 <!-- 调度的配置开始 -->
+	<bean id="crontestJobTrigger11" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail11" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 2 * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger10" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail10" />
+		</property>
+		<property name="cronExpression">
+			<value>0 40 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger9" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail9" />
+		</property>
+		<property name="cronExpression">
+			<value>0 52 1 * * ?</value>
+		</property>
+	</bean>
+    <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="scheduledJobDetail1" />
+        </property>
+        <property name="cronExpression">
+			<value>0 32 23 * * ?</value>
+		</property>
+    </bean>
+	<bean id="crontestJobTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail2" />
+		</property>
+		<property name="cronExpression">
+			<value>0 27 23 * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger3" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail3" />
+		</property>
+		<property name="cronExpression">
+			<value>0 22 23 * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger4" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail4" />
+		</property>
+		<property name="cronExpression">
+			<value>0 15 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger5" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail5" />
+		</property>
+		<property name="cronExpression">
+			<value>0 25 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger6" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail6" />
+		</property>
+		<property name="cronExpression">
+			<value>0 24 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger7" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail7" />
+		</property>
+		<property name="cronExpression">
+			<value>0 15 18 * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger8" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="sendMessageToCustomer" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 10 * * ?</value>
+		</property>
+	</bean>
+    <!-- 调度的配置结束 -->
+
+    <!-- 启动触发器的配置开始 -->
+    <bean name="startQuertz1" lazy-init="false" autowire="no" init-method="init" class="com.nhry.common.service.NhrySchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="crontestJobTrigger1"/>
+				<ref bean="crontestJobTrigger2"/>
+				<ref bean="crontestJobTrigger3"/>
+				<ref bean="crontestJobTrigger4"/>
+				<ref bean="crontestJobTrigger5"/>
+				<ref bean="crontestJobTrigger6"/>
+				<ref bean="crontestJobTrigger7"/>
+				<ref bean="crontestJobTrigger8"/>
+				<ref bean="crontestJobTrigger9"/>
+				<ref bean="crontestJobTrigger10"/>
+				<ref bean="crontestJobTrigger11"/>
+            </list>
+        </property>
+        <property name="stringRedisTemplate" ref="stringRedisTemplate"></property>
+    </bean>
+
+</beans>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TSysPushMessageLogMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TSysPushMessageLog" >
+    <id column="MNO" property="mno" jdbcType="VARCHAR" />
+    <result column="REQ_TYPE" property="reqType" jdbcType="VARCHAR" />
+    <result column="REQ_URL" property="reqUrl" jdbcType="VARCHAR" />
+    <result column="REQ_CONTENT" property="reqContent" jdbcType="VARCHAR" />
+    <result column="SYS_FLAG" property="sysFlag" jdbcType="VARCHAR" />
+    <result column="ERROR_MESSAGE" property="errorMessage" jdbcType="VARCHAR" />
+    <result column="ERROR_CODE" property="errorCode" jdbcType="VARCHAR" />
+    <result column="PROC_EXEC_RESULTS" property="procExecResults" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="AMOUNT" property="amount" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MNO, REQ_TYPE, REQ_URL, REQ_CONTENT, SYS_FLAG, ERROR_MESSAGE, ERROR_CODE, PROC_EXEC_RESULTS, 
+    STATUS, CREATE_AT, LAST_MODIFIED, AMOUNT
+  </sql>
+  <select id="selectPushMessageLogByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_push_message_log
+    where MNO = #{mno,jdbcType=VARCHAR}
+  </select>
+  <delete id="delPushMessageLog" parameterType="java.lang.String" >
+    delete from t_sys_push_message_log
+    where MNO = #{mno,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addPushMessageLog" parameterType="com.nhry.data.basic.domain.TSysPushMessageLog" >
+    insert into t_sys_push_message_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mno != null" >
+        MNO,
+      </if>
+      <if test="reqType != null" >
+        REQ_TYPE,
+      </if>
+      <if test="reqUrl != null" >
+        REQ_URL,
+      </if>
+      <if test="reqContent != null" >
+        REQ_CONTENT,
+      </if>
+      <if test="sysFlag != null" >
+        SYS_FLAG,
+      </if>
+      <if test="errorMessage != null" >
+        ERROR_MESSAGE,
+      </if>
+      <if test="errorCode != null" >
+        ERROR_CODE,
+      </if>
+      <if test="procExecResults != null" >
+        PROC_EXEC_RESULTS,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="amount != null" >
+        AMOUNT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mno != null" >
+        #{mno,jdbcType=VARCHAR},
+      </if>
+      <if test="reqType != null" >
+        #{reqType,jdbcType=VARCHAR},
+      </if>
+      <if test="reqUrl != null" >
+        #{reqUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="reqContent != null" >
+        #{reqContent,jdbcType=VARCHAR},
+      </if>
+      <if test="sysFlag != null" >
+        #{sysFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMessage != null" >
+        #{errorMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="errorCode != null" >
+        #{errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="procExecResults != null" >
+        #{procExecResults,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updatePushMessageLog" parameterType="com.nhry.data.basic.domain.TSysPushMessageLog" >
+    update t_sys_push_message_log
+    <set >
+      <if test="reqType != null" >
+        REQ_TYPE = #{reqType,jdbcType=VARCHAR},
+      </if>
+      <if test="reqUrl != null" >
+        REQ_URL = #{reqUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="reqContent != null" >
+        REQ_CONTENT = #{reqContent,jdbcType=VARCHAR},
+      </if>
+      <if test="sysFlag != null" >
+        SYS_FLAG = #{sysFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMessage != null" >
+        ERROR_MESSAGE = #{errorMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="errorCode != null" >
+        ERROR_CODE = #{errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="procExecResults != null" >
+        PROC_EXEC_RESULTS = #{procExecResults,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amount != null" >
+        AMOUNT = #{amount,jdbcType=INTEGER},
+      </if>
+    </set>
+    where MNO = #{mno,jdbcType=VARCHAR}
+  </update>
+  <select id="findSysPushMessageLogs" resultMap="BaseResultMap">
+      select 
+    <include refid="Base_Column_List" />
+    from t_sys_push_message_log
+    where AMOUNT &lt;= 10 and STATUS ='N'
+  </select>
+</mapper>

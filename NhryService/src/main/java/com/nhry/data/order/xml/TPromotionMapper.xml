@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.order.dao.TPromotionMapper">
+    <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TPromotion">
+        <result column="PROM_NO" property="promNo" jdbcType="VARCHAR"/>
+        <result column="PROM_DES" property="promDes" jdbcType="VARCHAR"/>
+        <result column="PROM_TYPE" property="promType" jdbcType="VARCHAR"/>
+        <result column="PROM_SUB_TYPE" jdbcType="VARCHAR" property="promSubType"/>
+         <result column="PROM_SUB_TYPE_NAME" jdbcType="VARCHAR" property="promSubTypeName"/>
+        <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
+        <result column="SALES_DIST" property="salesDist" jdbcType="VARCHAR"/>
+        <result column="CUSTOMER_TYPE" property="customerType" jdbcType="VARCHAR"/>
+        <result column="PROM_STAT" property="promStat" jdbcType="VARCHAR"/>
+        <result column="PLAN_START_TIME" property="planStartTime" jdbcType="DATE"/>
+        <result column="PLAN_STOP_TIME" property="planStopTime" jdbcType="DATE"/>
+        <result column="BUY_START_TIME" property="buyStartTime" jdbcType="DATE"/>
+        <result column="BUY_STOP_TIME" property="buyStopTime" jdbcType="DATE"/>
+        <result column="BUY_AMT" property="buyAmt" jdbcType="DECIMAL"/>
+        <result column="GIFT_AMT" property="giftAmt" jdbcType="DECIMAL"/>
+        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR"/>
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP"/>
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR"/>
+        <result column="ORG_MATNR" property="orgMatnr" jdbcType="VARCHAR"/>
+        <result column="GIFT_MATNR" property="giftMatnr" jdbcType="VARCHAR"/>
+        <result column="ORG_QTY" property="orgQty" jdbcType="DECIMAL"/>
+        <result column="GIFT_QTY" property="giftQty" jdbcType="DECIMAL"/>
+        <result column="GIFT_UNIT" property="giftUnit" jdbcType="DECIMAL"/>
+        <result column="DISCOUNT_AMT" jdbcType="DECIMAL" property="discountAmt"/>
+        <result column="LOW_AMT" jdbcType="DECIMAL" property="lowAmt"/>
+        <result column="ITEM_NO" jdbcType="VARCHAR" property="itemNo"/>
+        <result column="YEAR_TYPE" jdbcType="VARCHAR" property="yearType"/>
+    </resultMap>
+
+
+        <resultMap id="PromResultMap" type="com.nhry.model.order.TPromotionModel">
+            <result column="PROM_NO" property="promNo" jdbcType="VARCHAR"/>
+            <result column="PROM_ITEM_NO" jdbcType="VARCHAR" property="promItemNo"/>
+            <result column="PROM_SUB_TYPE" jdbcType="VARCHAR" property="promSubType"/>
+            <result column="DISCOUNT_AMT" jdbcType="DECIMAL" property="discountAmt"/>
+            <result column="ITEM_NO" jdbcType="VARCHAR" property="itemNo"/>
+            <result column="ITEM_DESCRIBE" jdbcType="VARCHAR" property="itemDescribe"/>
+        </resultMap>
+        
+        
+          <resultMap id="PromOrderResultMap" type="com.nhry.model.order.TPromotionOrderModel">
+            <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR"/>
+            <result column="PROM_NO" jdbcType="VARCHAR" property="promNo"/>
+            <result column="NUMBER" jdbcType="INTEGER" property="number"/>
+        </resultMap>
+
+    <select id="searchPromotionsByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel">
+        select 
+        distinct
+        p.PROM_SUB_TYPE,
+        i.ITEM_NAME  PROM_SUB_TYPE_NAME,
+        pro1.SHORT_TXT ORG_MATNR, oi.ORIG_NUM ORG_QTY, pro2.SHORT_TXT GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,
+        oi.ITEM_NO,
+        p.PROM_NO, 
+        (case when p.PROM_SUB_TYPE = 'Z008' then  CONCAT('购买',ROUND(oi.ORIG_NUM),'个',a1.SHORT_TXT,'赠送',ROUND(gi.GIFT_NUM),'个',a2.SHORT_TXT,'产品')
+         	  when p.PROM_SUB_TYPE = 'Z015' then  CONCAT('购买',a1.SHORT_TXT,'满', ci.LOW, '元钱减',oi.DISCOUNT_AMT,'元钱')
+         	  when p.PROM_SUB_TYPE = 'Z016' then   CONCAT('整单满',ci.LOW,'元减',oi.DISCOUNT_AMT, '元') 
+         	  else p.PROM_DES
+         	  END
+        ) PROM_DES,
+        p.PROM_TYPE,
+        p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+        p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+        p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT,
+        p.GIFT_AMT,
+        oi.DISCOUNT_AMT,
+        ci.LOW
+        from t_promotion p
+        left join t_sys_code_item i on p.PROM_SUB_TYPE = i.ITEM_CODE and i.TYPE_CODE=<include refid="mybaties.constant.PROM_SUB_TYPE"></include>
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO and oi.item_no = gi.item_no
+        LEFT JOIN t_promotion_con_item ci ON p.PROM_NO = ci.PROM_NO and ci.item_no = oi.item_no
+        LEFT JOIN t_md_mara_ex a1 ON oi.GOOD_NO = a1.MATNR AND p.SALES_ORG = a1.SALES_ORG
+        LEFT JOIN t_md_mara_ex a2 ON gi.GIFT_NO = a2.MATNR AND p.SALES_ORG = a2.SALES_ORG
+        left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+        left join t_md_mara_ex pro1 on pro1.matnr = oi.GOOD_NO
+        left join t_md_mara_ex pro2 on pro2.matnr = gi.GIFT_NO
+        where 1 = 1
+        and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="branchNo != null and branchNo != ''">
+            AND si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="orderDateStart != null and orderDateStart !=''">
+            AND p.PLAN_START_TIME &gt;= #{orderDateStart}
+        </if>
+        <if test="orderDateEnd != null and orderDateEnd !=''">
+            AND p.PLAN_STOP_TIME &lt;= #{orderDateEnd}
+        </if>
+        order by p.PROM_NO desc
+    </select>
+    
+   <select  id="promotionHasOrder" resultMap="PromOrderResultMap" parameterType="com.nhry.rest.basic.PromAllocatModel">
+   			select o.PROMOTION PROM_NO,o.BRANCH_NO,count(1) NUMBER
+   			from t_preorder o,t_promotion p
+   			where o.PROMOTION = p.PROM_NO
+   			and o.PROMOTION = #{promNo}
+   			and o.BRANCH_NO in 
+   			<foreach item="branchNos" index="index"  collection="branchNos"  open="(" separator="," close=")">
+		         #{branchNos}
+		    </foreach>
+		     GROUP BY o.PROMOTION,o.BRANCH_NO
+			HAVING count(1)>0
+   </select>
+    
+    
+    
+    <select id="searchPromoDetailByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select 
+        distinct
+        p.PROM_NO, 
+        p.PROM_SUB_TYPE,
+        i.ITEM_NAME  PROM_SUB_TYPE_NAME,
+        pro1.SHORT_TXT ORG_MATNR, oi.ORIG_NUM ORG_QTY, pro2.SHORT_TXT GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,
+        oi.ITEM_NO,
+        (case when p.PROM_SUB_TYPE = 'Z008' then  CONCAT('购买',ROUND(oi.ORIG_NUM),'个',a1.SHORT_TXT,'赠送',ROUND(gi.GIFT_NUM),'个',a2.SHORT_TXT,'产品')
+         	  when p.PROM_SUB_TYPE = 'Z015' then  CONCAT('购买',a1.SHORT_TXT,'满', ci.LOW, '元钱减',oi.DISCOUNT_AMT,'元钱')
+         	  when p.PROM_SUB_TYPE = 'Z016' then   CONCAT('整单满',ci.LOW,'元减',oi.DISCOUNT_AMT, '元') 
+         	  else p.PROM_DES
+         	  END
+        ) PROM_DES,
+        p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+        p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+        p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT,
+        p.GIFT_AMT,
+        oi.DISCOUNT_AMT,
+        ci.LOW
+        from t_promotion p
+        left join t_sys_code_item i on p.PROM_SUB_TYPE = i.ITEM_CODE and i.TYPE_CODE=<include refid="mybaties.constant.PROM_SUB_TYPE"></include>
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO and oi.item_no = gi.item_no
+        LEFT JOIN t_promotion_con_item ci ON p.PROM_NO = ci.PROM_NO and ci.item_no = oi.item_no
+        LEFT JOIN t_md_mara_ex a1 ON oi.GOOD_NO = a1.MATNR AND p.SALES_ORG = a1.SALES_ORG
+        LEFT JOIN t_md_mara_ex a2 ON gi.GIFT_NO = a2.MATNR AND p.SALES_ORG = a2.SALES_ORG
+        left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+        left join t_md_mara_ex pro1 on pro1.matnr = oi.GOOD_NO
+        left join t_md_mara_ex pro2 on pro2.matnr = gi.GIFT_NO
+        where 1 = 1
+        and p.PROM_NO = #{promNo,jdbcType=VARCHAR}
+        order by p.PROM_NO desc
+    </select>
+ 
+	  <delete id="delPromByNo" parameterType="java.lang.String">
+		    delete from t_promotion
+		    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+	  </delete>
+	    
+    
+      
+    <select id="selectPromsBySelesOrg" resultMap="BaseResultMap" parameterType="com.nhry.model.order.PromSearchModel">
+        select 
+        distinct
+        p.PROM_NO,
+		p.PROM_DES,
+       	p.PROM_SUB_TYPE,
+		i.ITEM_NAME PROM_SUB_TYPE_NAME,
+		p.SALES_ORG,
+		p.SALES_DIST,
+		p.CUSTOMER_TYPE,
+		p.PROM_STAT,
+		p.PLAN_START_TIME,
+		p.PLAN_STOP_TIME,
+		p.BUY_START_TIME,
+		p.BUY_STOP_TIME
+        from t_promotion p
+        left join t_sys_code_item i on p.PROM_SUB_TYPE = i.ITEM_CODE and i.TYPE_CODE=<include refid="mybaties.constant.PROM_SUB_TYPE"></include>
+        left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+        where 1 = 1
+         and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      
+        order by p.PROM_NO desc
+    </select>
+    
+    
+    
+    
+    <select id="searchPromoByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.PromSearchModel">
+        select 
+        distinct
+        p.PROM_NO,
+		p.PROM_DES,
+       	p.PROM_SUB_TYPE,
+		i.ITEM_NAME PROM_SUB_TYPE_NAME,
+		p.SALES_ORG,
+		p.SALES_DIST,
+		p.CUSTOMER_TYPE,
+		p.PROM_STAT,
+		p.PLAN_START_TIME,
+		p.PLAN_STOP_TIME,
+		p.BUY_START_TIME,
+		p.BUY_STOP_TIME
+        from t_promotion p
+        left join t_sys_code_item i on p.PROM_SUB_TYPE = i.ITEM_CODE and i.TYPE_CODE=<include refid="mybaties.constant.PROM_SUB_TYPE"></include>
+        left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+        where 1 = 1
+         and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="branchNo != null and branchNo != ''">
+            AND si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="orderDateStart != null and orderDateStart !=''">
+            AND p.PLAN_START_TIME &gt;= #{orderDateStart}
+        </if>
+        <if test="orderDateEnd != null and orderDateEnd !=''">
+            AND p.PLAN_STOP_TIME &lt;= #{orderDateEnd}
+        </if>
+        
+         <if test="promNo != null and promNo !=''">
+            AND p.PROM_NO like  '%${promNo}%'
+        </if>
+        order by p.PROM_NO desc
+    </select>
+    
+    
+    
+    
+    
+    <select id="selectPromotionByMatnr" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion">
+	   select distinct
+	   pro1.MATNR_TXT ORG_MATNR, oi.ORIG_NUM ORG_QTY, pro2.MATNR_TXT GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,
+	   p.PROM_NO, p.PROM_DES, p.PROM_TYPE,p.PROM_SUB_TYPE,
+      p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+      p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+      p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT,
+      p.GIFT_AMT
+		from t_promotion p
+		left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+		left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+		left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+		left join t_md_mara pro1 on pro1.matnr = oi.GOOD_NO
+		left join t_md_mara pro2 on pro2.matnr = gi.GIFT_NO
+		where 1 = 1
+		and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
+		and p.PLAN_START_TIME &lt;= #{createBy,jdbcType=DATE}
+		and p.PLAN_STOP_TIME &gt;= #{createBy,jdbcType=DATE}
+		and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+		and si.branch_no = #{branchNo,jdbcType=VARCHAR}
+		and (p.PROM_SUB_TYPE = 'Z008' OR p.PROM_SUB_TYPE = 'Z015')
+  </select>
+    <select id="selectPromotionByYear" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion">
+         select distinct
+			p.PROM_SUB_TYPE, oi.ORIG_NUM ORG_QTY,
+	        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
+            p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+            p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+            p.BUY_START_TIME, p.BUY_STOP_TIME,oi.DISCOUNT_AMT,ci.LOW LOW_AMT,oi.ITEM_NO
+		from t_promotion p
+		left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+		left join t_promotion_con_item ci on ci.PROM_NO = oi.PROM_NO and ci.ITEM_NO = oi.ITEM_NO
+		left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+		where 1 = 1
+		and p.PROM_SUB_TYPE = 'Z017'
+		and p.PLAN_START_TIME &lt;= #{createBy,jdbcType=DATE}
+		and p.PLAN_STOP_TIME &gt;= #{createBy,jdbcType=DATE}
+		and p.BUY_START_TIME &lt;= #{buyStartTime,jdbcType=DATE}
+        and p.BUY_STOP_TIME &gt;= #{buyStopTime,jdbcType=DATE}
+		and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+		and si.branch_no = #{branchNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectPromationByOrder" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion">
+        select distinct
+        p.PROM_SUB_TYPE, oi.ORIG_NUM ORG_QTY,
+        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
+        p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+        p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+        p.BUY_START_TIME, p.BUY_STOP_TIME,oi.DISCOUNT_AMT,ci.LOW LOW_AMT,oi.ITEM_NO
+        from t_promotion p
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        left join t_promotion_con_item ci on ci.PROM_NO = oi.PROM_NO and ci.ITEM_NO = oi.ITEM_NO
+        left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+        where 1 = 1
+        and p.PROM_SUB_TYPE = 'Z016'
+        and ci.LOW &lt;= #{buyAmt,jdbcType=DECIMAL}
+        and p.PLAN_START_TIME &lt;= #{createBy,jdbcType=DATE}
+        and p.PLAN_STOP_TIME &gt;= #{createBy,jdbcType=DATE}
+        and p.BUY_START_TIME &lt;= #{buyStartTime,jdbcType=DATE}
+        and p.BUY_STOP_TIME &gt;= #{buyStopTime,jdbcType=DATE}
+        and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and si.branch_no = #{branchNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectPromationByOneMatnr" resultMap="BaseResultMap"
+            parameterType="com.nhry.data.order.domain.TPromotion">
+        select distinct
+        pro1.MATNR_TXT ORG_MATNR ,
+        p.PROM_SUB_TYPE, oi.ORIG_NUM ORG_QTY,
+        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
+        p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+        p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+        p.BUY_START_TIME, p.BUY_STOP_TIME,oi.DISCOUNT_AMT,ci.LOW LOW_AMT,oi.ITEM_NO
+        from t_promotion p
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        left join t_promotion_con_item ci on ci.PROM_NO = oi.PROM_NO and ci.ITEM_NO = oi.ITEM_NO
+        left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+        left join t_md_mara pro1 on pro1.matnr = oi.GOOD_NO
+        where 1 = 1
+        and p.PROM_SUB_TYPE = 'Z015'
+        and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
+        and ci.LOW &lt;= #{buyAmt,jdbcType=DECIMAL}
+        and p.PLAN_START_TIME &lt;= #{createBy,jdbcType=DATE}
+        and p.PLAN_STOP_TIME &gt;= #{createBy,jdbcType=DATE}
+        and p.BUY_START_TIME &lt;= #{buyStartTime,jdbcType=DATE}
+        and p.BUY_STOP_TIME &gt;= #{buyStopTime,jdbcType=DATE}
+        and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and si.branch_no = #{branchNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectPromotionByPromNo" resultMap="BaseResultMap"
+            parameterType="com.nhry.data.order.domain.TPromotion">
+        select oi.GOOD_NO ORG_MATNR, oi.ORIG_NUM ORG_QTY, gi.GIFT_NO GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,gi.GIFT_UNIT,
+        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
+        p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+        p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+        p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT,
+        p.GIFT_AMT, p.CREATE_AT, p.CREATE_BY,
+        p.CREATE_BY_TXT, p.LAST_MODIFIED, p.LAST_MODIFIED_BY,
+        p.LAST_MODIFIED_BY_TXT
+        from t_promotion p
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+        <!-- left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO -->
+        where 1 = 1
+        and p.PROM_NO = #{promNo,jdbcType=VARCHAR}
+    </select>
+
+
+    <insert id="insert" parameterType="com.nhry.data.order.domain.TPromotion">
+    insert into t_promotion (PROM_NO, PROM_DES, PROM_TYPE, 
+      SALES_ORG, SALES_DIST, CUSTOMER_TYPE, 
+      PROM_STAT, PLAN_START_TIME, PLAN_STOP_TIME, 
+      BUY_START_TIME, BUY_STOP_TIME, BUY_AMT, 
+      GIFT_AMT, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT)
+    values (#{promNo,jdbcType=VARCHAR}, #{promDes,jdbcType=VARCHAR}, #{promType,jdbcType=VARCHAR}, 
+      #{salesOrg,jdbcType=VARCHAR}, #{salesDist,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, 
+      #{promStat,jdbcType=VARCHAR}, #{planStartTime,jdbcType=TIMESTAMP}, #{planStopTime,jdbcType=TIMESTAMP}, 
+      #{buyStartTime,jdbcType=TIMESTAMP}, #{buyStopTime,jdbcType=TIMESTAMP}, #{buyAmt,jdbcType=DECIMAL}, 
+      #{giftAmt,jdbcType=DECIMAL}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertPromSelective" parameterType="com.nhry.data.order.domain.TPromotion">
+        insert into t_promotion
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="promNo != null">
+                PROM_NO,
+            </if>
+            <if test="promDes != null">
+                PROM_DES,
+            </if>
+            <if test="promType != null">
+                PROM_TYPE,
+            </if>
+             <if test="promSubType != null">
+                PROM_SUB_TYPE,
+            </if>
+            <if test="salesOrg != null">
+                SALES_ORG,
+            </if>
+            <if test="salesDist != null">
+                SALES_DIST,
+            </if>
+            <if test="customerType != null">
+                CUSTOMER_TYPE,
+            </if>
+            <if test="promStat != null">
+                PROM_STAT,
+            </if>
+            <if test="planStartTime != null">
+                PLAN_START_TIME,
+            </if>
+            <if test="planStopTime != null">
+                PLAN_STOP_TIME,
+            </if>
+            <if test="buyStartTime != null">
+                BUY_START_TIME,
+            </if>
+            <if test="buyStopTime != null">
+                BUY_STOP_TIME,
+            </if>
+            <if test="buyAmt != null">
+                BUY_AMT,
+            </if>
+            <if test="giftAmt != null">
+                GIFT_AMT,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+            <if test="lastModified != null">
+                LAST_MODIFIED,
+            </if>
+            <if test="lastModifiedBy != null">
+                LAST_MODIFIED_BY,
+            </if>
+            <if test="lastModifiedByTxt != null">
+                LAST_MODIFIED_BY_TXT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="promNo != null">
+                #{promNo,jdbcType=VARCHAR},
+            </if>
+            <if test="promDes != null">
+                #{promDes,jdbcType=VARCHAR},
+            </if>
+            <if test="promType != null">
+                #{promType,jdbcType=VARCHAR},
+            </if>
+            
+            <if test="promSubType != null">
+                #{promSubType,jdbcType=VARCHAR},
+            </if>
+            <if test="salesOrg != null">
+                #{salesOrg,jdbcType=VARCHAR},
+            </if>
+            <if test="salesDist != null">
+                #{salesDist,jdbcType=VARCHAR},
+            </if>
+            <if test="customerType != null">
+                #{customerType,jdbcType=VARCHAR},
+            </if>
+            <if test="promStat != null">
+                #{promStat,jdbcType=VARCHAR},
+            </if>
+            <if test="planStartTime != null">
+                #{planStartTime,jdbcType=DATE},
+            </if>
+            <if test="planStopTime != null">
+                #{planStopTime,jdbcType=DATE},
+            </if>
+            <if test="buyStartTime != null">
+                #{buyStartTime,jdbcType=DATE},
+            </if>
+            <if test="buyStopTime != null">
+                #{buyStopTime,jdbcType=DATE},
+            </if>
+            <if test="buyAmt != null">
+                #{buyAmt,jdbcType=DECIMAL},
+            </if>
+            <if test="giftAmt != null">
+                #{giftAmt,jdbcType=DECIMAL},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModified != null">
+                #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifiedBy != null">
+                #{lastModifiedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifiedByTxt != null">
+                #{lastModifiedByTxt,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+
+    <select id="selectPromotionByPromNoAndItemNo" resultMap="BaseResultMap"
+            parameterType="com.nhry.data.order.domain.TPromotion">
+        select oi.GOOD_NO ORG_MATNR, oi.ORIG_NUM ORG_QTY, gi.GIFT_NO GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,gi.GIFT_UNIT,
+        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,p.PROM_SUB_TYPE,
+        p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+        p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+        p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT,
+        p.GIFT_AMT, p.CREATE_AT, p.CREATE_BY,
+        p.CREATE_BY_TXT, p.LAST_MODIFIED, p.LAST_MODIFIED_BY,
+        p.LAST_MODIFIED_BY_TXT,ci.LOW LOW_AMT,oi.DISCOUNT_AMT,oi.ITEM_NO
+        from t_promotion p
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        LEFT JOIN t_promotion_gift_item gi ON p.PROM_NO = gi.PROM_NO AND oi.ITEM_NO = gi.ITEM_NO
+        LEFT JOIN t_promotion_con_item ci ON p.PROM_NO = ci.PROM_NO  AND ci.ITEM_NO = oi.ITEM_NO
+        <!-- left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO -->
+        where 1 = 1
+        and p.PROM_NO = #{promNo,jdbcType=VARCHAR}
+        and oi.ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectPromotionByEntryAndAmt" resultMap="PromResultMap"
+            parameterType="com.nhry.data.order.domain.TPromotion">
+        select
+        p.PROM_NO,oi.ITEM_NO PROM_ITEM_NO,p.PROM_SUB_TYPE,(select NULL from DUAL) DISCOUNT_AMT
+        ,
+        CONCAT(
+        '购买',
+        ROUND(oi.ORIG_NUM),
+        '个',
+        a1.SHORT_TXT,
+        '赠送',
+        ROUND(gi.GIFT_NUM),
+        '个',
+        a2.SHORT_TXT,
+        '产品'
+        ) ITEM_DESCRIBE
+        from t_promotion p
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        left join t_promotion_con_item ci on p.PROM_NO = ci.PROM_NO and  ci.ITEM_NO = oi.ITEM_NO
+        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+        left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+        LEFT JOIN t_md_mara_ex a1 ON oi.GOOD_NO = a1.MATNR AND p.SALES_ORG = a1.SALES_ORG
+        LEFT JOIN t_md_mara_ex a2 ON gi.GIFT_NO = a2.MATNR AND p.SALES_ORG = a2.SALES_ORG
+        where 1 = 1
+        and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
+        and p.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        and p.PLAN_START_TIME &lt;=#{planStartTime,jdbcType=DATE}
+        and p.PLAN_STOP_TIME &gt;=#{planStopTime,jdbcType=DATE}
+        and p.BUY_START_TIME &lt;=#{buyStartTime,jdbcType=DATE}
+        and p.BUY_STOP_TIME &gt;=#{buyStopTime,jdbcType=DATE}
+        and  oi.ORIG_NUM &lt;= #{orgQty,jdbcType=DECIMAL}
+        and p.PROM_SUB_TYPE ='Z008'
+    UNION ALL
+        select
+        p.PROM_NO,oi.ITEM_NO PROM_ITEM_NO,p.PROM_SUB_TYPE,oi.DISCOUNT_AMT,
+        CONCAT(
+        a.SHORT_TXT,
+        '满',
+        ci.LOW,
+        '元钱减',
+        oi.DISCOUNT_AMT,
+        '元钱'
+        ) ITEM_DESCRIBE
+        from t_promotion p
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        left join t_promotion_con_item ci on p.PROM_NO = ci.PROM_NO  and ci.ITEM_NO = oi.ITEM_NO
+        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+        left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+        LEFT JOIN t_md_mara_ex a on oi.GOOD_NO = a.MATNR  and p.SALES_ORG = a.SALES_ORG
+        where 1 = 1
+        and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
+        and p.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        and p.PLAN_START_TIME &lt;=#{planStartTime,jdbcType=DATE}
+        and p.PLAN_STOP_TIME &gt;=#{planStopTime,jdbcType=DATE}
+        and p.BUY_START_TIME &lt;=#{buyStartTime,jdbcType=DATE}
+        and p.BUY_STOP_TIME &gt;=#{buyStopTime,jdbcType=DATE}
+        and ci.LOW &lt;=#{lowAmt,jdbcType=DECIMAL}
+        and p.PROM_SUB_TYPE ='Z015'
+    </select>
+    <select id="selectPromotionsByOrder" resultMap="PromResultMap" parameterType="com.nhry.data.order.domain.TPromotion">
+     SELECT DISTINCT
+            p.PROM_NO,
+            oi.ITEM_NO PROM_ITEM_NO,
+            p.PROM_SUB_TYPE,
+            oi.DISCOUNT_AMT,
+            CONCAT(
+                '整单满',
+                ci.LOW,
+                '元减',
+                oi.DISCOUNT_AMT,
+                '元'
+            ) ITEM_DESCRIBE
+        FROM
+            t_promotion p
+        LEFT JOIN t_promotion_orig_item oi ON p.PROM_NO = oi.PROM_NO
+        LEFT JOIN t_promotion_con_item ci ON ci.PROM_NO = oi.PROM_NO  AND ci.ITEM_NO = oi.ITEM_NO
+        LEFT JOIN t_prom_scope_item si ON p.PROM_NO = si.PROM_NO
+        where 1 = 1
+        and p.PROM_SUB_TYPE = 'Z016'
+        and ci.LOW &lt;= #{lowAmt,jdbcType=DECIMAL}
+        and p.PLAN_START_TIME &lt;= #{planStartTime,jdbcType=DATE}
+        and p.PLAN_STOP_TIME &gt;= #{planStopTime,jdbcType=DATE}
+        and p.BUY_START_TIME &lt;= #{buyStartTime,jdbcType=DATE}
+        and p.BUY_STOP_TIME &gt;= #{buyStopTime,jdbcType=DATE}
+        and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selYearCardPromBySalesOrg" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion">
+         select
+        p.PROM_SUB_TYPE,oi.GOOD_NO YEAR_TYPE,oi.ITEM_NO,oi.DISCOUNT_AMT,oi.ORIG_NUM ORG_QTY,
+        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
+        p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+        p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+        p.BUY_START_TIME, p.BUY_STOP_TIME
+        from t_promotion p
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        where 1 = 1
+        and p.PROM_SUB_TYPE = 'Z017'
+        and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </select>
+    <select id="selYearCardPromByPromNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion">
+        select
+        p.PROM_SUB_TYPE,oi.GOOD_NO YEAR_TYPE,oi.ITEM_NO,oi.DISCOUNT_AMT,oi.ORIG_NUM ORG_QTY,
+        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
+        p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+        p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+        p.BUY_START_TIME, p.BUY_STOP_TIME
+        from t_promotion p
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        where 1 = 1
+        and p.PROM_SUB_TYPE = 'Z017'
+        and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        AND p.PROM_NO = #{promNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

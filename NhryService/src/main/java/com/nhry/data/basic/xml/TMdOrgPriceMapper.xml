@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdOrgPriceMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdOrgPrice" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
+    <result column="PRICE_AGREE" property="priceAgree" jdbcType="DECIMAL" />
+    <result column="PRICE_DELIVER" property="priceDeliver" jdbcType="DECIMAL" />
+    <result column="PRICE_HOME" property="priceHome" jdbcType="DECIMAL" />
+    <result column="PRICE_NET_VALUE" property="priceNetValue" jdbcType="DECIMAL" />
+    <result column="START_DATE" property="startDate" jdbcType="DATE" />
+    <result column="END_DATE" property="endDate" jdbcType="DATE" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="IS_SHOW" property="isShow" jdbcType="VARCHAR" />
+    <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="SEC_CATE_NAME" property="secCateName" jdbcType="VARCHAR" />
+    <result column="OLD_PRICE" property="oldPrice" jdbcType="DECIMAL" />
+    <result column="OLD_PRICE_DELIVER" property="oldPriceDeliver" jdbcType="DECIMAL" />
+    <result column="OLD_PRICE_HOME" property="oldPriceHome" jdbcType="DECIMAL" />
+    <result column="OLD_PRICE_NET_VALUE" property="oldPriceNetValue" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MATNR, SALES_ORG, ORG_ID, PRICE_AGREE, PRICE_DELIVER, START_DATE, END_DATE, STATUS,PRICE_HOME,
+    PRICE_NET_VALUE,CREATE_AT, CREATE_BY, CREATE_BY_TXT, IS_SHOW
+  </sql>
+  <select id="selectOrgPriceById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_org_price
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="isOrgPriceEmp" resultType="int" parameterType="com.nhry.data.basic.domain.TMdOrgPrice">
+    SELECT
+    count(1)
+    FROM
+    t_md_org_price t
+    WHERE
+    t.ORG_ID = #{orgId,jdbcType=VARCHAR}
+    AND t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </select>
+  <select id="selectOrgPriceByOrgIdAndSaleOrg" resultMap="BaseResultMap" parameterType="com.nhry.data.basic.domain.TMdOrgPrice">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    t_md_org_price t
+    WHERE
+    t.ORG_ID = #{orgId,jdbcType=VARCHAR}
+    AND t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="status != null  and status != ''" >
+    AND STATUS #{status,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="selectOrgPriceList" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
+    SELECT
+    t.ID,
+    t.MATNR,
+    t1.SHORT_TXT,
+    t1.SHORT_TXT MATNR_TXT,
+    t3.ITEM_NAME SEC_CATE_NAME,
+    t.IS_SHOW,
+    t.PRICE_AGREE,
+    t.PRICE_DELIVER,
+    t.PRICE_HOME,
+    t.PRICE_NET_VALUE,
+    t.START_DATE,
+    t.END_DATE,
+    t.STATUS,
+    t.ORG_ID,
+    t.SALES_ORG
+    FROM
+    t_md_org_price t
+    INNER JOIN t_md_order_org t4 on t4.ID = t.ORG_ID and t.ORG_ID =#{orgId,jdbcType=VARCHAR}
+    LEFT JOIN t_md_mara_ex t1 ON t1.MATNR = t.MATNR and t1.SALES_ORG = t.SALES_ORG
+    LEFT JOIN t_md_mara t2 on t2.SALES_ORG = t.SALES_ORG and t2.MATNR = t.MATNR
+    LEFT JOIN t_sys_code_item t3 on t3.ITEM_CODE = t2.SEC_CATE and t3.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include>
+    AND t1.SALES_ORG = t.SALES_ORG
+    WHERE
+    t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="status != null  and status != ''" >
+      AND t.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="isShow != null  and isShow != ''" >
+      AND t.IS_SHOW = #{isShow,jdbcType=VARCHAR}
+    </if>
+    <if test="endDate != null  and endDate != ''" >
+      AND t.END_DATE &gt;= #{endDate,jdbcType=VARCHAR}
+    </if>
+    <if test="search != null  and search != ''" >
+      AND (t.MATNR like '%${search}%' or t1.SHORT_TXT like '%${search}%')
+    </if>
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
+  </select>
+  <select id="selectOrgPriceListPage" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
+    SELECT
+    t.ID,
+    t.MATNR,
+    t1.SHORT_TXT,
+    t1.SHORT_TXT MATNR_TXT,
+    t3.ITEM_NAME SEC_CATE_NAME,
+    t.IS_SHOW,
+    t.PRICE_AGREE,
+    t.PRICE_DELIVER,
+    t.PRICE_HOME,
+    t.PRICE_NET_VALUE,
+    t.START_DATE,
+    t.END_DATE,
+    t.STATUS,
+    t.ORG_ID,
+    t.SALES_ORG
+    FROM
+    t_md_org_price t
+    INNER JOIN t_md_order_org t4 on t4.ID = t.ORG_ID and t4.ORG_CODE =#{orgId,jdbcType=VARCHAR}
+    LEFT JOIN t_md_mara_ex t1 ON t1.MATNR = t.MATNR and t1.SALES_ORG = t.SALES_ORG
+    LEFT JOIN t_md_mara t2 on t2.SALES_ORG = t.SALES_ORG and t2.MATNR = t.MATNR
+    LEFT JOIN t_sys_code_item t3 on t3.ITEM_CODE = t2.SEC_CATE and t3.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include>
+    AND t1.SALES_ORG = t.SALES_ORG
+    WHERE
+     t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="status != null  and status != ''" >
+      AND t.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="isShow != null  and isShow != ''" >
+      AND t.IS_SHOW = #{isShow,jdbcType=VARCHAR}
+    </if>
+    <if test="search != null  and search != ''" >
+      AND (t.MATNR like '%${search}%' or t1.SHORT_TXT like '%${search}%')
+    </if>
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
+  </select>
+  <select id="selectOrgPriceListOldPrice" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
+    SELECT
+    t.ID,
+    t.MATNR,
+    t1.SHORT_TXT,
+    t1.SHORT_TXT MATNR_TXT,
+    t3.ITEM_NAME SEC_CATE_NAME,
+    t.IS_SHOW,
+    t.PRICE_AGREE,
+    t.PRICE_DELIVER,
+    t.PRICE_HOME,
+    t.PRICE_NET_VALUE,
+    t.START_DATE,
+    t.END_DATE,
+    t. STATUS,
+    t.ORG_ID,
+    t.SALES_ORG,
+    (
+    SELECT
+    o.PRICE_AGREE
+    FROM
+    t_md_org_price o
+    WHERE
+    o.MATNR = t.MATNR
+    AND o.START_DATE &lt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.END_DATE &gt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.SALES_ORG = t.SALES_ORG
+    AND o.ORG_ID = t4.ID
+    AND o.`STATUS` = 'N'
+    ) OLD_PRICE,
+    (
+    SELECT
+    o.PRICE_DELIVER
+    FROM
+    t_md_org_price o
+    WHERE
+    o.MATNR = t.MATNR
+    AND o.START_DATE &lt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.END_DATE &gt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.ORG_ID = t4.ID
+    AND o.`STATUS` = 'N'
+    AND o.`STATUS` = 'N'
+    ) OLD_PRICE_DELIVER,
+    (
+    SELECT
+    o.PRICE_HOME
+    FROM
+    t_md_org_price o
+    WHERE
+    o.MATNR = t.MATNR
+    AND o.START_DATE &lt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.END_DATE &gt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.ORG_ID = t4.ID
+    AND o.`STATUS` = 'N'
+    AND o.`STATUS` = 'N'
+    ) OLD_PRICE_HOME,
+    (
+    SELECT
+    o.PRICE_NET_VALUE
+    FROM
+    t_md_org_price o
+    WHERE
+    o.MATNR = t.MATNR
+    AND o.START_DATE &lt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.END_DATE &gt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.ORG_ID = t4.ID
+    AND o.`STATUS` = 'N'
+    AND o.`STATUS` = 'N'
+    ) OLD_PRICE_NET_VALUE
+    FROM
+    t_md_org_price t
+    INNER JOIN t_md_order_org t4 ON t4.ID = t.ORG_ID
+    AND t4.ORG_CODE = #{orgId,jdbcType=VARCHAR}
+    LEFT JOIN t_md_mara_ex t1 ON t1.MATNR = t.MATNR
+    AND t1.SALES_ORG = t.SALES_ORG
+    LEFT JOIN t_md_mara t2 ON t2.SALES_ORG = t.SALES_ORG
+    AND t2.MATNR = t.MATNR
+    LEFT JOIN t_sys_code_item t3 ON t3.ITEM_CODE = t2.SEC_CATE
+    AND t3.TYPE_CODE =<include refid = "mybaties.constant.products_second_category" ></include >
+    AND t1.SALES_ORG = t.SALES_ORG
+    WHERE
+    t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="status != null  and status != ''" >
+      AND t.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="isShow != null  and isShow != ''" >
+      AND t.IS_SHOW = #{isShow,jdbcType=VARCHAR}
+    </if>
+    <if test="search != null  and search != ''" >
+      AND (t.MATNR like '%${search}%' or t1.SHORT_TXT like '%${search}%')
+    </if>
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
+  </select>
+  <select id="selectOrgPriceByMatnrOldPrice" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
+    SELECT
+    t.ID,
+    t.MATNR,
+    t1.SHORT_TXT,
+    t1.SHORT_TXT MATNR_TXT,
+    t3.ITEM_NAME SEC_CATE_NAME,
+    t.IS_SHOW,
+    t.PRICE_AGREE,
+    t.PRICE_DELIVER,
+    t.PRICE_HOME,
+    t.PRICE_NET_VALUE,
+    t.START_DATE,
+    t.END_DATE,
+    t. STATUS,
+    t.ORG_ID,
+    t.SALES_ORG,
+    (
+    SELECT
+    o.PRICE_AGREE
+    FROM
+    t_md_org_price o
+    WHERE
+    o.MATNR = t.MATNR
+    AND o.START_DATE &lt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.END_DATE &gt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.ORG_ID = t4.ID
+    AND o.`STATUS` = 'N'
+    AND o.`STATUS` = 'N'
+    ) OLD_PRICE,
+    (
+    SELECT
+    o.PRICE_DELIVER
+    FROM
+    t_md_org_price o
+    WHERE
+    o.MATNR = t.MATNR
+    AND o.START_DATE &lt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.END_DATE &gt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.ORG_ID = t4.ID
+    AND o.`STATUS` = 'N'
+    AND o.`STATUS` = 'N'
+    ) OLD_PRICE_DELIVER,
+    (
+    SELECT
+    o.PRICE_HOME
+    FROM
+    t_md_org_price o
+    WHERE
+    o.MATNR = t.MATNR
+    AND o.START_DATE &lt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.END_DATE &gt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.ORG_ID = t4.ID
+    AND o.`STATUS` = 'N'
+    AND o.`STATUS` = 'N'
+    ) OLD_PRICE_HOME,
+    (
+    SELECT
+    o.PRICE_NET_VALUE
+    FROM
+    t_md_org_price o
+    WHERE
+    o.MATNR = t.MATNR
+    AND o.START_DATE &lt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.END_DATE &gt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.ORG_ID = t4.ID
+    AND o.`STATUS` = 'N'
+    AND o.`STATUS` = 'N'
+    ) OLD_PRICE_NET_VALUE
+    FROM
+    t_md_org_price t
+    INNER JOIN t_md_order_org t4 ON t4.ID = t.ORG_ID
+    AND t4.ORG_CODE = #{orgId,jdbcType=VARCHAR}
+    LEFT JOIN t_md_mara_ex t1 ON t1.MATNR = t.MATNR
+    AND t1.SALES_ORG = t.SALES_ORG
+    LEFT JOIN t_md_mara t2 ON t2.SALES_ORG = t.SALES_ORG
+    AND t2.MATNR = t.MATNR
+    LEFT JOIN t_sys_code_item t3 ON t3.ITEM_CODE = t2.SEC_CATE
+    AND t3.TYPE_CODE =<include refid = "mybaties.constant.products_second_category" ></include >
+    AND t1.SALES_ORG = t.SALES_ORG
+    WHERE
+    t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      AND t.STATUS = 'Y'
+      AND t.IS_SHOW = 'Y'
+      AND t.MATNR = #{matnr,jdbcType=VARCHAR}
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
+  </select>
+  <select id="selectOrgPriceByMatnr" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
+    SELECT
+    t.PRICE_AGREE,
+    t.PRICE_DELIVER,
+    t.PRICE_HOME,
+    t.PRICE_NET_VALUE,
+    t.MATNR
+    FROM
+    t_md_org_price t
+    INNER JOIN t_md_order_org t4 on t4.ID = t.ORG_ID and t4.ORG_CODE =#{orgId,jdbcType=VARCHAR}
+    WHERE
+    t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    AND t.MATNR = #{matnr,jdbcType=VARCHAR}
+    AND t.STATUS = 'Y'
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
+  </select>
+  <delete id="deleteOrgPriceById" parameterType="java.lang.String" >
+    delete from t_md_org_price
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertOrgPrice" parameterType="com.nhry.data.basic.domain.TMdOrgPrice" >
+    insert into t_md_org_price (ID, MATNR, SALES_ORG, 
+      ORG_ID, PRICE_AGREE, PRICE_DELIVER,
+      START_DATE, END_DATE, STATUS,PRICE_HOME,PRICE_NET_VALUE,
+      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+      IS_SHOW)
+    values (#{id,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
+      #{orgId,jdbcType=VARCHAR}, #{priceAgree,jdbcType=DECIMAL}, #{priceDeliver,jdbcType=DECIMAL},
+      #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{status,jdbcType=VARCHAR},
+      #{priceHome,jdbcType=DECIMAL},#{priceNetValue,jdbcType=DECIMAL},
+      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
+      #{isShow,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertOrgPriceSelective" parameterType="com.nhry.data.basic.domain.TMdOrgPrice" >
+    insert into t_md_org_price
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="orgId != null" >
+        ORG_ID,
+      </if>
+      <if test="priceAgree != null" >
+        PRICE_AGREE,
+      </if>
+      <if test="priceDeliver != null" >
+        PRICE_DELIVER,
+      </if>
+      <if test="priceHome != null" >
+        PRICE_HOME,
+      </if>
+      <if test="priceNetValue != null" >
+        PRICE_NET_VALUE,
+      </if>
+      <if test="startDate != null" >
+        START_DATE,
+      </if>
+      <if test="endDate != null" >
+        END_DATE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="isShow != null" >
+        IS_SHOW,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="priceAgree != null" >
+        #{priceAgree,jdbcType=DECIMAL},
+      </if>
+      <if test="priceDeliver != null" >
+        #{priceDeliver,jdbcType=DECIMAL},
+      </if>
+      <if test="priceHome != null" >
+        #{priceHome,jdbcType=DECIMAL},
+      </if>
+      <if test="priceNetValue != null" >
+        #{priceNetValue,jdbcType=DECIMAL},
+      </if>
+      <if test="startDate != null" >
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=DATE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="isShow != null" >
+        #{isShow,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateOrgPriceSelective" parameterType="com.nhry.data.basic.domain.TMdOrgPrice" >
+    update t_md_org_price
+    <set >
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        ORG_ID = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="priceAgree != null" >
+        PRICE_AGREE = #{priceAgree,jdbcType=DECIMAL},
+      </if>
+      <if test="priceDeliver != null" >
+        PRICE_DELIVER = #{priceDeliver,jdbcType=DECIMAL},
+      </if>
+      <if test="priceHome != null" >
+        PRICE_HOME = #{priceHome,jdbcType=DECIMAL},
+      </if>
+      <if test="priceNetValue != null" >
+        PRICE_NET_VALUE = #{priceNetValue,jdbcType=DECIMAL},
+      </if>
+      <if test="startDate != null" >
+        START_DATE = #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        END_DATE = #{endDate,jdbcType=DATE},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="isShow != null" >
+        IS_SHOW = #{isShow,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateOrgPriceById" parameterType="com.nhry.data.basic.domain.TMdOrgPrice" >
+    update t_md_org_price
+    set MATNR = #{matnr,jdbcType=VARCHAR},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      ORG_ID = #{orgId,jdbcType=VARCHAR},
+      PRICE_AGREE = #{priceAgree,jdbcType=DECIMAL},
+      PRICE_DELIVER = #{priceDeliver,jdbcType=DECIMAL},
+      PRICE_HOME = #{priceHome,jdbcType=DECIMAL},
+      PRICE_NET_VALUE = #{priceNetValue,jdbcType=DECIMAL},
+      START_DATE = #{startDate,jdbcType=DATE},
+      END_DATE = #{endDate,jdbcType=DATE},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      IS_SHOW = #{isShow,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

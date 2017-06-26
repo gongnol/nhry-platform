@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TssmMilkmanAmtsMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TssmMilkmanAmts" >
+    <id column="branch_no" property="branchNo" jdbcType="VARCHAR" />
+    <id column="emp_no" property="empNo" jdbcType="VARCHAR" />
+    <id column="order_date" property="orderDate" jdbcType="DATE" />
+    <result column="re_amt" property="reAmt" jdbcType="DECIMAL" />
+    <result column="day_amt" property="dayAmt" jdbcType="DECIMAL" />
+    <result column="day_bill_amt" property="dayBillAmt" jdbcType="DECIMAL" />
+    <result column="total_amt" property="totalAmt" jdbcType="DECIMAL" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    branch_no, emp_no, order_date, re_amt, day_amt, day_bill_amt, total_amt, CREATE_AT, 
+    LAST_MODIFIED, LAST_MODIFIED_BY
+  </sql>
+  <select id="selectAmtsByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ssm_milkman_amts
+    where branch_no = #{branchNo,jdbcType=VARCHAR}
+      and emp_no = #{empNo,jdbcType=VARCHAR}
+      and order_date like '%${monthDate}%'
+    ORDER BY order_date ASC
+  </select>
+  <delete id="deleteAmtsByPrimaryKey" parameterType="com.nhry.data.milktrans.domain.TssmMilkmanAmtsKey" >
+    delete from t_ssm_milkman_amts
+    where branch_no = #{branchNo,jdbcType=VARCHAR}
+      and emp_no = #{empNo,jdbcType=VARCHAR}
+      and order_date = #{orderDate,jdbcType=DATE}
+  </delete>
+  <insert id="insertAmts" parameterType="com.nhry.data.milktrans.domain.TssmMilkmanAmts" >
+    insert into t_ssm_milkman_amts (branch_no, emp_no, order_date, 
+      re_amt, day_amt, day_bill_amt, 
+      total_amt, CREATE_AT, LAST_MODIFIED, 
+      LAST_MODIFIED_BY)
+    values (#{branchNo,jdbcType=VARCHAR}, #{empNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, 
+      #{reAmt,jdbcType=DECIMAL}, #{dayAmt,jdbcType=DECIMAL}, #{dayBillAmt,jdbcType=DECIMAL}, 
+      #{totalAmt,jdbcType=DECIMAL}, #{createAt,jdbcType=TIMESTAMP}, #{lastModified,jdbcType=TIMESTAMP}, 
+      #{lastModifiedBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertAmtsSelective" parameterType="com.nhry.data.milktrans.domain.TssmMilkmanAmts" >
+    insert into t_ssm_milkman_amts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="branchNo != null" >
+        branch_no,
+      </if>
+      <if test="empNo != null" >
+        emp_no,
+      </if>
+      <if test="orderDate != null" >
+        order_date,
+      </if>
+      <if test="reAmt != null" >
+        re_amt,
+      </if>
+      <if test="dayAmt != null" >
+        day_amt,
+      </if>
+      <if test="dayBillAmt != null" >
+        day_bill_amt,
+      </if>
+      <if test="totalAmt != null" >
+        total_amt,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empNo != null" >
+        #{empNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="reAmt != null" >
+        #{reAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="dayAmt != null" >
+        #{dayAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="dayBillAmt != null" >
+        #{dayBillAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="totalAmt != null" >
+        #{totalAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateAmtsByPrimaryKeySelective" parameterType="com.nhry.data.milktrans.domain.TssmMilkmanAmts" >
+    update t_ssm_milkman_amts
+    <set >
+      <if test="reAmt != null" >
+        re_amt = #{reAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="dayAmt != null" >
+        day_amt = #{dayAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="dayBillAmt != null" >
+        day_bill_amt = #{dayBillAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="totalAmt != null" >
+        total_amt = #{totalAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        order_date = #{orderDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where branch_no = #{branchNo,jdbcType=VARCHAR}
+      and emp_no = #{empNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateAmtsByPrimaryKey" parameterType="com.nhry.data.milktrans.domain.TssmMilkmanAmts" >
+    update t_ssm_milkman_amts
+    set re_amt = #{reAmt,jdbcType=DECIMAL},
+      day_amt = #{dayAmt,jdbcType=DECIMAL},
+      day_bill_amt = #{dayBillAmt,jdbcType=DECIMAL},
+      total_amt = #{totalAmt,jdbcType=DECIMAL},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR}
+    where branch_no = #{branchNo,jdbcType=VARCHAR}
+      and emp_no = #{empNo,jdbcType=VARCHAR}
+      and order_date = #{orderDate,jdbcType=DATE}
+  </update>
+  <!--送奶员、奶站确认最大一天的数据-->
+  <select id="selectAmtsMaxDay" resultMap="BaseResultMap" parameterType="com.nhry.model.statistics.OutMilkModel" >
+    select
+    <include refid="Base_Column_List" />
+    from t_ssm_milkman_amts
+    WHERE
+    order_date = (
+    SELECT
+      max(order_date)
+      FROM
+      t_ssm_milkman_amts
+      where branch_no = #{branchNo,jdbcType=VARCHAR}
+      AND emp_no = #{empNo,jdbcType=VARCHAR}
+    )
+    AND branch_no = #{branchNo,jdbcType=VARCHAR}
+    AND emp_no = #{empNo,jdbcType=VARCHAR}
+  </select>
+  <!--送奶员、奶站确认最小一天的数据-->
+  <select id="selectAmtsMinDay" resultMap="BaseResultMap" parameterType="com.nhry.model.statistics.OutMilkModel" >
+    select
+    <include refid="Base_Column_List" />
+    from t_ssm_milkman_amts
+    WHERE
+    order_date = (
+    SELECT
+      min(order_date)
+      FROM
+      t_ssm_milkman_amts
+      where branch_no = #{branchNo,jdbcType=VARCHAR}
+      AND emp_no = #{empNo,jdbcType=VARCHAR}
+    )
+    AND branch_no = #{branchNo,jdbcType=VARCHAR}
+    AND emp_no = #{empNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAmtsByDay" resultMap="BaseResultMap" parameterType="com.nhry.model.statistics.OutMilkModel" >
+    select
+    <include refid="Base_Column_List" />
+    from t_ssm_milkman_amts
+    where order_date = #{orderDate,jdbcType=DATE}
+    AND branch_no = #{branchNo,jdbcType=VARCHAR}
+    AND emp_no = #{empNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteAmtsKeyDay" parameterType="com.nhry.data.milktrans.domain.TssmMilkmanAmtsKey" >
+    delete from t_ssm_milkman_amts
+    where branch_no = #{branchNo,jdbcType=VARCHAR}
+    and emp_no = #{empNo,jdbcType=VARCHAR}
+    and order_date &gt;= #{orderDate,jdbcType=DATE}
+  </delete>
+  <select id="selectAmtsOneDay" resultMap="BaseResultMap" parameterType="com.nhry.model.statistics.OutMilkModel" >
+    select
+    <include refid="Base_Column_List" />
+    from t_ssm_milkman_amts
+    where  branch_no = #{branchNo,jdbcType=VARCHAR}
+    AND emp_no = #{empNo,jdbcType=VARCHAR}
+    <if test="orderDate != null" >
+      and order_date = #{orderDate,jdbcType=DATE}
+    </if>
+  </select>
+</mapper>

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.basic.dao.TMdResidentialAreaMapper">
+  <!-- <cache type="org.mybatis.caches.redis.RedisCache" />-->
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
+    <result column="BRANCH_NAME" jdbcType="VARCHAR" property="branchName" />
+    <result column="RESIDENTIAL_AREA_TXT" jdbcType="VARCHAR" property="residentialAreaTxt" />
+    <result column="PROVINCE" jdbcType="VARCHAR" property="province" />
+    <result column="CITY" jdbcType="VARCHAR" property="city" />
+    <result column="COUNTY" jdbcType="VARCHAR" property="county" />
+
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+    <result column="COUNTY_NAME" property="countyName" jdbcType="VARCHAR" />
+    <result column="STREET_NAME" property="streetName" jdbcType="VARCHAR" />
+
+    <result column="GUIDEBOARD" jdbcType="VARCHAR" property="guideboard" />
+    <result column="STREET" jdbcType="VARCHAR" property="street" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="ADDRESS_TXT" jdbcType="VARCHAR" property="addressTxt" />
+    <result column="RESIDENTIAL_NUM" jdbcType="INTEGER" property="residentialNum" />
+    <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="PROPERTY_TXT" jdbcType="VARCHAR" property="propertyTxt" />
+    <result column="PROPERTY_TEL" jdbcType="VARCHAR" property="propertyTel" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET,GUIDEBOARD,STATUS, ADDRESS_TXT, RESIDENTIAL_NUM,
+    SALES_ORG, PROPERTY_TXT, PROPERTY_TEL
+  </sql>
+
+  <delete id="delBranchArea" parameterType="java.lang.String">
+    delete from t_md_residential_area
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="delArea" parameterType="java.lang.String">
+    delete from t_md_branch_scope
+    where RESIDENTIAL_AREA_ID = #{id,jdbcType=VARCHAR}
+  </delete>
+
+
+  <insert id="insertBranchArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+    insert into t_md_branch_scope (BRANCH_NO,RESIDENTIAL_AREA_ID)
+    values (#{branchNo,jdbcType=VARCHAR},#{id,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+    insert into t_md_residential_area (ID, RESIDENTIAL_AREA_TXT, PROVINCE,
+    CITY, COUNTY, STREET,GUIDEBOARD,STATUS,
+    ADDRESS_TXT, RESIDENTIAL_NUM, SALES_ORG,
+    PROPERTY_TXT, PROPERTY_TEL,CREATE_AT,CREATE_BY)
+    values (#{id,jdbcType=VARCHAR}, #{residentialAreaTxt,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
+    #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{street,jdbcType=VARCHAR}, #{guideboard,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+    #{addressTxt,jdbcType=VARCHAR}, #{residentialNum,jdbcType=INTEGER}, #{salesOrg,jdbcType=VARCHAR},
+    #{propertyTxt,jdbcType=VARCHAR}, #{propertyTel,jdbcType=VARCHAR},#{createAt,jdbcType=TIMESTAMP},#{createBy,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+    insert into t_md_residential_area
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="residentialAreaTxt != null">
+        RESIDENTIAL_AREA_TXT,
+      </if>
+      <if test="province != null">
+        PROVINCE,
+      </if>
+      <if test="city != null">
+        CITY,
+      </if>
+      <if test="county != null">
+        COUNTY,
+      </if>
+      <if test="street != null">
+      STREET,
+    </if>
+
+      <if test="guideboard != null">
+        GUIDEBOARD,
+      </if>
+      <if test="status != null">
+        Status,
+      </if>
+      <if test="addressTxt != null">
+        ADDRESS_TXT,
+      </if>
+      <if test="residentialNum != null">
+        RESIDENTIAL_NUM,
+      </if>
+      <if test="salesOrg != null">
+        SALES_ORG,
+      </if>
+      <if test="propertyTxt != null">
+        PROPERTY_TXT,
+      </if>
+      <if test="propertyTel != null">
+        PROPERTY_TEL,
+      </if>
+      <if test="createAt != null">
+        CREATE_AT,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialAreaTxt != null">
+        #{residentialAreaTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null">
+        #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="addressTxt != null">
+        #{addressTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialNum != null">
+        #{residentialNum,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrg != null">
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTxt != null">
+        #{propertyTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTel != null">
+        #{propertyTel,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null">
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+    update t_md_residential_area
+    <set>
+      <if test="residentialAreaTxt != null">
+        RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        COUNTY = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null">
+        STREET = #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="addressTxt != null">
+        ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialNum != null">
+        RESIDENTIAL_NUM = #{residentialNum,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrg != null">
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTxt != null">
+        PROPERTY_TXT = #{propertyTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTel != null">
+        PROPERTY_TEL = #{propertyTel,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="uptArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+    update t_md_residential_area
+    set RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      COUNTY = #{county,jdbcType=VARCHAR},
+      STREET = #{street,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
+      RESIDENTIAL_NUM = #{residentialNum,jdbcType=INTEGER},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      PROPERTY_TXT = #{propertyTxt,jdbcType=VARCHAR},
+      PROPERTY_TEL = #{propertyTel,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="uptBranchArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+    update t_md_branch_scope
+    set
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    where RESIDENTIAL_AREA_ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getAreaByBranchNo" parameterType="String" resultMap="BaseResultMap">
+     select
+     a.ID,a.RESIDENTIAL_AREA_TXT,a.GUIDEBOARD,a.RESIDENTIAL_NUM,a.SALES_ORG,a.PROPERTY_TXT,a.PROPERTY_TEL,a.STATUS,a.ADDRESS_TXT,
+     a.PROVINCE,a.CITY,a.COUNTY,a.STREET,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.PROVINCE ) PROVINCE_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME,
+    s.BRANCH_NO
+    from t_md_residential_area  a
+    LEFT JOIN  t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+    WHERE  1=1
+    and s.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    ORDER BY a.CREATE_AT desc
+  </select>
+<!--liuyin    add get：,nz.BRANCH_NAME as BRANCH_NO       add sql：  LEFT JOIN   T_MD_BRANCH_SCOPE  md on md.RESIDENTIAL_AREA_ID=a.id    LEFT JOIN   T_MD_BRANCH   nz on nz.BRANCH_NO=md.BRANCH_NO-->
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+      a.ID, a.RESIDENTIAL_AREA_TXT,  a.PROVINCE,a.CITY,a.COUNTY,a.STREET,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.PROVINCE ) PROVINCE_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME,
+    a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,a.RESIDENTIAL_NUM,a.SALES_ORG,  a.PROPERTY_TXT,  a.PROPERTY_TEL,group_concat(nz.BRANCH_NAME) as BRANCH_NO
+    from t_md_residential_area a
+     LEFT JOIN   T_MD_BRANCH_SCOPE  md on md.RESIDENTIAL_AREA_ID=a.id
+    LEFT JOIN   T_MD_BRANCH   nz on nz.BRANCH_NO=md.BRANCH_NO
+    where 1=1
+    and  ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <!--liuyin  add  end -->
+  <select id="selectAreaByPage" resultMap="BaseResultMap" parameterType="com.nhry.service.basic.pojo.ResidentialAreaModel">
+    SELECT
+    a.ID,a.RESIDENTIAL_AREA_TXT,a.GUIDEBOARD,a.RESIDENTIAL_NUM,a.SALES_ORG,a.PROPERTY_TXT,a.PROPERTY_TEL,a.STATUS,a.ADDRESS_TXT, a.PROVINCE,a.CITY,a.COUNTY,a.STREET,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.PROVINCE ) PROVINCE_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME
+    from t_md_residential_area a
+    where 1=1
+      and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="branchNo != null and branchNo !=''">
+      AND s.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="province != null and province !=''">
+      AND a.PROVINCE = #{province,jdbcType=VARCHAR}
+    </if>
+    <if test="city != null and city != ''">
+      AND a.CITY = #{city,jdbcType=VARCHAR}
+    </if>
+    <if test="county != null and county != ''">
+      AND a.COUNTY = #{county,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null and status != ''">
+      AND a.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="areaTxt != null and areaTxt != ''">
+      AND a.RESIDENTIAL_AREA_TXT like '%${areaTxt}%'
+    </if>
+    ORDER BY a.CREATE_AT desc
+  </select>
+  <update id="updateStatusToUnDistById"  parameterType="String">
+    UPDATE  t_md_residential_area
+    SET  STATUS = '10'
+    WHERE  ID = #{residentialAreaId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateStatusToDistedById" parameterType="String">
+    UPDATE  t_md_residential_area
+    SET  STATUS = '30'
+    WHERE  ID = #{residentialAreaId,jdbcType=VARCHAR}
+  </update>
+  <select id="getAreaById" resultMap="BaseResultMap" parameterType="String">
+    SELECT
+        a.ID, a.RESIDENTIAL_AREA_TXT, a.PROVINCE,a.CITY,a.COUNTY,a.STREET,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.PROVINCE ) PROVINCE_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME,
+        a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,a.RESIDENTIAL_NUM,a.SALES_ORG,  a.PROPERTY_TXT,  a.PROPERTY_TEL,
+        s.BRANCH_NO,b.BRANCH_NAME
+    from t_md_residential_area a
+      left JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+      LEFT JOIN t_md_branch b ON s.BRANCH_NO = b.BRANCH_NO
+    WHERE  a.ID = #{residentialAreaId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getUnDistAreas" resultMap="BaseResultMap"  parameterType="String" >
+    SELECT
+    <include refid="Base_Column_List" />
+    from t_md_residential_area
+    WHERE 1=1
+   /*   and STATUS = '10'*/
+     and  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    ORDER BY CREATE_AT desc
+  </select>
+
+
+  <select id="searchAreaBySalesOrg" resultMap="BaseResultMap" parameterType="com.nhry.service.basic.pojo.AreaSearchModel">
+    SELECT * FROM (
+    SELECT DISTINCT
+    a.ID,a.RESIDENTIAL_AREA_TXT,a.GUIDEBOARD,a.RESIDENTIAL_NUM,a.SALES_ORG,a.PROPERTY_TXT,a.PROPERTY_TEL,a.STATUS,a.ADDRESS_TXT,a.PROVINCE,a.CITY,a.COUNTY,a.STREET,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.PROVINCE ) PROVINCE_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME
+    from t_md_residential_area a
+    <if test="branchNo != null and branchNo !=''">
+        LEFT JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+    </if>
+    where a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="branchNo != null and branchNo !=''">
+      AND s.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+     <if test="status != null and status != ''">
+      AND a.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="province != null and province !=''">
+      AND a.PROVINCE = #{province,jdbcType=VARCHAR}
+    </if>
+    <if test="city != null and city != ''">
+      AND a.CITY = #{city,jdbcType=VARCHAR}
+    </if>
+    <if test="county != null and county != ''">
+      AND a.COUNTY = #{county,jdbcType=VARCHAR}
+    </if>
+    ) t 
+    <where>
+       <if test="content != null and content != ''">
+             CONCAT_WS(t.PROVINCE_NAME,t.CITY_NAME,t.COUNTY_NAME,t.RESIDENTIAL_AREA_TXT) like '%${content}%'
+       </if>
+    </where> 
+  </select>
+<select id="getAreaByAreaName" resultMap="BaseResultMap" parameterType="java.util.Map">
+  SELECT
+  <include refid="Base_Column_List" />
+  from t_md_residential_area
+  WHERE 1=1
+  and  RESIDENTIAL_AREA_TXT = #{residentialAreaTxt}
+  and SALES_ORG = #{salesOrg}
+</select>
+  <select id="searchAreaSaleOrgBranchNo" resultMap="BaseResultMap" parameterType="com.nhry.service.basic.pojo.AreaSearchModel">
+      SELECT DISTINCT
+    a.ID,a.RESIDENTIAL_AREA_TXT,a.SALES_ORG,a.ADDRESS_TXT,b.BRANCH_NO,b1.BRANCH_NAME,a.PROVINCE,a.CITY,a.COUNTY,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= '1001' and i.ITEM_CODE = a.PROVINCE ) PROVINCE_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= '1001'and i.ITEM_CODE = a.CITY ) CITY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= '1001' and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME
+
+    from t_md_residential_area a
+		LEFT JOIN t_md_branch_scope b on b.RESIDENTIAL_AREA_ID = a.ID
+		LEFT JOIN t_md_branch b1 on b1.BRANCH_NO = b.BRANCH_NO
+
+    where a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="branchNo != null and branchNo !=''">
+      AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    ORDER BY b.BRANCH_NO,a.RESIDENTIAL_AREA_TXT
+  </select>
+</mapper>

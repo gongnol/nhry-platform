@@ -1,0 +1,1586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.statistics.dao.BranchInfoMapper">
+    <sql id="Query_Base_Column">
+        <if test="branchNo != null">
+            AND b.BRANCH_NO = #{branchNo}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND b.DEALER_NO = #{dealerId}
+        </if>
+        <if test="salesOrg != null">
+            AND b.SALES_ORG = #{salesOrg}
+        </if>
+
+    </sql>
+    <select id="branchDayInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        SELECT
+        b.branch_no branchNo,
+        br.BRANCH_NAME branchName,
+        br.branch_group branchGroup,
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 4 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date1',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 3 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date2',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 2 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date3',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date4',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(#{theDate,jdbcType=DATE}, '%Y-%m-%d') THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date5',
+        ROUND(
+        (max(
+        CASE b.ORDER_DATE
+        WHEN date_format(#{theDate,jdbcType=DATE}, '%Y-%m-%d') THEN
+        qty
+        ELSE
+        0
+        END
+        )-max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ))*100/ max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ),'2') AS hb
+        FROM
+        (
+        SELECT
+        q.BRANCH_NO,
+        q.ORDER_DATE,
+        sum(q.qty) qty
+        FROM
+        (
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        i.QTY
+        FROM
+        t_mst_inside_sal_order_item i
+        JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+        AND i.ORDER_DATE BETWEEN DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 4 DAY)
+        AND #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+        <include refid="Query_Base_Column"/>
+        UNION ALL
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        i.CONFIRM_QTY qty
+        FROM
+        t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND i.ORDER_DATE BETWEEN DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 4 DAY)
+        AND #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        AND o.`STATUS` = '20'
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+        <include refid="Query_Base_Column"/>
+        ) q
+        GROUP BY
+        q.BRANCH_NO,
+        q.ORDER_DATE
+        ) b
+        LEFT JOIN t_md_branch br ON b.BRANCH_NO = br.BRANCH_NO
+        GROUP BY
+        b.BRANCH_NO
+    </select>
+
+    <select id="getBranchs" resultType="hashmap" parameterType="com.nhry.model.statistics.DistInfoModel">
+        SELECT
+        BRANCH_NO,
+        BRANCH_NAME
+        FROM
+        t_md_branch
+        <where>
+            <if test="salesOrg != null">
+                SALES_ORG = #{salesOrg}
+            </if>
+            <if test="dealerNo != null">
+                AND DEALER_NO = #{dealerNo}
+            </if>
+        </where>
+    </select>
+
+    <select id="findOrderRatio" parameterType="com.nhry.model.statistics.BranchInfoModel" resultType="hashMap">
+        SELECT
+        z.BRANCH_NO branchNo,
+        br.BRANCH_GROUP branchGroup,
+        br.BRANCH_NAME branchName,
+        z.qty initQty,
+        y.qty validQty,
+        cc.qty infoErrQty,
+        k.qty custQty,
+        q.qty superQty,
+        qt.qty otherQty,
+        y.qty / z.qty ratio
+        FROM
+        (
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND i.DISP_DATE = DATE_FORMAT(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 3 DAY),
+        '%y-%m-%d'
+        )
+        GROUP BY
+        p.BRANCH_NO
+        ) z
+        LEFT JOIN (
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.PREORDER_STAT = '10'
+        AND i.`STATUS` != '30'
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
+        ) y ON z.BRANCH_NO = y.BRANCH_NO
+        LEFT JOIN (
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.RET_REASON = '20'
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
+        ) cc ON cc.BRANCH_NO = z.BRANCH_NO
+        LEFT JOIN (
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.RET_REASON = '30'
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
+        ) k ON k.BRANCH_NO = z.BRANCH_NO
+        LEFT JOIN (
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.RET_REASON = '10'
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
+        ) q ON q.BRANCH_NO = z.BRANCH_NO
+        LEFT JOIN (
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.RET_REASON = '40'
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
+        ) qt ON qt.BRANCH_NO = z.BRANCH_NO
+        JOIN t_md_branch br ON br.BRANCH_NO = z.BRANCH_NO
+        <if test="branchNo != null">
+            AND br.BRANCH_NO =  #{branchNo}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND br.DEALER_NO =  #{dealerId}
+        </if>
+        <if test="salesOrg != null">
+            AND br.SALES_ORG =  #{salesOrg}
+        </if>
+    </select>
+
+    <select id="findBranchMonthReport" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        SELECT
+        monthd.*, b.BRANCH_GROUP branchGroup,
+        b.BRANCH_NAME branchName,
+        dayd.dayPrice,
+        dayd.dayWeigth / 1000 dayWeigth,
+        dayd.dayQty,
+        lastd.lastPrice,
+        lastd.lastQty,
+        IFNULL(dayd.dayQty, 0) - IFNULL(lastd.lastQty, 0) newQty,
+        ROUND(
+        (
+        IFNULL(dayd.dayQty, 0) - IFNULL(lastd.lastQty, 0)
+        ) * 100 / lastd.lastQty,
+        '2'
+        ) hb,
+        bbb.planPrice,
+        ROUND(
+        monthd.montyPrice / bbb.planPrice,
+        2
+        ) dcl
+        FROM
+        (
+        SELECT
+        a.BRANCH_NO,
+        sum(a.qty) monthQty,
+        sum(a.PRICE * a.QTY) montyPrice
+        FROM
+        (
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        m.WEIGHT,
+        i.QTY,
+        i.PRICE
+        FROM
+        t_mst_inside_sal_order_item i
+        JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+        AND i.ORDER_DATE BETWEEN date_add(#{theDate,jdbcType=DATE}, INTERVAL - DAY(#{theDate,jdbcType=DATE}) + 1 DAY)
+        AND #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO and b.BRANCH_GROUP = '01'
+        JOIN t_md_mara m ON i.MATNR = m.MATNR
+        AND b.SALES_ORG = m.SALES_ORG
+        UNION ALL
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        m.WEIGHT,
+        i.CONFIRM_QTY qty,
+        i.PRICE
+        FROM
+        t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND i.ORDER_DATE BETWEEN date_add(#{theDate,jdbcType=DATE}, INTERVAL - DAY(#{theDate,jdbcType=DATE}) + 1 DAY)
+        AND #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        AND o.`STATUS` = '20'
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO and b.BRANCH_GROUP = '01'
+        JOIN t_md_mara m ON i.MATNR = m.MATNR
+        AND b.SALES_ORG = m.SALES_ORG
+        ) a
+        GROUP BY
+        a.BRANCH_NO
+        ) monthd
+        LEFT JOIN (
+        SELECT
+        a.BRANCH_NO,
+        sum(a.qty) dayQty,
+        sum(a.PRICE * a.QTY) dayPrice,
+        sum(a.QTY * a.WEIGHT) dayWeigth
+        FROM
+        (
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        m.WEIGHT,
+        i.QTY,
+        i.PRICE
+        FROM
+        t_mst_inside_sal_order_item i
+        JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+        AND i.ORDER_DATE = #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO and b.BRANCH_GROUP = '01'
+        JOIN t_md_mara m ON i.MATNR = m.MATNR
+        AND b.SALES_ORG = m.SALES_ORG
+        UNION ALL
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        m.WEIGHT,
+        i.CONFIRM_QTY qty,
+        i.PRICE
+        FROM
+        t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND i.ORDER_DATE = #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        AND o.`STATUS` = '20'
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO and b.BRANCH_GROUP = '01'
+        JOIN t_md_mara m ON i.MATNR = m.MATNR
+        AND b.SALES_ORG = m.SALES_ORG
+        ) a
+        GROUP BY
+        a.BRANCH_NO
+        ) dayd ON monthd.branch_no = dayd.branch_no
+        LEFT JOIN (
+        SELECT
+        a.BRANCH_NO,
+        sum(a.qty) lastQty,
+        sum(a.PRICE * a.QTY) lastPrice
+        FROM
+        (
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        m.WEIGHT,
+        i.QTY,
+        i.PRICE
+        FROM
+        t_mst_inside_sal_order_item i
+        JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+        AND i.ORDER_DATE = date_add(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY)
+        AND o.ORDER_DATE = i.ORDER_DATE
+        JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO and b.BRANCH_GROUP = '01'
+        JOIN t_md_mara m ON i.MATNR = m.MATNR
+        AND b.SALES_ORG = m.SALES_ORG
+        UNION ALL
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        m.WEIGHT,
+        i.CONFIRM_QTY qty,
+        i.PRICE
+        FROM
+        t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND i.ORDER_DATE = date_add(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY)
+        AND o.ORDER_DATE = i.ORDER_DATE
+        AND o.`STATUS` = '20'
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO and b.BRANCH_GROUP = '01'
+        JOIN t_md_mara m ON i.MATNR = m.MATNR
+        AND b.SALES_ORG = m.SALES_ORG
+        ) a
+        GROUP BY
+        a.BRANCH_NO
+        ) lastd ON monthd.BRANCH_NO = lastd.BRANCH_NO
+        JOIN t_md_branch b ON monthd.BRANCH_NO = b.BRANCH_NO
+        <include refid="Query_Base_Column"/>
+        LEFT JOIN (
+        SELECT
+        CASE MONTH (#{theDate,jdbcType=DATE})
+        WHEN "01" THEN
+        t.TASK_JAN
+        WHEN "02" THEN
+        t.TASK_FEB
+        WHEN "03" THEN
+        t.TASK_MAR
+        WHEN "04" THEN
+        t.TASK_APR
+        WHEN "05" THEN
+        t.TASK_MAY
+        WHEN "06" THEN
+        t.TASK_JUN
+        WHEN "07" THEN
+        t.TASK_JUL
+        WHEN "08" THEN
+        t.TASK_AUG
+        WHEN "09" THEN
+        t.TASK_SEP
+        WHEN "10" THEN
+        t.TASK_OCT
+        WHEN "11" THEN
+        t.TASK_NOV
+        WHEN "12" THEN
+        t.TASK_DEV
+        END planPrice,
+        t.BRANCK_NO
+        FROM
+        `t_task_year_month_plan` t where t.TASK_YEAR = YEAR (#{theDate,jdbcType=DATE})
+        ) bbb ON bbb.BRANCK_NO = b.BRANCH_NO
+    </select>
+
+    <select id="findReqOrder" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        SELECT
+            IFNULL(
+                d.DEALER_NAME,
+                "直营奶站"
+            ) dealerName,
+            b.BRANCH_NAME branchName,
+            m.MATNR_TXT matnrTxt,
+            i.qty qty,i.INCRE_QTY increQty,i.qty+i.INCRE_QTY sumQty, ROUND(i.INCRE_QTY/(i.qty+i.INCRE_QTY),2) bl ,
+        CASE
+        WHEN o.`STATUS` = '10' THEN
+        '初始'
+        WHEN o.`STATUS` = '20' THEN
+        '待发送SAP'
+        WHEN o.`STATUS` = '30' THEN
+        '发送SAP成功'
+        END AS flag
+        FROM
+            t_ssm_req_goods_order_item i
+        JOIN t_ssm_req_goods_order o ON i.ORDER_NO = o.ORDER_NO
+        AND o.ORDER_DATE = #{theDate,jdbcType=DATE}
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+        <include refid="Query_Base_Column"/>
+        LEFT JOIN t_md_dealer d ON d.DEALER_NO = b.DEALER_NO
+        LEFT JOIN t_md_mara m ON m.MATNR = i.MATNR
+        AND b.SALES_ORG = m.SALES_ORG
+
+
+
+        <if test="branchName != null">
+          where  b.BRANCH_NAME     like '%' #{branchName,jdbcType=VARCHAR} '%'
+        </if>
+
+
+
+    </select>
+    <select id="orderOnlineStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+      SELECT
+            t.SALES_ORG,
+            t3.DEALER_NAME,
+            t2.BRANCH_NAME,
+            t1.VIP_NAME,
+            t1.VIP_MP,
+            t.ORDER_NO,
+            case t.PREORDER_SOURCE
+            when 10 then '电商平台'
+            when 40 then '牛奶钱包'
+            else '' end as PREORDER_SOURCE,
+            t.ONLINE_SOURCE_TYPE,
+            t.ONLINE_INIT_AMT,
+            t.CUR_AMT,
+            t.ORDER_DATE,
+            t.END_DATE,
+            t.PAY_DATE
+        FROM
+            t_preorder t
+        inner join t_vip_cust_info t1 on t1.VIP_CUST_NO = t.MILKMEMBER_NO
+        inner join t_md_branch t2 on t2.BRANCH_NO=t.BRANCH_NO
+        left join t_md_dealer t3 on t3.DEALER_NO=t.DEALER_NO
+        WHERE 1=1
+        <if test="branchNo != null">
+           AND  t.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND t.DEALER_NO =  #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="salesOrg != null">
+            AND t.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null">
+            AND t.PAY_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null">
+            AND t.PAY_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        AND (t.PREORDER_SOURCE = 10 OR t.PREORDER_SOURCE = 40 )
+        order by t.BRANCH_NO,t.PREORDER_SOURCE,t.ONLINE_SOURCE_TYPE
+    </select>
+    <select id="changeplanStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+            SELECT
+                br.BRANCH_NAME,
+                u.EMP_NAME,
+                i.ORDER_DATE,
+                i.REPLACE_REASON,
+                v.VIP_NAME,
+                v.MP,
+                concat(
+                    r.RESIDENTIAL_AREA_TXT,
+                    a.ADDRESS_TXT
+                ) ADDRESS_TXT,
+                p.SHORT_TXT,
+                i.QTY,
+                ex.SHORT_TXT as CONFIRM_SHORT_TXT,
+                i.CONFIRM_QTY
+
+            FROM
+                t_mst_disp_order_item i
+            LEFT JOIN t_preorder o ON o.ORDER_NO = i.ORG_ORDER_NO
+            LEFT JOIN t_md_mara_ex p ON p.MATNR = i.MATNR
+            AND p.SALES_ORG = o.SALES_ORG
+            LEFT JOIN t_md_mara_ex ex on ex.MATNR = i .CONFIRM_MATNR and ex.SALES_ORG=o.SALES_ORG
+            LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+            LEFT JOIN t_vip_cust_info v ON v.VIP_CUST_NO = o.MILKMEMBER_NO
+            LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+            LEFT JOIN t_md_branch_emp u on u.EMP_NO=o.EMP_NO
+            LEFT JOIN t_md_branch br on br.BRANCH_NO = o.BRANCH_NO
+            LEFT JOIN t_mst_disp_order od on od.ORDER_NO=i.ORDER_NO
+            WHERE  i.REASON='10' and od.STATUS='20'
+        <if test="branchNo != null">
+            AND br.BRANCH_NO =  #{branchNo}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND br.DEALER_NO =  #{dealerId}
+        </if>
+        <if test="salesOrg != null">
+            AND br.SALES_ORG =  #{salesOrg}
+        </if>
+        <if test="empNo !=null">
+            AND u.EMP_NO =  #{empNo}
+        </if>
+        <if test="dateStart !=null">
+            AND i.ORDER_DATE  &gt;=  #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd !=null">
+            AND i.ORDER_DATE  &lt;=  #{dateEnd,jdbcType=DATE}
+        </if>
+         order by i.ORDER_DATE desc
+    </select>
+    <select id="returnBoxStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+        SELECT
+        d.BRANCH_NO,
+        br.BRANCH_NAME,
+        e.EMP_NAME,
+        d.EMP_NO,
+        (
+        SELECT
+        i.ITEM_NAME
+        FROM
+        t_sys_code_item i
+        WHERE
+        i.TYPE_CODE =<include refid="mybaties.constant.bot_type"/>
+        AND i.ITEM_CODE = d.SPEC
+        ) SPEC_NAME,
+        IFNULL(sum(d.RECEIVE_NUM), 0) RECEIVE_NUM,
+        IFNULL(sum(d.REAL_NUM), 0) REAL_NUM,
+        (
+        IFNULL(sum(d.RECEIVE_NUM), 0) - IFNULL(sum(d.REAL_NUM), 0)
+        ) AS dif
+        FROM
+        t_rec_bot_detail d
+        LEFT JOIN t_md_branch br ON d.BRANCH_NO = br.BRANCH_NO
+        LEFT JOIN t_md_dealer de ON br.DEALER_NO = de.DEALER_NO
+        LEFT JOIN t_md_branch_emp e ON d.EMP_NO = e.EMP_NO
+        WHERE
+        1 = 1
+        <if test="salesOrg != null">
+            AND br.SALES_ORG =  #{salesOrg}
+        </if>
+        <if test="branchNo != null">
+            AND br.BRANCH_NO =  #{branchNo}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND br.DEALER_NO =  #{dealerId}
+        </if>
+        <if test="empNo !=null">
+            AND d.EMP_NO =  #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart !=null">
+            AND d.CREATE_AT  &gt;=  #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd !=null">
+            AND d.CREATE_AT  &lt;=  #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY
+        d.BRANCH_NO,
+        e.EMP_NAME,
+        SPEC_NAME
+        ORDER BY
+        d.BRANCH_NO,
+        d.EMP_NO,
+        d.SPEC
+    </select>
+    <select id="mstDispNumStat" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+        SELECT BRANCH_NAME , EMP_NAME , MATNR_TXT ,
+        sum(CASE TYPE WHEN '配送产品' THEN QTY ELSE 0 END ) psqty,
+        sum(CASE TYPE WHEN '内部销售订单产品' THEN QTY ELSE 0 END ) innerqty,
+        sum(CASE TYPE WHEN '赠品' THEN QTY ELSE 0 END ) zqty,
+        sum(CASE TYPE WHEN '配送产品' THEN QTY WHEN '内部销售订单产品' THEN QTY ELSE 0 END ) dayqty
+        from(
+        SELECT
+        so.ORDER_DATE  DISP_DATE,
+        so.SAL_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.MATNR,
+        m.MATNR_TXT,
+        SUM(i.QTY) QTY,
+        so.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.INS_ORDER_NO ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '内部销售订单产品' from DUAL) TYPE
+        FROM t_mst_inside_sal_order_item i
+        LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
+        LEFT JOIN t_mst_disp_order di on so.DISP_ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_mara m on i.MATNR = m.MATNR
+        LEFT JOIN t_md_branch_emp e on so.SAL_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_branch b on so.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where 1=1
+        and m.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerId!=null and ''!=dealerId">
+            AND  b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND  so.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  so.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null">
+            AND so.ORDER_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null">
+            AND so.ORDER_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY  so.ORDER_DATE,so.SAL_EMP_NO,i.MATNR
+
+
+        UNION ALL
+
+        SELECT
+        di.DISP_DATE,
+        di.DISP_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.CONFIRM_MATNR MATNR,
+        m.MATNR_TXT,
+        SUM(i.CONFIRM_QTY) QTY,
+        di.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '配送产品' from DUAL) TYPE
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_branch b on di.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where di.`STATUS` ='20'
+        /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR i.REASON IS NULL)*/
+        and i.GIFT_FLAG IS NULL
+        and i.CONFIRM_QTY is NOT NULL
+        and i.CONFIRM_QTY !=0
+        and b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and m.SALES_ORG=  #{salesOrg,jdbcType=VARCHAR}
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerId!=null and ''!=dealerId">
+            AND  b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null and ''!=dateStart">
+            AND   di.DISP_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null and ''!=dateEnd">
+            AND  di.DISP_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY di.DISP_DATE,di.DISP_EMP_NO,i.CONFIRM_MATNR
+
+        UNION ALL
+
+        SELECT
+        di.DISP_DATE,
+        di.DISP_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.CONFIRM_MATNR MATNR,
+        m.MATNR_TXT,
+        SUM(i.CONFIRM_QTY) QTY,
+        di.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '赠品' from DUAL) TYPE
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_branch b on di.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where di.`STATUS` ='20'
+        /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR  i.REASON IS NULL)*/
+        and i.GIFT_FLAG IS NOT NULL
+        and i.CONFIRM_QTY is NOT NULL
+        and i.CONFIRM_QTY !=0
+        and b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and m.SALES_ORG=  #{salesOrg,jdbcType=VARCHAR}
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerId!=null and ''!=dealerId">
+            AND  b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null and ''!=dateStart">
+            AND   di.DISP_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null and ''!=dateEnd">
+            AND  di.DISP_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY di.DISP_DATE,di.DISP_EMP_NO,i.CONFIRM_MATNR
+        ) t
+        group by BRANCH_NAME, EMP_NAME, MATNR_TXT
+    </select>
+    <select id="branchMstDispNumStat" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+        SELECT DEALER_NAME,BRANCH_NAME , MATNR_TXT,
+        sum(CASE TYPE WHEN '配送产品' THEN QTY ELSE 0 END ) psqty,
+        sum(CASE TYPE WHEN '内部销售订单产品' THEN QTY ELSE 0 END ) innerqty,
+        sum(CASE TYPE WHEN '赠品' THEN QTY ELSE 0 END ) zqty,
+        sum(CASE TYPE WHEN '配送产品' THEN QTY WHEN '内部销售订单产品' THEN QTY ELSE 0 END ) dayqty
+        from(
+        SELECT
+        so.ORDER_DATE  DISP_DATE,
+        so.SAL_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.MATNR,
+        m.MATNR_TXT,
+        SUM(i.QTY) QTY,
+        so.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.INS_ORDER_NO ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '内部销售订单产品' from DUAL) TYPE
+        FROM t_mst_inside_sal_order_item i
+        LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
+        LEFT JOIN t_mst_disp_order di on so.DISP_ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_mara m on i.MATNR = m.MATNR
+        LEFT JOIN t_md_branch_emp e on so.SAL_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_branch b on so.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where 1=1
+        and m.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerId!=null and ''!=dealerId">
+            AND  b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND  so.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  so.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null">
+            AND so.ORDER_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null">
+            AND so.ORDER_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY  so.ORDER_DATE,so.SAL_EMP_NO,i.MATNR
+
+
+        UNION ALL
+
+        SELECT
+        di.DISP_DATE,
+        di.DISP_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.CONFIRM_MATNR MATNR,
+        m.MATNR_TXT,
+        SUM(i.CONFIRM_QTY) QTY,
+        di.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '配送产品' from DUAL) TYPE
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_branch b on di.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where di.`STATUS` ='20'
+        /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR i.REASON IS NULL)*/
+        and i.GIFT_FLAG IS NULL
+        and i.CONFIRM_QTY is NOT NULL
+        and i.CONFIRM_QTY !=0
+        and b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and m.SALES_ORG=  #{salesOrg,jdbcType=VARCHAR}
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerId!=null and ''!=dealerId">
+            AND  b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null and ''!=dateStart">
+            AND   di.DISP_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null and ''!=dateEnd">
+            AND  di.DISP_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY di.DISP_DATE,di.DISP_EMP_NO,i.CONFIRM_MATNR
+
+        UNION ALL
+
+        SELECT
+        di.DISP_DATE,
+        di.DISP_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.CONFIRM_MATNR MATNR,
+        m.MATNR_TXT,
+        SUM(i.CONFIRM_QTY) QTY,
+        di.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '赠品' from DUAL) TYPE
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_branch b on di.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where di.`STATUS` ='20'
+        /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR  i.REASON IS NULL)*/
+        and i.GIFT_FLAG IS NOT NULL
+        and i.CONFIRM_QTY is NOT NULL
+        and i.CONFIRM_QTY !=0
+        and b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and m.SALES_ORG=  #{salesOrg,jdbcType=VARCHAR}
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerId!=null and ''!=dealerId">
+            AND  b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null and ''!=dateStart">
+            AND   di.DISP_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null and ''!=dateEnd">
+            AND  di.DISP_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY di.DISP_DATE,di.DISP_EMP_NO,i.CONFIRM_MATNR
+        ) t
+        group by DEALER_NAME,BRANCH_NAME, MATNR_TXT
+    </select>
+    <select id="dayMstDispNumStat" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+        SELECT BRANCH_NAME ,DISP_DATE, MATNR_TXT,
+        sum(CASE TYPE WHEN '配送产品' THEN QTY ELSE 0 END ) psqty,
+        sum(CASE TYPE WHEN '内部销售订单产品' THEN QTY ELSE 0 END ) innerqty,
+        sum(CASE TYPE WHEN '赠品' THEN QTY ELSE 0 END ) zqty,
+        sum(CASE TYPE WHEN '配送产品' THEN QTY WHEN '内部销售订单产品' THEN QTY ELSE 0 END ) dayqty
+        from(
+        SELECT
+        so.ORDER_DATE  DISP_DATE,
+        so.SAL_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.MATNR,
+        m.MATNR_TXT,
+        SUM(i.QTY) QTY,
+        so.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.INS_ORDER_NO ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '内部销售订单产品' from DUAL) TYPE
+        FROM t_mst_inside_sal_order_item i
+        LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
+        LEFT JOIN t_mst_disp_order di on so.DISP_ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_mara m on i.MATNR = m.MATNR
+        LEFT JOIN t_md_branch_emp e on so.SAL_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_branch b on so.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where 1=1
+        and m.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerId!=null and ''!=dealerId">
+            AND  b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND  so.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  so.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null">
+            AND so.ORDER_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null">
+            AND so.ORDER_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY  so.ORDER_DATE,so.SAL_EMP_NO,i.MATNR
+
+
+        UNION ALL
+
+        SELECT
+        di.DISP_DATE,
+        di.DISP_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.CONFIRM_MATNR MATNR,
+        m.MATNR_TXT,
+        SUM(i.CONFIRM_QTY) QTY,
+        di.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '配送产品' from DUAL) TYPE
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_branch b on di.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where di.`STATUS` ='20'
+        /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR i.REASON IS NULL)*/
+        and i.GIFT_FLAG IS NULL
+        and i.CONFIRM_QTY is NOT NULL
+        and i.CONFIRM_QTY !=0
+        and b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and m.SALES_ORG=  #{salesOrg,jdbcType=VARCHAR}
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerId!=null and ''!=dealerId">
+            AND  b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null and ''!=dateStart">
+            AND   di.DISP_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null and ''!=dateEnd">
+            AND  di.DISP_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY di.DISP_DATE,di.DISP_EMP_NO,i.CONFIRM_MATNR
+
+        UNION ALL
+
+        SELECT
+        di.DISP_DATE,
+        di.DISP_EMP_NO EMP_NO,
+        e.EMP_NAME,
+        i.CONFIRM_MATNR MATNR,
+        m.MATNR_TXT,
+        SUM(i.CONFIRM_QTY) QTY,
+        di.BRANCH_NO,
+        b.BRANCH_NAME,
+        i.ORDER_NO,
+        b.DEALER_NO,
+        d.DEALER_NAME,
+        (select '赠品' from DUAL) TYPE
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_md_branch b on di.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        where di.`STATUS` ='20'
+        /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR  i.REASON IS NULL)*/
+        and i.GIFT_FLAG IS NOT NULL
+        and i.CONFIRM_QTY is NOT NULL
+        and i.CONFIRM_QTY !=0
+        and b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        and m.SALES_ORG=  #{salesOrg,jdbcType=VARCHAR}
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerId!=null and ''!=dealerId">
+            AND  b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            AND  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null and ''!=dateStart">
+            AND   di.DISP_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null and ''!=dateEnd">
+            AND  di.DISP_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY di.DISP_DATE,di.DISP_EMP_NO,i.CONFIRM_MATNR
+        ) t
+        group by BRANCH_NAME,DISP_DATE, MATNR_TXT
+    </select>
+    <select id="branchDayRepo" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        SELECT
+        SALES_ORG,
+        sum(date1) AS date1,
+        sum(date2) AS date2,
+        sum(date3) AS date3,
+        sum(date4) AS date4,
+        sum(date5) AS date5
+        FROM
+        (
+        SELECT
+        br.SALES_ORG,
+        b.branch_no branchNo,
+        br.BRANCH_NAME branchName,
+        br.branch_group branchGroup,
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(
+        #{theDate,jdbcType=DATE}, INTERVAL - 4 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date1',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(
+        #{theDate,jdbcType=DATE}, INTERVAL - 3 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date2',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(
+        #{theDate,jdbcType=DATE}, INTERVAL - 2 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date3',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(
+        #{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date4',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        #{theDate,jdbcType=DATE}, '%Y-%m-%d') THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date5',
+        ROUND(
+        (
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        #{theDate,jdbcType=DATE}, '%Y-%m-%d') THEN
+        qty
+        ELSE
+        0
+        END
+        ) - max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(
+        #{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        )
+        ) * 100 / max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(
+        #{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ),
+        '2'
+        ) AS hb
+        FROM
+        (
+        SELECT
+        q.BRANCH_NO,
+        q.ORDER_DATE,
+        sum(q.qty) qty
+        FROM
+        (
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        i.QTY
+        FROM
+        t_mst_inside_sal_order_item i
+        JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+        AND i.ORDER_DATE BETWEEN DATE_ADD(
+        #{theDate,jdbcType=DATE}, INTERVAL - 4 DAY)
+        AND #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO <include refid = "Query_Base_Column" />
+        UNION ALL
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        i.CONFIRM_QTY qty
+        FROM
+        t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND i.ORDER_DATE BETWEEN DATE_ADD(
+        #{theDate,jdbcType=DATE}, INTERVAL - 4 DAY)
+        AND #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        AND o.`STATUS` = '20'
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO <include refid = "Query_Base_Column" />
+        ) q
+        GROUP BY
+        q.BRANCH_NO,
+        q.ORDER_DATE
+        ) b
+        LEFT JOIN t_md_branch br ON b.BRANCH_NO = br.BRANCH_NO
+        GROUP BY
+        b.BRANCH_NO
+        ) tf
+        GROUP BY
+        tf.SALES_ORG
+    </select>
+    <select id="branchDayQty" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        SELECT
+        SALES_ORG,
+        ORDER_DATE,
+        sum(qty) as qty
+        FROM
+        (
+        SELECT
+        b.SALES_ORG,
+        b.DEALER_NO,
+        o.ORDER_DATE,
+        i.QTY
+        FROM
+        t_mst_inside_sal_order_item i
+        JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+        AND o.ORDER_DATE = i.ORDER_DATE
+        AND o.ORDER_DATE = #{theDate,jdbcType=DATE}
+        JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO <include refid = "Query_Base_Column" />
+        UNION ALL
+        SELECT
+        b.SALES_ORG,
+        b.DEALER_NO,
+        o.ORDER_DATE,
+        i.CONFIRM_QTY qty
+        FROM
+        t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND o.ORDER_DATE = i.ORDER_DATE
+        AND o.ORDER_DATE = #{theDate,jdbcType=DATE}
+        AND o.`STATUS` = '20'
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO <include refid = "Query_Base_Column" />
+        ) tf
+        GROUP BY
+        tf.SALES_ORG,
+        tf.ORDER_DATE
+    </select>
+    <select id="exportOrderByModel" parameterType="com.nhry.model.statistics.BranchInfoModel" resultType="hashmap">
+        SELECT
+        DISP_EMP_NO,
+        CONFIRM_MATNR,
+        GROUP_CONCAT(CONFIRM_QTY ORDER BY CONFIRM_QTY desc ) as CONFIRM_QTY,
+        sum(CQTY) as CQTY,
+        sum(RESEND_QTY) as RESEND_QTY,
+        (sum(CQTY)-sum(RESEND_QTY)) as FINAL_QTY,
+        case sum(RESEND_QTY)
+        when 0 then CONCAT((sum(CQTY)-sum(RESEND_QTY)),' ')
+        else CONCAT((sum(CQTY)-sum(RESEND_QTY)),',(',sum(RESEND_QTY),')') end as COUNT_QTY,
+        MATNR_TXT,
+        EMP_NAME
+        FROM
+        (
+        SELECT
+        i.DISP_EMP_NO,
+        i.CONFIRM_MATNR,
+        ROUND(sum(i.CONFIRM_QTY)) AS CONFIRM_QTY,
+        ROUND(sum(i.CONFIRM_QTY)) as CQTY,
+        '0' as RESEND_QTY,
+        p.SHORT_TXT MATNR_TXT,
+        e.EMP_NAME
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order mdo ON mdo.ORDER_NO = i.ORDER_NO
+        LEFT JOIN t_md_branch b ON mdo.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_mara_ex p ON p.MATNR = i.CONFIRM_MATNR
+        AND p.SALES_ORG = b.SALES_ORG
+        LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+        LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+        LEFT JOIN t_md_branch_emp e ON e.EMP_NO = i.DISP_EMP_NO
+        WHERE 1=1
+        and mdo.DISP_DATE = #{theDate,jdbcType=VARCHAR}
+        and mdo.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
+        <if test="reachTimeType!=null and ''!=reachTimeType">
+            AND  mdo.REACH_TIME_TYPE &lt;= #{reachTimeType,jdbcType=DATE}
+        </if>
+        group by i.DISP_EMP_NO,i.CONFIRM_MATNR
+
+        UNION
+        SELECT
+        t3.EMP_NO AS DISP_EMP_NO,
+        t3.MATNR,
+        CONCAT(
+        '(',
+        ROUND(sum(DISTINCT t2.QTY)),
+        ')'
+        ) AS CONFIRM_QTY,
+        0 AS CQTY,
+        ROUND(sum(DISTINCT t2.QTY)) as RESEND_QTY,
+        t4.SHORT_TXT AS MATNR_TXT,
+        t5.EMP_NAME
+        FROM
+        t_ssm_req_goods_order t
+        INNER JOIN t_ssm_req_goods_order_item t1 ON t1.ORDER_NO = t.ORDER_NO
+        INNER JOIN t_mst_refuse_resend_item t2 ON t2.ORDER_NO = t.ORDER_NO
+        INNER JOIN t_mst_refuse_resend t3 ON t3.RESEND_ORDER_NO = t2.RESEND_ORDER_NO
+        INNER JOIN t_md_mara_ex t4 ON t4.MATNR = t3.MATNR AND t4.SALES_ORG = t3.SALES_ORG 
+        INNER JOIN t_md_branch_emp t5 ON t5.EMP_NO = t3.EMP_NO
+        WHERE
+        1 = 1
+        AND t1.RESEND_QTY > 0
+        AND t.STATUS=30
+        AND t.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
+        AND t.ORDER_DATE=date_add(#{theDate,jdbcType=DATE}, INTERVAL - t4.PRE_DAYS DAY)
+        GROUP BY
+        t3.EMP_NO,
+        t3.MATNR
+        ) fnt
+        GROUP BY
+        DISP_EMP_NO,
+        CONFIRM_MATNR
+    </select>
+    <!--台帐统计-->
+    <select id="exportDispInlOrderByModel" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel" resultType="hashmap">
+        SELECT
+            DISP_DATE,
+            DISP_EMP_NO,
+            CONFIRM_MATNR,
+            ROUND(sum(CONFIRM_QTY)) AS CONFIRM_QTY,
+            MATNR_TXT
+        FROM
+            (
+                SELECT
+                    mdo.DISP_DATE,
+                    i.DISP_EMP_NO,
+                    i.CONFIRM_MATNR,
+                    ROUND(sum(i.CONFIRM_QTY)) AS CONFIRM_QTY,
+                    p.SHORT_TXT MATNR_TXT
+                FROM
+                    t_mst_disp_order_item i
+                LEFT JOIN t_mst_disp_order mdo ON mdo.ORDER_NO = i.ORDER_NO
+                AND mdo.`STATUS` = '20'
+                LEFT JOIN t_md_branch b ON mdo.BRANCH_NO = b.BRANCH_NO
+                LEFT JOIN t_md_mara_ex p ON p.MATNR = i.CONFIRM_MATNR
+                AND p.SALES_ORG = b.SALES_ORG
+                WHERE
+                    1 = 1
+                AND mdo.DISP_DATE like '%${monthDate}%'
+                AND i.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+                AND mdo.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                GROUP BY
+                    mdo.DISP_DATE,
+                    i.DISP_EMP_NO,
+                    i.CONFIRM_MATNR
+                UNION
+                    SELECT
+                        t1.ORDER_DATE DISP_DATE,
+                        t1.SAL_EMP_NO DISP_EMP_NO,
+                        t.MATNR CONFIRM_MATNR,
+                        ROUND(sum(t.QTY)) AS CONFIRM_QTY,
+                        p.SHORT_TXT MATNR_TXT
+                    FROM
+                        t_mst_inside_sal_order_item t
+                    JOIN t_mst_inside_sal_order t1 ON t1.INS_ORDER_NO = t.INS_ORDER_NO
+                    LEFT JOIN t_md_mara_ex p ON p.MATNR = t.MATNR
+                    WHERE
+                        t1.ORDER_DATE like '%${monthDate}%'
+                    AND t1.SAL_EMP_NO =#{empNo,jdbcType=VARCHAR}
+                    AND t1.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                    GROUP BY
+                        t1.ORDER_DATE,
+                        t1.SAL_EMP_NO,
+                        t.MATNR
+            ) fnt
+        GROUP BY
+            DISP_DATE,
+            DISP_EMP_NO,
+            CONFIRM_MATNR
+        ORDER BY DISP_DATE ASC
+    </select>
+    <select id="Refuse2receiveResend" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+        SELECT
+            rr.RESEND_ORDER_NO,
+            rr.EMP_NO,
+            e.EMP_NAME,
+            rr.BRANCH_NO,
+            b.BRANCH_NAME,
+            d.DEALER_NO,
+            d.DEALER_NAME,
+            rr.DISP_DATE,
+            rr.MATNR,
+            ex.SHORT_TXT MATNR_TXT,
+            rr.CONFIRM_QTY,
+            rr.INSIDE_QTY,
+            rr.QTY,
+            rr.REMAIN_QTY
+        FROM
+        t_mst_refuse_resend rr
+        LEFT  JOIN  t_md_branch b on rr.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        LEFT JOIN t_md_branch_emp e ON rr.EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara_ex ex ON rr.MATNR = ex.MATNR and ex.SALES_ORG = rr.SALES_ORG
+        WHERE  1=1
+        <if test="empNo!=null and ''!=empNo">
+            and rr.EMP_NO =#{empNo}
+        </if>
+        <if test="branchNo!=null and ''!=branchNo">
+            and rr.BRANCH_NO =#{branchNo}
+        </if>
+        <if test="dateStart!=null and ''!=dateStart">
+            and rr.DISP_DATE &gt;= #{dateStart}
+        </if>
+        <if test="dateEnd!=null and ''!=dateEnd">
+            and rr.DISP_DATE &lt;= #{dateEnd}
+        </if>
+        <if test="salesOrg!=null and ''!=salesOrg">
+            and rr.SALES_ORG = #{salesOrg}
+        </if>
+    </select>
+
+    <select id="Refuse2receiveResendDetail" resultType="hashmap" parameterType="String">
+     SELECT
+            rr.MATNR,
+            ex.SHORT_TXT MATNR_TXT,
+            ri.QTY,
+            ri.ORDER_NO,
+            (CASE
+
+                WHEN ri.TYPE = '10' THEN
+                    '要货单'
+                ELSE
+                    '内部销售订单'
+                END
+            ) TYPE
+        FROM
+            t_mst_refuse_resend_item ri
+        LEFT JOIN t_mst_refuse_resend rr ON ri.RESEND_ORDER_NO = rr.RESEND_ORDER_NO
+        LEFT JOIN t_md_mara_ex ex ON rr.MATNR = ex.MATNR and ex.SALES_ORG = rr.SALES_ORG
+        where 1=1
+       and ri.RESEND_ORDER_NO = #{resendOrderNo}
+    </select>
+
+    <select id="PendingUnConfirmOnline" resultType="hashmap" parameterType="String">
+        SELECT DISTINCT
+            o.ONLINEORDER_NO,
+            o.ORDER_NO,
+            v.VIP_NAME,
+            v.VIP_MP,
+            r.RESIDENTIAL_AREA_TXT,
+            a.ADDRESS_TXT,
+            p.ITEM_NO,
+            GROUP_CONCAT(p.MATNR) AS MATNR,
+            GROUP_CONCAT(ex.SHORT_TXT) AS SHORT_TXT,
+            SUM(p.DISP_TOTAL) AS DISP_TOTAL,
+            o.ONLINE_INIT_AMT,
+            b.BRANCH_NAME,
+            o.MEMO_TXT,
+            CASE o.PREORDER_SOURCE
+            WHEN 10 THEN
+                item.ITEM_NAME
+            WHEN 20 THEN
+                '征订'
+            WHEN 30 THEN
+                '奶站'
+            WHEN 40 THEN
+                '牛奶钱包'
+            WHEN 50 THEN
+                '送奶工app'
+            WHEN 60 THEN
+                '电话'
+            ELSE
+                ''
+            END AS PREORDER_SOURCE
+        FROM
+            t_preorder o
+        INNER JOIN t_mst_plan_order_item p ON p.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_mara_ex ex ON ex.MATNR = p.MATNR
+        LEFT JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d ON b.DEALER_NO = d.DEALER_NO
+        LEFT JOIN t_vip_cust_info v ON v.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_md_address a ON a.ADDRESS_ID = o.ADRESS_NO
+        LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+        LEFT JOIN t_sys_code_item item ON item.TYPE_CODE = <include refid="mybaties.constant.vip_src" />
+        AND item.ITEM_CODE = o.ONLINEORDER_NO
+        WHERE
+            1 = 1
+        AND o.PREORDER_STAT = "20"
+        AND o.IS_VALID = 'N'
+        and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        AND b.BRANCH_NO > 0
+        GROUP BY
+            o.ORDER_NO
+        ORDER BY
+            b.BRANCH_NO,
+            o.ORDER_NO DESC
+    </select>
+    <select id="getDayReportBasis" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+    SELECT
+        t.BRANCH_NO,
+        t3.BRANCH_NAME,
+        t1.MATNR,
+        t2.SHORT_TXT,
+        t5.ITEM_NAME,
+        t.ORDER_DATE,
+        t.FREE_FLAG,
+        ROUND(sum(t1.qty)) as totalQty
+    FROM
+        t_ssm_sal_order t
+    INNER JOIN t_ssm_sal_order_items t1 ON t1.ORDER_NO = t.ORDER_NO
+    LEFT JOIN t_md_mara_ex t2 ON t2.MATNR = t1.MATNR
+    LEFT JOIN t_md_branch t3 on t3.BRANCH_NO = t.BRANCH_NO
+    LEFT JOIN t_md_mara t4 on t4.MATNR = t1.MATNR and t4.SALES_ORG = t.SALES_ORG
+    LEFT JOIN t_sys_code_item t5 on t5.TYPE_CODE = <include refid="mybaties.constant.packing _type"/> and t5.ITEM_CODE = t4.ZBOT_CODE
+    AND t.SALES_ORG = t2.SALES_ORG
+    WHERE
+        t.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+    <if test="branchNo != null">
+        AND  t.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerId != null and dealerId != '-1'">
+        AND t.DEALER_NO =  #{dealerId,jdbcType=VARCHAR}
+    </if>
+    AND t.ORDER_DATE = #{theDate,jdbcType=VARCHAR}
+    GROUP BY t.BRANCH_NO,t1.MATNR,t.FREE_FLAG
+    ORDER BY t.BRANCH_NO,t1.MATNR
+    </select>
+    <select id="getDayReportForm" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+    SELECT
+        t.BRANCH_NO,
+        t3.BRANCH_NAME,
+        t1.MATNR,
+        t2.SHORT_TXT,
+        t5.ITEM_NAME,
+        t.ORDER_DATE,
+        t.FREE_FLAG,
+        t.PREORDER_SOURCE,
+        ROUND(SUM(t1.qty)) qty
+
+    FROM
+        t_ssm_sal_order t
+    INNER JOIN t_ssm_sal_order_items t1 ON t1.ORDER_NO = t.ORDER_NO
+    LEFT JOIN t_md_mara_ex t2 ON t2.MATNR = t1.MATNR
+    LEFT JOIN t_md_branch t3 on t3.BRANCH_NO = t.BRANCH_NO
+    LEFT JOIN t_md_mara t4 on t4.MATNR = t1.MATNR and t4.SALES_ORG = t.SALES_ORG
+    LEFT JOIN t_sys_code_item t5 on t5.TYPE_CODE =  <include refid="mybaties.constant.packing _type"/> and t5.ITEM_CODE = t4.ZBOT_CODE
+    AND t.SALES_ORG = t2.SALES_ORG
+    WHERE
+        t.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        <if test="branchNo != null">
+            AND  t.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND t.DEALER_NO =  #{dealerId,jdbcType=VARCHAR}
+        </if>
+        AND t.ORDER_DATE = #{theDate,jdbcType=VARCHAR}
+    GROUP BY t.BRANCH_NO,t1.MATNR,t.FREE_FLAG,t.PREORDER_SOURCE
+    ORDER BY t.BRANCH_NO,t1.MATNR
+    </select>
+    <select id="getDayReportBranch" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        SELECT
+        t.BRANCH_NO
+
+        FROM
+        t_ssm_sal_order t
+        INNER JOIN t_ssm_sal_order_items t1 ON t1.ORDER_NO = t.ORDER_NO
+
+        WHERE
+        t.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        <if test="branchNo != null">
+            AND  t.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND t.DEALER_NO =  #{dealerId,jdbcType=VARCHAR}
+        </if>
+        AND t.ORDER_DATE = #{theDate,jdbcType=VARCHAR}
+        GROUP BY t.BRANCH_NO
+    </select>
+</mapper>
