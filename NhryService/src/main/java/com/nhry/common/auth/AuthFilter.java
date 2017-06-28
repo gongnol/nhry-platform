@@ -1,9 +1,16 @@
 package com.nhry.common.auth;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import com.nhry.common.exception.MessageCode;
+import com.nhry.model.sys.ResponseModel;
+import com.nhry.service.auth.dao.TSysAccesskeyService;
+import com.nhry.utils.CookieUtil;
+import com.nhry.utils.SysContant;
+import com.sun.jersey.spi.container.ContainerRequest;
+import com.sun.jersey.spi.container.ContainerRequestFilter;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,23 +19,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Component;
-
-import com.nhry.common.exception.MessageCode;
-import com.nhry.model.sys.ResponseModel;
-import com.nhry.service.auth.dao.TSysAccesskeyService;
-import com.nhry.utils.Base64Util;
-import com.nhry.utils.CookieUtil;
-import com.nhry.utils.EnvContant;
-import com.nhry.utils.SysContant;
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.sun.jersey.spi.container.ContainerRequestFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class AuthFilter implements ContainerRequestFilter {
@@ -53,6 +45,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	
 	static{
 		whiteUriList = new ArrayList<String>();
+		whiteUriList.add("POST;/NhryService/api/v1/user/doLogin");
 		whiteUriList.add("POST;/NhryService/api/v1/user/login");
 		whiteUriList.add("GET;/api/v1/order/");
 		whiteUriList.add("GET;/api/v1/order/dailyPlans/");
