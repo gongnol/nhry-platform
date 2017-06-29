@@ -64,7 +64,7 @@
 	<config key="SMS.SpCode" value="228672"/>
 	<config key="SMS.LoginName" value="sc_xhry"/>
 	<config key="SMS.Password" value="ry85953221.com"/>
-
+	
 	<config key="filePath" value="/opt/hdms/"/>
 	<!-- 没有配置组织时，提示页面地址 -->
 	<config key="info_page_uri" value="http://hdms.newhopedairy.cn/#/error/NoSalesOrg"></config>

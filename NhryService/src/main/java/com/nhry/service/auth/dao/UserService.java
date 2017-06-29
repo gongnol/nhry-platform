@@ -70,4 +70,6 @@ public interface UserService {
 	public TSysUser doLogin(TSysUser user);
 
 	public int updateUserPass(TSysUser user);
+
+	public int addSysUser(TSysUser user);
 }

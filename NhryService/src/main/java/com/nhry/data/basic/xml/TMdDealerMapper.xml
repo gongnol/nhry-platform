@@ -6,6 +6,7 @@
     <id column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
     <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+     <result column="SALES_ORG_NAME" property="salesOrgName" jdbcType="VARCHAR" />
     <result column="PARENT" property="parent" jdbcType="VARCHAR" />
     <result column="DEALER_TYPE" property="dealerType" jdbcType="VARCHAR" />
     <result column="CONTACT" property="contact" jdbcType="VARCHAR" />
@@ -14,6 +15,13 @@
     <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
     <result column="CITY" property="city" jdbcType="VARCHAR" />
     <result column="COUNTY" property="county" jdbcType="VARCHAR" />
+    
+    
+     <result column="DEL_FLAG_NAME" property="delFlagName" jdbcType="VARCHAR" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+    <result column="COUNTY_NAME" property="countyName" jdbcType="VARCHAR" />
+    
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
     <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
     <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
@@ -22,6 +30,7 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="DEL_FLAG" property="delFlag" jdbcType="CHAR" />
     <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR"/>
+     <result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     DEALER_NO, DEALER_NAME, SALES_ORG, PARENT, DEALER_TYPE, CONTACT, TEL, ADDRESS, PROVINCE, 
@@ -30,9 +39,28 @@
   </sql>
   <select id="selectDealerByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
-    <include refid="Base_Column_List" />
-    from t_md_dealer
-    where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    d.DEALER_NO, d.DEALER_NAME, d.SALES_ORG, d.PARENT, d.DEALER_TYPE, d.CONTACT, d.TEL, d.ADDRESS, d.PROVINCE, 
+    d.CITY,d.COUNTY, d.CREATE_AT, d.CREATE_BY, d.CREATE_BY_TXT, d.LAST_MODIFIED, d.LAST_MODIFIED_BY, 
+    d.LAST_MODIFIED_BY_TXT, d.DEL_FLAG,
+    (CASE WHEN d.DEL_FLAG = 'Y' THEN '无效' ELSE '有效' END) DEL_FLAG_NAME,
+    (
+				SELECT i.ITEM_NAME
+					from t_sys_code_item i
+				WHERE i.TYPE_CODE=<include refid="mybaties.constant.SALES_ORG_CONSTANT"/>
+                and i.ITEM_CODE = d.SALES_ORG
+	) SALES_ORG_NAME,
+	d.COMPANY_CODE,
+	(
+				SELECT i.ITEM_NAME
+				from t_sys_code_item i
+				WHERE i.TYPE_CODE=<include refid="mybaties.constant.comp_code"/>
+				and i.ITEM_CODE = d.COMPANY_CODE
+	) COMPANY_NAME,
+	 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = d.PROVINCE ) PROVINCE_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = d.CITY ) CITY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = d.COUNTY ) COUNTY_NAME
+    from t_md_dealer d
+    where d.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteDealerByNo" parameterType="java.lang.String" >
     delete from t_md_dealer
@@ -58,8 +86,8 @@
       #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}, #{delFlag,jdbcType=CHAR},#{companyCode,jdbcType=VARCHAR}
       )
   </insert>
-  <!--
-  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdDealer" >
+
+  <insert id="addDealer" parameterType="com.nhry.data.basic.domain.TMdDealer" >
     insert into t_md_dealer
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="dealerNo != null" >
@@ -174,7 +202,6 @@
       </if>
     </trim>
   </insert>
-  -->
   <update id="updateDealerSelective" parameterType="com.nhry.data.basic.domain.TMdDealer" >
     update t_md_dealer
     <set >
@@ -258,5 +285,41 @@
       DEL_FLAG = #{delFlag,jdbcType=CHAR}
     where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
   </update>
+  
+  
+  
+  <select id="findDealerListByPage" resultMap="BaseResultMap" parameterType="com.nhry.data.basic.domain.DealerQueryModel">
+    select 
+     d.DEALER_NO,
+     d.DEALER_NAME,
+     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=
+       <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and i.ITEM_CODE = d.SALES_ORG) SALES_ORG_NAME,
+    d.TEL,d.ADDRESS,
+   d.DEL_FLAG,
+    (CASE WHEN d.DEL_FLAG = 'Y' THEN '无效' ELSE '有效' END) DEL_FLAG_NAME
+    from t_md_dealer d
+    where 1=1
+    <if test="dealerNo!=null and dealerNo!=''">
+       and  d.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
+     <if test="salesOrg!=null and salesOrg!=''">
+       and  d.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
+    <if test="search!=null and search!=''">
+    	and (d.TEL like  '%${search}%' OR d.DEALER_NO like  '%${search}%' OR d.DEALER_NAME like  '%${search}%' OR d.ADDRESS like  '%${search}%' )
+    </if>
+  </select>
+  
+  
+  
+  
+  
+  <update id="updateDealerStatus" parameterType="com.nhry.data.basic.SearchModel.TMdDealerStatusModel" >
+    update t_md_dealer
+    set
+      DEL_FLAG = (CASE WHEN DEL_FLAG = 'Y' THEN 'N' ELSE 'Y' END)
+    where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+  </update>
+  
 
 </mapper>

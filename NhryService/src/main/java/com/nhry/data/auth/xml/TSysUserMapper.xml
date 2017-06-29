@@ -436,7 +436,7 @@
                 #{loginName,jdbcType=VARCHAR},
             </if>
              <if test="password != null">
-                 #{PASSWORD,jdbcType=VARCHAR},
+                 #{password,jdbcType=VARCHAR},
             </if>
             <if test="displayName != null">
                 #{displayName,jdbcType=VARCHAR},

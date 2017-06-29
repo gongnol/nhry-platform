@@ -80,4 +80,14 @@
     where PROM_NO = #{promNo,jdbcType=VARCHAR}
     and  BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </delete>
+  
+   
+    <delete id="delPromScopesByScope" parameterType="com.nhry.rest.basic.PromAllocatModel" >
+	    delete from t_prom_scope_item
+	    where PROM_NO = #{promNo,jdbcType=VARCHAR}
+	    and  BRANCH_NO in 
+	    <foreach item="branchNos" index="index"  collection="branchNos"  open="(" separator="," close=")">
+		         #{branchNos}
+	   </foreach>
+   </delete>
 </mapper>

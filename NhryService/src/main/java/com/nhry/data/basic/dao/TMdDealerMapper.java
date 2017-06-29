@@ -1,5 +1,8 @@
 package com.nhry.data.basic.dao;
 
+import com.github.pagehelper.PageInfo;
+import com.nhry.data.basic.SearchModel.TMdDealerStatusModel;
+import com.nhry.data.basic.domain.DealerQueryModel;
 import com.nhry.data.basic.domain.TMdDealer;
 
 import java.util.List;
@@ -18,4 +21,10 @@ public interface TMdDealerMapper {
     int updateDealer(TMdDealer record);
     
     public List<TMdDealer>findDealersBySalesOrg(String salesOrg);
+
+	PageInfo findDealerListByPage(DealerQueryModel sModel);
+
+	int addDealer(TMdDealer dealer);
+
+	int updateDealerStatus(TMdDealerStatusModel model);
 }

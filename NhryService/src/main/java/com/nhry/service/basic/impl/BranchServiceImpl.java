@@ -116,8 +116,13 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		}
 		TSysUser user = userSessionService.getCurrentUser();
 		branchModel.setSalesOrg(user.getSalesOrg());
-		branchModel.setDealerNo(user.getDealerId());
-		branchModel.setBranchNo(user.getBranchNo());
+		if(StringUtils.isBlank(branchModel.getDealerNo())){
+			branchModel.setDealerNo(user.getDealerId());
+		}
+		if(StringUtils.isBlank(branchModel.getBranchNo())){
+			branchModel.setBranchNo(user.getBranchNo());
+		}
+		
 
 		return branchMapper.findBranchListByPage(branchModel);
 	}

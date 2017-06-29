@@ -1,13 +1,15 @@
 package com.nhry.data.basic.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
+import com.nhry.data.basic.SearchModel.TMdDealerStatusModel;
 import com.nhry.data.basic.dao.TMdDealerMapper;
+import com.nhry.data.basic.domain.DealerQueryModel;
 import com.nhry.data.basic.domain.TMdDealer;
 
 import java.util.List;
 
 /**
- * Created by cbz on 6/29/2016.
  */
 public class TMdDealerMapperImpl implements TMdDealerMapper {
 
@@ -46,5 +48,21 @@ public class TMdDealerMapperImpl implements TMdDealerMapper {
 	public List<TMdDealer> findDealersBySalesOrg(String salesOrg) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("findDealersBySalesOrg", salesOrg);
+	}
+
+	@Override
+	public PageInfo findDealerListByPage(DealerQueryModel sModel) {
+		return sqlSessionTemplate.selectListByPages("findDealerListByPage",sModel, Integer.parseInt(sModel.getPageNum()), Integer.parseInt(sModel.getPageSize()));
+
+	}
+
+	@Override
+	public int addDealer(TMdDealer dealer) {
+		return sqlSessionTemplate.insert("addDealer",dealer);
+	}
+
+	@Override
+	public int updateDealerStatus(TMdDealerStatusModel model) {
+		return sqlSessionTemplate.update("updateDealerStatus",model);
 	}
 }

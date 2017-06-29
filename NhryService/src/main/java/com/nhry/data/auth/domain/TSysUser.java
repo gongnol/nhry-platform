@@ -163,8 +163,8 @@ public class TSysUser implements Serializable{
         this.loginName = loginName == null ? null : loginName.trim();
     }
     
-    
-    public String getPassword() {
+  
+	public String getPassword() {
 		return password;
 	}
 

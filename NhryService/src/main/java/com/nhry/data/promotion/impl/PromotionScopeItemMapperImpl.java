@@ -6,6 +6,7 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.promotion.dao.PromotionScopeItemMapper;
 import com.nhry.data.promotion.domain.PromotionScopeItem;
+import com.nhry.rest.basic.PromAllocatModel;
 
 /**
  * Created by cbz on 8/8/2016.
@@ -41,6 +42,11 @@ public class PromotionScopeItemMapperImpl implements PromotionScopeItemMapper {
 	@Override
 	public int delPromScopeByPromScope(PromotionScopeItem key) {
 		return sqlSessionTemplate.delete("delPromScopeByPromScope",key);
+	}
+
+	@Override
+	public int delPromScopesByScope( PromAllocatModel model) {
+		return sqlSessionTemplate.delete("delPromScopesByScope",model);
 	}
 
 }

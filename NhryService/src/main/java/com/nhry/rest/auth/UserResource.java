@@ -203,4 +203,14 @@ public class UserResource extends BaseResource {
 		}
 		return convertToRespModel(MessageCode.NORMAL, null, userObject);
 	}
+	
+	
+	@POST
+	@Path("/addUser")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/addUser", response = ResponseModel.class, notes = "增加用户")
+	public Response addSysUser(@ApiParam(required = true, name = "user", value = "用户对象") TSysUser user) {
+		return convertToRespModel(MessageCode.NORMAL, null,userService.addSysUser(user));
+	}
+	
 }

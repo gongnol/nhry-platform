@@ -326,4 +326,29 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private TSysUser findUserPass(String loginName) {
 		return userMapper.findUserPass(loginName);
 	}
+
+	@Override
+	public int addSysUser(TSysUser user) {
+		if(StringUtils.isEmpty(user.getLoginName()) || StringUtils.isEmpty(user.getDisplayName())){
+			 throw new ServiceException(MessageCode.LOGIC_ERROR, "loginName、displayName属性值不能为空!");
+		}
+		
+		if(!StringUtils.isEmpty(user.getCustomizedHrregion())){
+			NHSysCodeItem item = new NHSysCodeItem();
+			item.setParent(user.getCustomizedHrregion());
+			item.setTypeCode(SysContant.getSystemConst("sales_org"));
+			List<NHSysCodeItem> items = codeItemMapper.findItemsByParentCode(item);
+			if(items != null && items.size() > 0 && !StringUtils.isEmpty(items.get(0).getItemCode())){
+				user.setSalesOrg(items.get(0).getItemCode());
+			}
+		}
+		TSysUser u = this.userMapper.findUserByLoginName2(user.getLoginName());
+		if(u == null){
+			user.setCreateOn(new Date());
+			user.setLastModified(new Date());
+			return userMapper.addUser(user);
+		}else{
+			 throw new ServiceException(MessageCode.LOGIC_ERROR, "用户登录名为"+user.getLoginName()+"的用户已存在!!!");
+		}
+	}
 }

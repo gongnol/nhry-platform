@@ -38,13 +38,11 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 
 	@Override
 	public int addUser(TSysUser user) {
-		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.insert("addUser", user);
 	}
 
 	@Override
 	public TSysUser findUserByLoginName(String loginName) {
-		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("findUserByLoginName", loginName);
 	}
 

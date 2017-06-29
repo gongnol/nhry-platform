@@ -41,8 +41,72 @@ public class TMdDealer implements Serializable{
     private String delFlag;
 
     private String companyCode;
+    
+    private String salesOrgName;
+    
+    private String companyName;
+    
+    private String provinceName;
+    
+    private String cityName;
+    
+    private String countyName;
+    
+    private String delFlagName;
+    
+    
+    
+    
 
-    public String getDealerNo() {
+    public String getDelFlagName() {
+		return delFlagName;
+	}
+
+	public void setDelFlagName(String delFlagName) {
+		this.delFlagName = delFlagName;
+	}
+
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getCountyName() {
+		return countyName;
+	}
+
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getSalesOrgName() {
+		return salesOrgName;
+	}
+
+	public void setSalesOrgName(String salesOrgName) {
+		this.salesOrgName = salesOrgName;
+	}
+
+	public String getDealerNo() {
         return dealerNo;
     }
 

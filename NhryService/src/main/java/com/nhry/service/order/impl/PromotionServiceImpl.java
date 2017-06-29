@@ -725,7 +725,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 					str.append(","+model.getBranchNo());
 				}
 			}
-			throw new ServiceException(MessageCode.LOGIC_ERROR," 的门店已经存在订单,不能删除其关系");
+			throw new ServiceException(MessageCode.LOGIC_ERROR,str.toString()+" 的门店已经存在订单,不能删除其关系");
 		}
 		return 1;
 	}
@@ -748,7 +748,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 			//用来保存要新增的关系
 			List<PromotionScopeItem> newScopes = new ArrayList<PromotionScopeItem>();
 			//用来保存需要删除的关系
-			List<PromotionScopeItem>  delScopes = new ArrayList<PromotionScopeItem>();
+			List<String>  delScopes = new ArrayList<String>();
 			
 			//用来保存原促销和奶站的关系(所有的奶站编号)
 			List<String> oldScopes = new ArrayList<String>();
@@ -762,22 +762,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 				if(branchs.contains(branchNo)){
 					continue;
 				}else{
-					//如果最新的关系表中 不包含原奶站说明 该奶站和该促销号关系解除
-					PromotionScopeItem scope = new PromotionScopeItem();
-					scope.setBranchNo(branchNo);
-					scope.setPromNo(promNo);
-					//如果该奶站和该促销号关系下  没有订单方可删除
-					List<TPreOrder> orders = orderService.selectOrderByPromScope(scope);
-					if(orders== null || orders.size()<=-0){
-						delScopes.add(scope);
-					}else{
-						if(StringUtils.isBlank(errBuff.toString())){
-							errBuff.append("促销号"+promNo + "和奶站号为 :"+branchNo);
-						}else{
-							errBuff.append(","+branchNo);
-						}
-					}
-					
+					delScopes.add(branchNo);					
 				}
 			}
 			if(StringUtils.isNoneBlank(errBuff.toString())){
@@ -798,10 +783,33 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 			}
 			
 			if(delScopes.size()>0){
-				delScopes.stream().forEach(entry->{
-					promotionScopeItemMapper.delPromScopeByPromScope(entry);
+				
+				PromAllocatModel model = new  PromAllocatModel();
+				model.setBranchNos(delScopes);
+				model.setPromNo(promNo);
+				
+				//判断需要删除的关系中,是否存在不能删除的关系
+				List<TPromotionOrderModel> lists = tPromotionMapper.promotionHasOrder(model);
+				if(lists!=null && lists.size()>0){
+					for(TPromotionOrderModel entry : lists){
+						if(StringUtils.isBlank(errBuff.toString())){
+							errBuff.append("促销号"+promNo + "和奶站号为 :"+entry.getBranchNo());
+						}else{
+							errBuff.append(","+entry.getBranchNo());
+						}
+					}
+				}else{
+					promotionScopeItemMapper.delPromScopesByScope(model);
+				}
+				
+			}
+			
+			if(newScopes.size()>0){
+				newScopes.stream().forEach(entry->{
+					promotionScopeItemMapper.insertScopeItem(entry);
 				});
 			}
+			
 			
 			
 		}else{
