@@ -232,7 +232,7 @@
     and s.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
     ORDER BY a.CREATE_AT desc
   </select>
-<!--liuyin    add get：,nz.BRANCH_NAME as BRANCH_NO       add sql：  LEFT JOIN   T_MD_BRANCH_SCOPE  md on md.RESIDENTIAL_AREA_ID=a.id    LEFT JOIN   T_MD_BRANCH   nz on nz.BRANCH_NO=md.BRANCH_NO-->
+<!--liuyin    add get：,nz.BRANCH_NAME as BRANCH_NO       add sql：  LEFT JOIN   t_md_branch_SCOPE  md on md.RESIDENTIAL_AREA_ID=a.id    LEFT JOIN   t_md_branch   nz on nz.BRANCH_NO=md.BRANCH_NO-->
   <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
       a.ID, a.RESIDENTIAL_AREA_TXT,  a.PROVINCE,a.CITY,a.COUNTY,a.STREET,
@@ -242,8 +242,8 @@
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME,
     a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,a.RESIDENTIAL_NUM,a.SALES_ORG,  a.PROPERTY_TXT,  a.PROPERTY_TEL,group_concat(nz.BRANCH_NAME) as BRANCH_NO
     from t_md_residential_area a
-     LEFT JOIN   T_MD_BRANCH_SCOPE  md on md.RESIDENTIAL_AREA_ID=a.id
-    LEFT JOIN   T_MD_BRANCH   nz on nz.BRANCH_NO=md.BRANCH_NO
+     LEFT JOIN   t_md_branch_SCOPE  md on md.RESIDENTIAL_AREA_ID=a.id
+    LEFT JOIN   t_md_branch   nz on nz.BRANCH_NO=md.BRANCH_NO
     where 1=1
     and  ID = #{id,jdbcType=VARCHAR}
   </select>

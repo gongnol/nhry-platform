@@ -78,7 +78,7 @@
     left join t_sys_user_role urole on emp.HR_EMP_NO = urole.LOGIN_NAME
     LEFT JOIN t_sys_role role on urole.ID = role.ID
      -->
-    LEFT JOIN T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
+    LEFT JOIN t_md_branch branch on emp.BRANCH_NO = branch.BRANCH_NO
     where emp. EMP_NO = #{0}
 </select>
 
@@ -266,8 +266,8 @@
     select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER,
     emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.ID_NO,emp.STATUS
     from t_md_branch_emp emp
-    LEFT JOIN  T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
-    LEFT JOIN T_SYS_USER_ROLE erole on emp.HR_EMP_NO = erole.LOGIN_NAME
+    LEFT JOIN  t_md_branch branch on emp.BRANCH_NO = branch.BRANCH_NO
+    LEFT JOIN t_sys_user_role erole on emp.HR_EMP_NO = erole.LOGIN_NAME
     LEFT JOIN t_sys_role role  on  erole.ID = role.ID
     where  1=1
     AND emp.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -297,7 +297,7 @@
     select
     <include refid="Route_Column_List" />
     from t_md_residential_area area
-    LEFT  JOIN  T_MD_EMP_SCOPE scope on  area.ID = scope.RESIDENTIAL_AREA_ID
+    LEFT  JOIN t_md_emp_scope scope on  area.ID = scope.RESIDENTIAL_AREA_ID
     where 1=1
     and scope.EMP_NO =  #{empNo,jdbcType=VARCHAR}
   </select>

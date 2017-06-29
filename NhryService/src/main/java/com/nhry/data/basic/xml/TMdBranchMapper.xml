@@ -203,7 +203,7 @@
     BRANCH_GROUP,b.BRANCH_LEVEL,b.DEALER_NO,d.DEALER_NAME,
    /* (select count(t.VIP_CUST_NO) from t_vip_cust_info t where t.BRANCH_NO=b.BRANCH_NO) TOTAL_CUS,*/
     b.MP,b.TEL,b.IS_VALID,b.ONLINE_DATE
-    from T_MD_BRANCH b LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+    from t_md_branch b LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
     where 1=1
       <if test="branchN !=null and ''!=branchN">
           and ( b.BRANCH_NO like '%${branchN}%' or b.BRANCH_NAME like '%${branchN}%')

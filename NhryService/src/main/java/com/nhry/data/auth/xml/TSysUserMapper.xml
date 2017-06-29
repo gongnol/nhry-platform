@@ -630,11 +630,11 @@
         u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
-        FROM T_SYS_USER u
+        FROM t_sys_user u
         <if test="isAll">
             LEFT
         </if>
-        JOIN T_SYS_USER_ROLE r
+        JOIN t_sys_user_role r
         ON u.LOGIN_NAME = r.LOGIN_NAME
         <if test="roleId != null">
             and r.ID = #{roleId,jdbcType=VARCHAR}
@@ -664,11 +664,11 @@
         u.DEPARTMENT_NAME,
         u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,de.DEALER_NAME,b.BRANCH_NAME,it.ITEM_NAME SALE_NAME,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
-        (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
-        FROM T_SYS_USER u
-        JOIN T_SYS_USER_ROLE r
+        (t_sys_user group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
+        FROM t_sys_user u
+        JOIN t_sys_user_role r
         ON u.LOGIN_NAME = r.LOGIN_NAME
-        LEFT JOIN T_MD_BRANCH b on b.BRANCH_NO = u.BRANCH_NO
+        LEFT JOIN t_md_branch b on b.BRANCH_NO = u.BRANCH_NO
         LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
         LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
         <where>
@@ -725,7 +725,7 @@
         u.*,
         r.id
         FROM
-        T_SYS_USER u left join t_sys_user_role r
+        t_sys_user u left join t_sys_user_role r
         on u.LOGIN_NAME = r.LOGIN_NAME
         <where>
             <if test="uname != null">
@@ -750,8 +750,8 @@
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds,
         (select group_concat(role.ROLE_NAME) from t_sys_user_role r,t_sys_role role where r.LOGIN_NAME = u.LOGIN_NAME and r.ID = role.ID) as roleNames
         FROM
-        T_SYS_USER u
-        LEFT JOIN T_MD_BRANCH b on b.BRANCH_NO = u.BRANCH_NO
+        t_sys_user u
+        LEFT JOIN t_md_branch b on b.BRANCH_NO = u.BRANCH_NO
         LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
         LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
         <where>

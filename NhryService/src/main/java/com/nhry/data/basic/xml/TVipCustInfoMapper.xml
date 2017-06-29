@@ -156,7 +156,7 @@
 		 SELECT
 				b.BRANCH_NAME
 			FROM
-				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
+				t_md_branch b where b.BRANCH_NO = i.BRANCH_NO
 		) BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
 			WHEN '-1' THEN '<include refid="mybaties.constant.ownBranch"></include>'
 			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME,
@@ -895,7 +895,7 @@
 			WHEN '-1' THEN '<include refid="mybaties.constant.ownBranch"></include>'
 			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME
 		from t_vip_cust_info i
-		LEFT JOIN T_MD_BRANCH b ON b.BRANCH_NO = i.BRANCH_NO
+		LEFT JOIN t_md_branch b ON b.BRANCH_NO = i.BRANCH_NO
 		LEFT JOIN t_md_residential_area a ON a.ID=i.SUBDIST
 			where 1=1
 		     <if test="salesOrg != null and salesOrg !=''">
@@ -1045,7 +1045,7 @@
 	ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME
 	from t_vip_cust_info i
 	INNER JOIN t_md_org_cust oct on oct.CUST_ID = i.VIP_CUST_NO and oct.ORG_ID = #{orgId,jdbcType=VARCHAR}
-	LEFT JOIN T_MD_BRANCH b ON b.BRANCH_NO = i.BRANCH_NO
+	LEFT JOIN t_md_branch b ON b.BRANCH_NO = i.BRANCH_NO
 	LEFT JOIN t_md_residential_area a ON a.ID=i.SUBDIST
 	where 1=1
 	<if test="salesOrg != null and salesOrg !=''">
@@ -1107,7 +1107,7 @@
 	</select>
 
 	<select id="findcustMixedTermsCount"  resultType="Long"  parameterType="com.nhry.model.basic.CustQueryModel">
-		 select count(i.VIP_CUST_NO)  from t_vip_cust_info i,T_MD_BRANCH b
+		 select count(i.VIP_CUST_NO)  from t_vip_cust_info i,t_md_branch b
 			where b.BRANCH_NO = i.BRANCH_NO 
 		     <if test="salesOrg != null and salesOrg !=''">
 		         AND i.SALES_ORG = #{salesOrg} 
@@ -1326,7 +1326,7 @@
 		from t_md_org_cust oc
 		LEFT JOIN t_md_order_org t on oc.ORG_ID = t.ID
 		LEFT JOIN t_vip_cust_info i on oc.CUST_ID = i.VIP_CUST_NO
-		LEFT JOIN T_MD_BRANCH b ON b.BRANCH_NO = i.BRANCH_NO
+		LEFT JOIN t_md_branch b ON b.BRANCH_NO = i.BRANCH_NO
 		LEFT JOIN t_md_residential_area a ON a.ID=i.SUBDIST
 		where 1=1
 		<if test="orgId != null and orgId !=''">
@@ -1479,7 +1479,7 @@
 		ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME
 		from t_vip_cust_info i
 		LEFT JOIN t_md_org_cust c on i.VIP_CUST_NO = c.CUST_ID
-		LEFT JOIN T_MD_BRANCH b ON b.BRANCH_NO = i.BRANCH_NO
+		LEFT JOIN t_md_branch b ON b.BRANCH_NO = i.BRANCH_NO
 		LEFT JOIN t_md_residential_area a ON a.ID=i.SUBDIST
 		where 1=1
 		and (c.ORG_ID is null  OR c.ORG_ID='')

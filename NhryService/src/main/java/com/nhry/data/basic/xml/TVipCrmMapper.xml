@@ -152,7 +152,7 @@
 		 SELECT
 				b.BRANCH_NAME
 			FROM
-				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
+				t_md_branch b where b.BRANCH_NO = i.BRANCH_NO
 		) BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
 			WHEN '-1' THEN '<include refid="mybaties.constant.ownBranch"></include>'
 			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME,
