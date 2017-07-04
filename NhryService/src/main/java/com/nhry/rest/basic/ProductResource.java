@@ -47,6 +47,15 @@ public class ProductResource extends BaseResource {
 	} 
 	
 	@POST
+	@Path("/add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/add", response = ResponseModel.class, notes = "新增商品信息")
+	public Response addProduct(@ApiParam(required=true,name="record",value="系统参数json格式")TMdMara record){
+		return convertToRespModel(MessageCode.NORMAL, null,  productService.addProductByCode(record));
+	}
+	
+	@POST
 	@Path("/upt")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

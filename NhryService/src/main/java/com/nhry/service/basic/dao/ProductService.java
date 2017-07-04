@@ -27,6 +27,13 @@ public interface ProductService {
     TMdMaraEx getMaraExByMatnrAndSalesOrg(String matnr,String salesOrg);
     
     /**
+     * 新增产品信息
+     * @param record
+     * @return
+     */
+    int addProductByCode(TMdMara record);
+    
+    /**
      * 修改产品信息
      * @param record
      * @return

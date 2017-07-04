@@ -13,6 +13,11 @@ public  class CodeGeneratorUtil {
         int num = new Random().nextInt(89999)+10000;
         return format.format(new Date())+num;
     }
+    
+    public static String getCodeForProduct(){
+        int num = new Random().nextInt(999);
+        return format.format(new Date())+num;
+    }
 
     public static void main(String[] args){
         System.out.println(getCode());
