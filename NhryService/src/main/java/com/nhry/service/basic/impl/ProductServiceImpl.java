@@ -33,6 +33,7 @@ import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.basic.pojo.BotType;
 import com.nhry.service.stock.dao.TSsmStockService;
+import com.nhry.utils.CodeGeneratorUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
@@ -81,6 +82,54 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 
 	}
 
+	@Override
+	public int addProductByCode(TMdMara record) {
+		//产品编号生成
+		record.setMatnr(CodeGeneratorUtil.getCode());
+		//end
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
+		record.setSalesOrg(sysuser.getSalesOrg());
+		record.setStatus("Y");
+		record.setHide("N");
+		record.setCreateAt(new Date());
+		record.getMaraEx().setMatnr(record.getMatnr());
+		record.getMaraEx().setSalesOrg(sysuser.getSalesOrg());
+		//add
+		tMdMaraMapper.addProduct(record);
+		tMdMaraExMapper.addMaraEx(record.getMaraEx());
+		
+		if (record.getNotsellList() != null
+				&& record.getNotsellList().size() > 0) {
+			for (TBranchNotsellList nl : record.getNotsellList()) {
+				nl.setListNo(PrimaryKeyUtils.generateUuidKey());
+				nl.setSalesOrg(sysuser.getSalesOrg());
+				nl.setCreateAt(new Date());
+				nl.setMatnr(record.getMatnr());
+				nl.setCreateBy(sysuser.getLoginName());
+				nl.setCreateByTxt(sysuser.getDisplayName());
+				notsellListMapper.addBranchNotSell(nl);
+			}
+		}
+		
+		TMdMara product = this.selectProductByCode(record.getMatnr());
+		
+		if (!StringUtils.isBlank(record.getStatus())) {
+			// 状态不为空时，更新产品状态
+			pubProductByCode(record.getMatnr(), record.getStatus(), false);
+			//以线程池的方式发送系统
+			taskExecutor.execute(new Thread() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					super.run();
+					this.setName("sendProductsMessagesForUpt");
+					messService.sendProductsMessages("产品新增了！", product,sysuser);
+				}
+			});
+		}
+		return 1;
+	}
+	
 	@Override
 	public int uptProductByCode(TMdMara record) {
 		// TODO Auto-generated method stub
