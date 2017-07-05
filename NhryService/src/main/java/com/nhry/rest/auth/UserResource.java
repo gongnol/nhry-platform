@@ -7,29 +7,24 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
 import com.nhry.model.auth.UserQueryModel3;
-import com.nhry.model.sys.AccessKey;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.HttpUtils;
-import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -115,8 +110,8 @@ public class UserResource extends BaseResource {
 	public Response doLogin(@ApiParam(required = true, name = "user", value = "用户名、密码") TSysUser user) {
 		String accesskey = userSessionService.generateKey();
 		TSysUser loginuser = userService.doLogin(user,accesskey);
-		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey);
-		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
+		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey, -1);
+		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName(), -1);
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, loginuser,request);
 		return convertToRespModel(MessageCode.NORMAL,null, loginuser);
 	}
@@ -127,6 +122,9 @@ public class UserResource extends BaseResource {
 	@ApiOperation(value = "/logout", response = ResponseModel.class, notes = "用户注销")
 	public Response logout(@ApiParam(required = true, name = "tk", value = "token") @QueryParam("tk")String tk) {
 		boolean flag = userService.logout(tk);
+		// delete cookie
+		CookieUtil.setCookie(request, response, UserSessionService.accessKey, "logout", 0);
+		CookieUtil.setCookie(request, response, UserSessionService.uname, "logout", 0);
 		if(flag){
 			//String url = EnvContant.getSystemConst("idm_logout_uri")+EnvContant.getSystemConst("redirect_uri");
 			String url = "localhost/local";
