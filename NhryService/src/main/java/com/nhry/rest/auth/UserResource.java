@@ -113,8 +113,8 @@ public class UserResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/doLogin", response = ResponseModel.class, notes = "用户登录")
 	public Response doLogin(@ApiParam(required = true, name = "user", value = "用户名、密码") TSysUser user) {
-		TSysUser loginuser = userService.doLogin(user);
 		String accesskey = userSessionService.generateKey();
+		TSysUser loginuser = userService.doLogin(user,accesskey);
 		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey);
 		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, loginuser,request);

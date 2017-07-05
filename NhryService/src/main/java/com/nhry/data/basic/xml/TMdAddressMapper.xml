@@ -41,7 +41,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.PROVINCE
@@ -51,7 +51,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.CITY
@@ -60,7 +60,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.COUNTY
@@ -74,7 +74,7 @@
 			SELECT
 				a.RESIDENTIAL_AREA_TXT
 			FROM
-				T_MD_RESIDENTIAL_AREA a
+				t_md_residential_area a
 			WHERE
 				a.ID = d.RESIDENTIAL_AREA
 		) RESIDENTIAL_AREA_NAME,d.RESIDENTIAL_AREA,
@@ -282,7 +282,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.PROVINCE
@@ -292,7 +292,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.CITY
@@ -301,7 +301,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.COUNTY
@@ -310,7 +310,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.STREET
@@ -323,7 +323,7 @@
 			SELECT
 				a.RESIDENTIAL_AREA_TXT
 			FROM
-				T_MD_RESIDENTIAL_AREA a
+				t_md_residential_area a
 			WHERE
 				a.ID = d.RESIDENTIAL_AREA
 		) RESIDENTIAL_AREA_NAME,d.RESIDENTIAL_AREA,
@@ -336,7 +336,7 @@
 		VIP_CUST_NO,
 		IS_DEFAULT
 	FROM
-		T_MD_ADDRESS d
+		t_md_address d
 	WHERE
 		d.IS_DELETE='N' AND d.VIP_CUST_NO = #{custNo} order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
   </select>
@@ -351,7 +351,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.PROVINCE
@@ -360,7 +360,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.CITY
@@ -369,7 +369,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.COUNTY
@@ -378,7 +378,7 @@
 			SELECT
 				it.ITEM_NAME
 			FROM
-				T_SYS_CODE_ITEM it
+				t_sys_code_item it
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.STREET
@@ -391,7 +391,7 @@
 			SELECT
 				a.RESIDENTIAL_AREA_TXT
 			FROM
-				T_MD_RESIDENTIAL_AREA a
+				t_md_residential_area a
 			WHERE
 				a.ID = d.RESIDENTIAL_AREA
 		) RESIDENTIAL_AREA,
@@ -404,7 +404,7 @@
 		VIP_CUST_NO,
 		IS_DEFAULT
 	FROM
-		T_MD_ADDRESS d
+		t_md_address d
 	WHERE
 		IS_DELETE='N' and ADDRESS_ID = #{id}
   </select>
@@ -510,7 +510,7 @@
                         SELECT
                             a.RESIDENTIAL_AREA_TXT
                         FROM
-                            T_MD_RESIDENTIAL_AREA a
+                            t_md_residential_area a
                         WHERE
                             a.ID = #{residentialArea}
                     ),
@@ -521,7 +521,7 @@
                         SELECT
                             CONCAT(IFNULL(a.RESIDENTIAL_AREA_TXT,''),IFNULL(a.ADDRESS_TXT,''))
                         FROM
-                            T_MD_RESIDENTIAL_AREA a
+                            t_md_residential_area a
                         WHERE
                             a.ID = #{residentialArea}
                     ),

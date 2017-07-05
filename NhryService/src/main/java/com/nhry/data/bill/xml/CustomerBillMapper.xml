@@ -445,11 +445,11 @@
         ) BRANCH_ADDRESS,
 
         concat(
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.PROVINCE),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.CITY),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.COUNTY),
         IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
         IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
@@ -502,11 +502,11 @@
         (SELECT MIN(START_DISP_DATE) FROM t_mst_plan_order_item WHERE ORDER_NO=o.ORDER_NO)  START_DATE,
         o.END_DATE,
         concat(
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.PROVINCE),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.CITY),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.COUNTY),
         IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
         IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
@@ -583,11 +583,11 @@
         ) BRANCH_ADDRESS,
 
         concat(
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.PROVINCE),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.CITY),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.COUNTY),
         IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
         IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
@@ -635,11 +635,11 @@
         o.END_DATE,
         (SELECT MIN(DISP_DATE) FROM t_mst_order_daliy_plan_item WHERE ORDER_NO=o.ORDER_NO) START_DATE,
         concat(
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.PROVINCE),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.CITY),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.COUNTY),
         IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
         IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
@@ -719,11 +719,11 @@
         ) BRANCH_ADDRESS,
 
         concat(
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = c.PROVINCE),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = c.CITY),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = c.COUNTY),
         IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
         IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
@@ -769,11 +769,11 @@
         ) BRANCH_ADDRESS,
 
         concat(
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = c.PROVINCE),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = c.CITY),
-        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        (SELECT it.ITEM_NAME FROM t_sys_code_item it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = c.COUNTY),
         IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
         IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),

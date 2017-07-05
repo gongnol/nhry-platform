@@ -423,7 +423,7 @@ public class ReportResource extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportFile/{fileName}", response = OrderCreateModel.class, notes = "下载文件")
     public Response reportFile(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName){
-        String url = EnvContant.getSystemConst("filePath");
+    	 String url =EnvContant.getSystemConst("filePath");
 //        String url = request.getServletContext().getRealPath("/");
         String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
 //        String urlPath = url + fileName;
@@ -2141,7 +2141,7 @@ public class ReportResource extends BaseResource{
     @ApiOperation(value = "/exportReturnBox", response = ResponseModel.class, notes = "回瓶汇总导出")
     public Response exportReturnBox(@ApiParam(name = "model",value = "回瓶汇总") ExtendBranchInfoModel model){
         String outUrl = "";
-        String url = EnvContant.getSystemConst("filePath");
+        String url =EnvContant.getSystemConst("filePath");
         List<Map<String, String>> boxList = branchInfoService.returnBoxStatList(model);
         try {
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "ReturnBoxTemplate.xlsx");    //审批单

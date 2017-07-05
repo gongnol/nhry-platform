@@ -14,15 +14,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
-import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.common.ladp.LadpService;
-import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.domain.NHSysCodeType;
-import com.nhry.data.config.domain.NHSysParameter;
-import com.nhry.model.basic.BranchQueryModel;
-import com.nhry.model.basic.DictionarySearchModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.config.dao.DictionaryService;
@@ -41,10 +35,10 @@ import com.wordnik.swagger.annotations.ApiParam;
 public class DictionaryResource extends BaseResource {
 	@Autowired
 	private DictionaryService dicService;
-	
+/*	
 	@Autowired
 	private LadpService ladpService;
-	
+	*/
 	@POST
 	@Path("/items/{typecode}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -159,7 +153,7 @@ public class DictionaryResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, data );
 	}
 	*/
-	
+	/*
 	@POST
 	@Path("/sync/users/all")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -174,7 +168,7 @@ public class DictionaryResource extends BaseResource {
 	@ApiOperation(value = "/sync/users/upt", response = ResponseModel.class, notes = "增量同步idm订户系统用户")
 	public Response syncSysUsersForUpt(){
 		return convertToRespModel(MessageCode.NORMAL, null,  ladpService.syncSysUsers(false));
-	}
+	}*/
 	
 	@GET
 	@Path("/sys/date")

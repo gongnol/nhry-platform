@@ -56,10 +56,11 @@ public class CookieUtil {
      * @param response
      * @param name
      * @param value
-     * 如果不设置时间，默认永久
+     * 如果不设置时间，默认yigeyue
      */
     public static void setCookie(HttpServletRequest request,HttpServletResponse response, String name, String value) {
-        setCookie(request, response, name, value, 0x278d00);
+       //setCookie(request, response, name, value, 0x278d00);
+    	setCookie(request, response, name, value,-1);
     }
 
     /**
@@ -72,7 +73,9 @@ public class CookieUtil {
      */
     public static void setCookie(HttpServletRequest request,HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
-        cookie.setMaxAge(maxAge);
+      
+        //cookie.setMaxAge(maxAge);
+       
         cookie.setPath(getPath(request));
         cookie.setPath("/");
         cookie.setHttpOnly(true);

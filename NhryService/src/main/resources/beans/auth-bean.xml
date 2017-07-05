@@ -62,9 +62,9 @@
 	<bean id="sysOrgMapper" class="com.nhry.data.auth.impl.TSysOrgsMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
-	<bean id="ladpService" class="com.nhry.common.ladp.LadpService" init-method="init">
+	<!-- <bean id="ladpService" class="com.nhry.common.ladp.LadpService" init-method="init">
 	   <property name="userService" ref="userService"></property>
-	</bean>
+	</bean> -->
 	<bean id="isysAkmapper" class="com.nhry.data.auth.impl.TSysAccesskeyMapperImpl">
 	  <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>

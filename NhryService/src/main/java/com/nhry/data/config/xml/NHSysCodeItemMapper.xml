@@ -74,7 +74,7 @@
   <select id="getCodeItemsByTypeCode" parameterType="String" resultMap="BaseResultMap">
        select 
     <include refid="Base_Column_List" />
-     from T_SYS_CODE_ITEM where TYPE_CODE=#{0} order by PARENT,IDX asc
+     from t_sys_code_item where TYPE_CODE=#{0} order by PARENT,IDX asc
   </select>
   <select id="findTypeItemCountByTypeCode" resultType="Integer">
       select count(ITEM_CODE) from t_sys_code_item where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
@@ -82,6 +82,6 @@
   <select id="findItemsByParentCode"  resultMap="BaseResultMap" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
       select 
     <include refid="Base_Column_List" />
-     from T_SYS_CODE_ITEM where TYPE_CODE=#{typeCode} and PARENT=#{parent} order by IDX asc
+     from t_sys_code_item where TYPE_CODE=#{typeCode} and PARENT=#{parent} order by IDX asc
   </select>
 </mapper>

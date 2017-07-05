@@ -669,8 +669,8 @@
         JOIN t_sys_user_role r
         ON u.LOGIN_NAME = r.LOGIN_NAME
         LEFT JOIN t_md_branch b on b.BRANCH_NO = u.BRANCH_NO
-        LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
-        LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
+        LEFT JOIN t_md_dealer de on de.DEALER_NO = u.DEALER_ID
+        LEFT JOIN t_sys_code_item it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
         <where>
             <if test="roleId != null">
                 r.ID = #{roleId,jdbcType=VARCHAR}
@@ -752,8 +752,8 @@
         FROM
         t_sys_user u
         LEFT JOIN t_md_branch b on b.BRANCH_NO = u.BRANCH_NO
-        LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
-        LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
+        LEFT JOIN t_md_dealer de on de.DEALER_NO = u.DEALER_ID
+        LEFT JOIN t_sys_code_item it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
         <where>
             <if test="uname != null and uname != ''">
                 and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like

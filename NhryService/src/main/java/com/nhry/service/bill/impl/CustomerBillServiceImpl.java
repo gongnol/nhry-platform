@@ -260,7 +260,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 }
 */
         //会员积分
-        if("Y".equals(order.getIsIntegration())){
+        /*if("Y".equals(order.getIsIntegration())){
             taskExecutor.execute(new Thread(){
                 @Override
                 public void run() {
@@ -294,7 +294,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 }
             });
         }
-
+*/
         //计算订单结算价
         if("10".equals(order.getPaymentmethod())){
             BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
@@ -304,7 +304,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         }
 
 
-        //发送EC,更新订单状态
+      /*  //发送EC,更新订单状态
         TPreOrder sendOrder = new TPreOrder();
         sendOrder.setOrderNo(order.getOrderNo());
         sendOrder.setPreorderStat("101");
@@ -323,7 +323,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 }
 
             }
-        });
+        });*/
 
         //将订单收款日志写入 t_md_operation_log 表。     by  liuyin   编号   类型   名称  送奶员  配送地址 原值  新值 产品 日期
         //   start
@@ -638,7 +638,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             }
             //判断是否需要 返还积分
             if("Y".equals(preOrder.getIsIntegration())){
-                piVipPointCreateBatService.backPoint(preOrder,preOrder.getInitAmt(), preOrder.getInitAmt());
+               // piVipPointCreateBatService.backPoint(preOrder,preOrder.getInitAmt(), preOrder.getInitAmt());
 //                taskExecutor.execute(new Thread(){
 //                    @Override
 //                    public void run() {

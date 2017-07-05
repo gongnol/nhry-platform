@@ -67,7 +67,7 @@ public interface UserService {
 	 */
 	PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel3 model);
 
-	public TSysUser doLogin(TSysUser user);
+	public TSysUser doLogin(TSysUser user, String accesskey);
 
 	public int updateUserPass(TSysUser user);
 

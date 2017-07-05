@@ -4,7 +4,7 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd"
 	   default-lazy-init="true">
 
-	<bean id="scheduledJobDetail1"
+	<!-- <bean id="scheduledJobDetail1"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
 			<ref  bean="piProductService"/>
@@ -12,8 +12,8 @@
 		<property name="targetMethod">
 			<value>matHandler</value>
 		</property>
-	</bean>
-	<bean id="scheduledJobDetail2"
+	</bean> -->
+	<!-- <bean id="scheduledJobDetail2"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
 			<ref  bean="piProductService"/>
@@ -21,8 +21,8 @@
 		<property name="targetMethod">
 			<value>customerDataHandle</value>
 		</property>
-	</bean>
-	<bean id="scheduledJobDetail3"
+	</bean> -->
+	<!-- <bean id="scheduledJobDetail3"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
 			<ref  bean="piProductService"/>
@@ -30,8 +30,8 @@
 		<property name="targetMethod">
 			<value>salesQueryHandler</value>
 		</property>
-	</bean>
-	<bean id="scheduledJobDetail4"
+	</bean> -->
+	<!-- <bean id="scheduledJobDetail4"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
 			<bean class="com.nhry.service.external.EcBaseService">
@@ -41,8 +41,8 @@
 		<property name="targetMethod">
 			<value>resendMessage2Ec</value>
 		</property>
-	</bean>
-	<bean id="scheduledJobDetail5"
+	</bean> -->
+	<!-- <bean id="scheduledJobDetail5"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
 			<ref  bean="ladpService"/>
@@ -50,7 +50,8 @@
 		<property name="targetMethod">
 			<value>syncSysUsersForUpt</value>
 		</property>
-	</bean>
+	</bean> -->
+	<!-- 删除最近一次等于时间为8小时前的 accessKey  每24分钟触发一次 -->
 	<bean id="scheduledJobDetail6" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
 			<ref  bean="isysAkService"/>
@@ -59,14 +60,16 @@
 			<value>deleteExpiredAccesskey</value>
 		</property>
 	</bean>
-	<bean id="scheduledJobDetail7" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+	<!-- <bean id="scheduledJobDetail7" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
 			<ref bean="piRequireOrderService"/>
 		</property>
 		<property name="targetMethod">
 			<value>saveFactoryPrice</value>
 		</property>
-	</bean>
+	</bean> -->
+	
+	
 	<bean id="sendMessageToCustomer" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
 			<ref bean="orderService"/>
@@ -85,7 +88,7 @@
 		</property>
 	</bean>
 
-	<bean id="scheduledJobDetail10"
+	<!-- <bean id="scheduledJobDetail10"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
 			<ref bean="piRedateByTradeService"/>
@@ -94,7 +97,7 @@
 			<value>sendRedateByTradeToCRM</value>
 		</property>
 	</bean>
-
+ -->
 	<bean id="scheduledJobDetail11"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
@@ -105,6 +108,7 @@
 		</property>
 	</bean>
 	 <!-- 调度的配置开始 -->
+	 <!-- 根据送奶员、奶站创建前一天的统计数据 (报表用->出奶表送奶员统计数据)  每天凌晨两天触发-->
 	<bean id="crontestJobTrigger11" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail11" />
@@ -113,15 +117,17 @@
 			<value>0 0 2 * * ?</value>
 		</property>
 	</bean>
-	<bean id="crontestJobTrigger10" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	<!--  -->
+	<!-- <bean id="crontestJobTrigger10" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail10" />
 		</property>
 		<property name="cronExpression">
 			<value>0 40 * * * ?</value>
 		</property>
-	</bean>
-	<bean id="crontestJobTrigger9" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	</bean> -->
+	<!--  同步奶站的工厂和仓库  每天凌晨一点五十二分 -->
+	<!-- <bean id="crontestJobTrigger9" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail9" />
 		</property>
@@ -129,46 +135,55 @@
 			<value>0 52 1 * * ?</value>
 		</property>
 	</bean>
-    <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+ -->
+    <!--  同步产品信息   每天23:32分触发-->
+   <!--  <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
             <ref bean="scheduledJobDetail1" />
         </property>
         <property name="cronExpression">
 			<value>0 32 23 * * ?</value>
 		</property>
-    </bean>
-	<bean id="crontestJobTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+    </bean> -->
+    
+    <!-- 同步自营奶站主数据,经销商奶站主数据(经销商信息也同步)    每天23:27分 -->
+	<!-- <bean id="crontestJobTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail2" />
 		</property>
 		<property name="cronExpression">
 			<value>0 27 23 * * ?</value>
 		</property>
-	</bean>
-	<bean id="crontestJobTrigger3" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	</bean> -->
+	<!-- 同步字典信息   每晚23:22分 -->
+	<!-- <bean id="crontestJobTrigger3" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail3" />
 		</property>
 		<property name="cronExpression">
 			<value>0 22 23 * * ?</value>
 		</property>
-	</bean>
-	<bean id="crontestJobTrigger4" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	</bean> -->
+	
+	<!-- 将推送失败的消息重新推送 -->
+	<!-- <bean id="crontestJobTrigger4" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail4" />
 		</property>
 		<property name="cronExpression">
 			<value>0 15 * * * ?</value>
 		</property>
-	</bean>
-	<bean id="crontestJobTrigger5" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	</bean> -->
+	
+	<!-- 同步用户信息  每25分钟同步一次 -->
+	<!-- <bean id="crontestJobTrigger5" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail5" />
 		</property>
 		<property name="cronExpression">
 			<value>0 25 * * * ?</value>
 		</property>
-	</bean>
+	</bean> -->
 	<bean id="crontestJobTrigger6" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail6" />
@@ -177,14 +192,16 @@
 			<value>0 24 * * * ?</value>
 		</property>
 	</bean>
-	<bean id="crontestJobTrigger7" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	<!-- <bean id="crontestJobTrigger7" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail7" />
 		</property>
 		<property name="cronExpression">
 			<value>0 15 18 * * ?</value>
 		</property>
-	</bean>
+	</bean> -->
+	
+	<!-- 发送短信job  (7天后到期，我们将于7日内上门收取下期奶款) 每天十点发送-->
 	<bean id="crontestJobTrigger8" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="sendMessageToCustomer" />
@@ -199,16 +216,16 @@
     <bean name="startQuertz1" lazy-init="false" autowire="no" init-method="init" class="com.nhry.common.service.NhrySchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="crontestJobTrigger1"/>
+               <!--  <ref bean="crontestJobTrigger1"/>
 				<ref bean="crontestJobTrigger2"/>
-				<ref bean="crontestJobTrigger3"/>
-				<ref bean="crontestJobTrigger4"/>
-				<ref bean="crontestJobTrigger5"/>
+				<ref bean="crontestJobTrigger3"/> -->
+			<!-- 	<ref bean="crontestJobTrigger4"/> -->
+			<!-- 	<ref bean="crontestJobTrigger5"/> -->
 				<ref bean="crontestJobTrigger6"/>
-				<ref bean="crontestJobTrigger7"/>
+			<!-- 	<ref bean="crontestJobTrigger7"/> -->
 				<ref bean="crontestJobTrigger8"/>
-				<ref bean="crontestJobTrigger9"/>
-				<ref bean="crontestJobTrigger10"/>
+				<!-- <ref bean="crontestJobTrigger9"/>
+				<ref bean="crontestJobTrigger10"/> -->
 				<ref bean="crontestJobTrigger11"/>
             </list>
         </property>

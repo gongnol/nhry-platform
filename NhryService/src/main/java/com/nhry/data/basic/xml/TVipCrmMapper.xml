@@ -76,7 +76,7 @@
 		SELECT
 		it.ITEM_NAME
 		FROM
-		T_SYS_CODE_ITEM it
+		t_sys_code_item it
 		WHERE it.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT" /> AND 
 		it.ITEM_CODE = i.SALES_ORG
 		) SALES_ORG,
@@ -86,7 +86,7 @@
 		SELECT
 		it.ITEM_NAME
 		FROM
-		T_SYS_CODE_ITEM it
+		t_sys_code_item it
 		WHERE it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.PROVINCE
 		) PROVINCE,
@@ -94,7 +94,7 @@
 		SELECT
 		it.ITEM_NAME
 		FROM
-		T_SYS_CODE_ITEM it
+		t_sys_code_item it
 		WHERE it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.CITY
 		) CITY,
@@ -102,7 +102,7 @@
 		SELECT
 		it.ITEM_NAME
 		FROM
-		T_SYS_CODE_ITEM it
+		t_sys_code_item it
 		WHERE it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.COUNTY
 		) COUNTY,
@@ -121,7 +121,7 @@
 		SELECT
 		it.ITEM_NAME
 		FROM
-		T_SYS_CODE_ITEM it
+		t_sys_code_item it
 		WHERE it.TYPE_CODE = <include refid="mybaties.constant.vip_src" /> AND 
 		it.ITEM_CODE = i.VIP_SRC
 		) VIP_SRC_NAME,
@@ -131,7 +131,7 @@
 		SELECT
 		it.ITEM_NAME
 		FROM
-		T_SYS_CODE_ITEM it
+		t_sys_code_item it
 		WHERE it.TYPE_CODE = <include refid="mybaties.constant.vip_type" /> AND 
 		it.ITEM_CODE = i.VIP_TYPE
 		) VIP_TYPE_NAME,

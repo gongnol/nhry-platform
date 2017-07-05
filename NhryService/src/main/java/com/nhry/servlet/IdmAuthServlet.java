@@ -27,7 +27,6 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.nhry.common.auth.AuthFilter;
 import com.nhry.common.auth.UserSessionService;
-import com.nhry.common.ladp.LadpService;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysAccesskey;
 import com.nhry.data.auth.domain.TSysUser;
@@ -160,7 +159,6 @@ public class IdmAuthServlet extends HttpServlet {
 		try {
 			response.sendRedirect(EnvContant.getSystemConst("idm_logout_uri")+EnvContant.getSystemConst("redirect_uri"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

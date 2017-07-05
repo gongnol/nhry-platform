@@ -598,7 +598,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         uptManHandModel.setDealerNo(branch.getDealerNo());
         uptManHandModel.setIsValid("N");
         tPreOrderMapper.uptManHandOrder(uptManHandModel);
-
+/*
         //当是电商的订单时，更新EC对应订单的奶站
         if (!"30".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())) {
             order.setBranchNo(uptManHandModel.getBranchNo());
@@ -617,7 +617,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                     messLogService.sendOrderBranch(order);
                 }
             });
-        }
+        }*/
 
         return 1;
     }
@@ -840,7 +840,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             } else {
                 order.setDealerNo(branch.getDealerNo());
             }
-
+/*
             order.setPreorderStat("10");
             order.setIsValid("Y");
             taskExecutor.execute(new Thread() {
@@ -861,7 +861,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                         messLogService.sendOrderStatus(sendOrder);
                     }
                 }
-            });
+            });*/
         }
         //年卡订单确认
 
@@ -890,7 +890,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             //如果有赠品，生成赠品的日计划
             promotionService.createDaliyPlanByPromotion(order, entriesList, list);
 
-            //创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
+           /* //创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
             taskExecutor.execute(new Thread() {
                 @Override
                 public void run() {
@@ -936,7 +936,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                     }
 
                 }
-            });
+            });*/
         }
         return 1;
     }
@@ -1180,7 +1180,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             }
             tPreOrderMapper.updateOrderStatus(order);
 
-            //发送EC
+         /*   //发送EC
             taskExecutor.execute(new Thread() {
                 @Override
                 public void run() {
@@ -1189,7 +1189,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                     record.setContent("Y");
                     messLogService.sendOrderStopRe(record);
                 }
-            });
+            });*/
 
             //订户状态更改???
             List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
@@ -1460,7 +1460,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             //更新截止日期
             tPreOrderMapper.updateOrderEndDate(order);
             System.out.println("共花费时间" + (System.currentTimeMillis() - startTime) + "下面开始复订");
-            //发送EC
+/*            //发送EC
             taskExecutor.execute(new Thread() {
                 @Override
                 public void run() {
@@ -1469,7 +1469,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                     record.setContent("Y");
                     messLogService.sendOrderStopRe(record);
                 }
-            });
+            });*/
 
         } else {
             throw new ServiceException(MessageCode.LOGIC_ERROR, record.getOrderNo() + "当前订单不存在");
@@ -1555,7 +1555,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                             //年卡退订日志
                             OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.YEAR_CARD_BACK_ORDER, null, null,
                                     null, smodel.getBackAmt().toString(), null, null, user, operationLogMapper);
-
+/*
                             //发送EC,更新订单状态
                             TPreOrder sendOrder = new TPreOrder();
                             sendOrder.setOrderNo(order.getOrderNo());
@@ -1577,7 +1577,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                             //积分扣减
                             if ("20".equals(order.getPaymentmethod()) && "20".equals(order.getPaymentStat()) && "Y".equals(order.getIsIntegration())) {
                                 piVipPointCreateBatService.backPoint(order, initAmt, smodel.getBackAmt());
-                            }
+                            }*/
 
                         }
                     } else {
@@ -1728,7 +1728,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             }
         }
         //第八步  发送EC,更新订单状态
-        TPreOrder sendOrder = new TPreOrder();
+     /*   TPreOrder sendOrder = new TPreOrder();
         sendOrder.setOrderNo(order.getOrderNo());
         sendOrder.setPreorderStat("300");
         taskExecutor.execute(new Thread() {
@@ -1744,11 +1744,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 messLogService.sendOrderStatus(sendOrder);
             }
         });
-
-        //第九步  积分扣减
+*/
+      /*  //第九步  积分扣减
         if ("20".equals(order.getPaymentmethod()) && "20".equals(order.getPaymentStat()) && "Y".equals(order.getIsIntegration())) {
             piVipPointCreateBatService.backPoint(order, initAmt, record.getBackAmt());
-        }
+        }*/
         return 0;
     }
 
@@ -1899,7 +1899,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             milkBoxService.deleteMilkBoxByOrderNo(order.getOrderNo());
             System.out.println("订单退订，删除装箱表成功，下面开始发送EC");
 
-            //发送EC,更新订单状态
+         /*   //发送EC,更新订单状态
             TPreOrder sendOrder = new TPreOrder();
             sendOrder.setOrderNo(order.getOrderNo());
             sendOrder.setPreorderStat("300");
@@ -1920,7 +1920,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             //积分扣减
             if ("20".equals(order.getPaymentmethod()) && "20".equals(order.getPaymentStat()) && "Y".equals(order.getIsIntegration())) {
                 piVipPointCreateBatService.backPoint(order, initAmt, leftAmt);
-            }
+            }*/
 
         } else {
             throw new ServiceException(MessageCode.LOGIC_ERROR, "当前订单不存在");
@@ -2141,7 +2141,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 tPlanOrderItemMapper.updateEntryByItemNo(item);
             }
         }
-        //发送EC,更新订单状态
+   /*     //发送EC,更新订单状态
         TPreOrder sendOrder = new TPreOrder();
         sendOrder.setOrderNo(order.getOrderNo());
         sendOrder.setPreorderStat("300");
@@ -2164,7 +2164,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if ("20".equals(order.getPaymentmethod()) && "20".equals(order.getPaymentStat()) && "Y".equals(order.getIsIntegration())) {
             piVipPointCreateBatService.backPoint(order, initAmt, backAmt);
         }
-
+*/
         return 0;
     }
 
@@ -2381,7 +2381,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             //生成每日计划
             List<TOrderDaliyPlanItem> list = createDaliyPlan(order, entriesList);
 
-            //创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
+          /*  //创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
             taskExecutor.execute(new Thread() {
                 @Override
                 public void run() {
@@ -2390,7 +2390,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                     messLogService.sendOrderInfo(order, entriesList);
                 }
             });
-
+*/
         } else {
             throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo + "原订单不存在");
         }
@@ -2668,7 +2668,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
             //生成每日计划
             createDaliyPlan(order, entriesList);
-
+/*
             //创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
             taskExecutor.execute(new Thread() {
                 @Override
@@ -2677,7 +2677,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                     this.setName("sendOrderToEc");
                     messLogService.sendOrderInfo(order, entriesList);
                 }
-            });
+            });*/
 
         } else {
             throw new ServiceException(MessageCode.LOGIC_ERROR, record.getOrderNo() + "原订单不存在");
@@ -2881,7 +2881,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10", null, null);
 
         //发送EC
-        taskExecutor.execute(new Thread() {
+      /*  taskExecutor.execute(new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -2890,7 +2890,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 record.setContent("N");
                 messLogService.sendOrderStopRe(record);
             }
-        });
+        });*/
         OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.RESUME_ORDER, null, null, "停订", "在订", null, null, userSessionService.getCurrentUser(), operationLogMapper);
         return 1;
     }
@@ -3029,7 +3029,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         tPreOrderMapper.updateOrderEndDate(order);
         //订户状态更改
         tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10", null, null);
-        //发送EC
+       /* //发送EC
         taskExecutor.execute(new Thread() {
             @Override
             public void run() {
@@ -3039,7 +3039,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 record.setContent("N");
                 messLogService.sendOrderStopRe(record);
             }
-        });
+        });*/
         OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.RESUME_ORDER, null, null, "停订", "在订", null, null, userSessionService.getCurrentUser(), operationLogMapper);
         return 1;
     }
@@ -3712,7 +3712,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
         //如果有赠品，生成赠品的日计划
         promotionService.createDaliyPlanByPromotion(order, entriesList, list);
-
+/*
         //创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
         taskExecutor.execute(new Thread() {
             @Override
@@ -3759,7 +3759,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 }
 
             }
-        });
+        });*/
 
         return order.getOrderNo();
     }
@@ -10789,7 +10789,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.REPLACE_BRANCH, null, null,
                 order.getBranchNo(), smodel.getBranchNo(), null, null, userSessionService.getCurrentUser(), operationLogMapper);
         newOrder.setyFresh(newQty);
-        //发送中台
+       /* //发送中台
         taskExecutor.execute(new Thread() {
             @Override
             public void run() {
@@ -10797,7 +10797,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 this.setName("sendReplaceBranch");
                 messLogService.sendReplaceBranch(order.getOrderNo(),smodel.getBranchNo(),"2",newOrder.getyFresh(),newOrder.getInitAmt(),"");
             }
-        });
+        });*/
         return 0;
     }
 

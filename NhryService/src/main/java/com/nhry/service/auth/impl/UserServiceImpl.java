@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import com.github.pagehelper.PageInfo;
@@ -41,7 +42,8 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private TSysAccesskeyService accessKeyService;
 	private TMdBranchEmpMapper branchEmpMapper;
 	private TSysMessageService messageService;
-    
+	@Autowired
+	private TSysAccesskeyService isysAkService;
 	
 	@Override
 	public List<TSysUser> findUserByLoginNameList(ArrayList<String> loginName) {
@@ -130,7 +132,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 	
 	@Override
-	public TSysUser doLogin(TSysUser user){
+	public TSysUser doLogin(TSysUser user,String accessKey){
 		if(StringUtils.isEmpty(user.getLoginName())||StringUtils.isEmpty(user.getPassword())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"用户名和密码不能为空!");
 		}
@@ -138,6 +140,15 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if(_user == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"用户名或密码错误!!");
 		}
+		TSysAccesskey ak = new TSysAccesskey();
+		ak.setAccesskey(accessKey);
+		ak.setLoginname(user.getLoginName());
+		ak.setType("10"); 
+		ak.setVisitFirstTime(new Date());
+		ak.setVisitLastTime(new Date());
+		
+		isysAkService.updateIsysAccessKey(ak);
+		
 		return _user;
 	}
 
