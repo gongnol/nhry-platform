@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.utils.SysCodeUtil;
-import com.nhry.utils.SysContant;
+
 
 public class TMdBranch implements Serializable{
     private String branchNo;
