@@ -105,7 +105,7 @@ public class DealerResource extends BaseResource {
 	@Path("/updateDealerStatus")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/updateDealerStatus", response = String.class, notes = "更新网点客户(奶站)信息列表")
+	@ApiOperation(value = "/updateDealerStatus", response = String.class, notes = "更新经销商状态")
 	public Response updateDealerStatus(@ApiParam(required=true,name="branchModel",value="SearchModel") TMdDealerStatusModel model){
 		return convertToRespModel(MessageCode.NORMAL, null,dealerService.updateDealerStatus(model));
 	}
@@ -119,6 +119,19 @@ public class DealerResource extends BaseResource {
 	public Response getDealerOnAuthAndGroup(@ApiParam(required=true,name="branchGroup",value="经销商编号")  @PathParam("branchGroup") String branchGroup){
 		return convertToRespModel(MessageCode.NORMAL, null,dealerService.getDealerOnAuthAndGroup(branchGroup));
 	}
+	
+	
+
+	@POST
+	@Path("/updateDealerInfo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/updateDealerInfo", response = String.class, notes = "更新经销商信息")
+	public Response updateDealerInfo(@ApiParam(required=true,name="dealer",value="dealer") TMdDealer dealer){
+		return convertToRespModel(MessageCode.NORMAL, null,dealerService.updateDealerInfo(dealer));
+	}
+	
+	
 	
 
 

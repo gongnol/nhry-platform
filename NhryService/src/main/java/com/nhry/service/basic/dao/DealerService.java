@@ -26,4 +26,6 @@ public interface DealerService {
 	int updateDealerStatus(TMdDealerStatusModel model);
 
 	List<TMdDealer> getDealerOnAuthAndGroup(String branchGroup);
+
+	int updateDealerInfo(TMdDealer dealer);
 }

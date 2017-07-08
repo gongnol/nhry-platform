@@ -3,25 +3,32 @@ package com.nhry.rest.auth;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.auth.domain.TSysAccesskey;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
 import com.nhry.model.auth.UserQueryModel3;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.auth.dao.TSysAccesskeyService;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.HttpUtils;
+import com.nhry.utils.date.Date;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
+import scala.tools.nsc.interpreter.IMain.Request;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,6 +48,11 @@ public class UserResource extends BaseResource {
 	private UserService userService;
 	@Autowired
 	private UserSessionService userSessionService;
+	
+	@Autowired
+	private TSysAccesskeyService isysAkService;
+	@Autowired
+	HttpServletRequest request;
 
 	@POST
 	@Path("/search")
@@ -113,6 +125,16 @@ public class UserResource extends BaseResource {
 		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey, -1);
 		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName(), -1);
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, loginuser,request);
+		
+		
+
+		TSysAccesskey ak = new TSysAccesskey();
+		ak.setAccesskey(accesskey);
+		ak.setLoginname(user.getLoginName());
+		ak.setType("10"); 
+		ak.setVisitFirstTime(new Date());
+		ak.setVisitLastTime(new Date());
+		isysAkService.updateIsysAccessKey(ak);
 		return convertToRespModel(MessageCode.NORMAL,null, loginuser);
 	}
 	
@@ -122,16 +144,15 @@ public class UserResource extends BaseResource {
 	@ApiOperation(value = "/logout", response = ResponseModel.class, notes = "用户注销")
 	public Response logout(@ApiParam(required = true, name = "tk", value = "token") @QueryParam("tk")String tk) {
 		boolean flag = userService.logout(tk);
-		// delete cookie
+		// delete cookie  
+		
+		System.out.println(request.getContextPath());
+		System.out.println(request.getRequestURL());
 		CookieUtil.setCookie(request, response, UserSessionService.accessKey, "logout", 0);
 		CookieUtil.setCookie(request, response, UserSessionService.uname, "logout", 0);
-		if(flag){
-			//String url = EnvContant.getSystemConst("idm_logout_uri")+EnvContant.getSystemConst("redirect_uri");
-			String url = "localhost/local";
-			return convertToRespModel(MessageCode.NORMAL,null,url );
-		}else{
-			return convertToRespModel(MessageCode.LOGIC_ERROR,null, "");
-		}
+		String url = "#/login";
+		return convertToRespModel(MessageCode.NORMAL,null,url );
+		
 	}
 	
 	@POST

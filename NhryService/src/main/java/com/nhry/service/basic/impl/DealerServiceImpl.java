@@ -168,8 +168,27 @@ public class DealerServiceImpl implements DealerService {
 		            //经销商内勤
 		    	   dealers.add(this.getDealerByNo(user.getDealerId()));
 		    	   return dealers;
+		       }else{
+		    	   List<TMdDealer> list = dealerMapper.findDealersBySalesOrg(user.getSalesOrg());
+		    	   dealers.addAll(list);
+		    	   return dealers;
 		       }
-		       return this.getDealerBySalesOrg();
+		       
+		      
+		      
 		}
+	}
+
+	@Override
+	public int updateDealerInfo(TMdDealer dealer) {
+		if(StringUtils.isBlank(dealer.getDealerNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该经销商编号不存在！！！");     
+		}
+		
+		TMdDealer oldDealer = this.getDealerByNo(dealer.getDealerNo());
+		if(oldDealer == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该经销商不存在！！！");     
+		}
+		return dealerMapper.updateDealerSelective(dealer);
 	}
 }
