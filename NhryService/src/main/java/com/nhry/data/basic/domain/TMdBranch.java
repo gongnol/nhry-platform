@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.utils.SysCodeUtil;
+import com.nhry.utils.SysContant;
 
 public class TMdBranch implements Serializable{
     private String branchNo;
@@ -72,6 +74,7 @@ public class TMdBranch implements Serializable{
     
     
     public void initData(TSysUser user){
+    	//this.companyCode = SysCodeUtil.getCompanyCodeBySalesOrg(user.getSalesOrg(), SysContant.getSystemConst("comp_code"));
     	this.salesOrg = user.getSalesOrg();
     	this.createAt = new Date();
     	this.createBy = user.getLoginName();

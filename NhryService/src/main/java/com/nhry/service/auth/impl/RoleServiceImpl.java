@@ -111,7 +111,7 @@ public class RoleServiceImpl extends BaseService implements RoleService {
 			//判断在员工表中是否有该user
 			TMdBranchEmp branchEmp = empMapper.selectBranchEmpByNo(urmodel.getLoginName());
 			if(branchEmp==null){
-				TSysUser sysuser = userMapper.findUserByLoginName(urmodel.getLoginName());
+				TSysUser sysuser = userMapper.findUserByLogin(urmodel.getLoginName());
 				TMdBranchEmp emp = new TMdBranchEmp();
 				emp.setEmpNo(sysuser.getLoginName());
 				emp.setHrEmpNo(sysuser.getLoginName());

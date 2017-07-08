@@ -125,9 +125,19 @@ public class DealerServiceImpl implements DealerService {
 
 	@Override
 	public int addDealer(TMdDealer dealer) {
+		if(StringUtils.isBlank(dealer.getDealerNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"经销商编号不能为空"); 
+		}
+		if(dealer.getDealerNo().length()>10){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"经销商编号不能超过10位"); 
+		}
+		TMdDealer dea = this.getDealerByNo(dealer.getDealerNo());
+		if(dea!=null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"经销商编号为 [ "+dealer.getDealerNo()+"] 的经销商已存在!!!!"); 
+		}
+		
 		TSysUser user = userSessionService.getCurrentUser();
 		dealer.setSalesOrg(user.getSalesOrg());
-		dealer.setDealerNo(CodeGeneratorUtil.getCode());
 		dealer.setCreateBy(user.getLoginName());
 		dealer.setCreateByTxt(user.getDisplayName());
 		dealer.setCreateAt(new Date());

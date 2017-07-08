@@ -84,8 +84,20 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 
 	@Override
 	public int addProductByCode(TMdMara record) {
-		//产品编号生成
-		record.setMatnr(CodeGeneratorUtil.getCode());
+		if(StringUtils.isBlank(record.getMatnr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站编号不能为空"); 
+		}
+	
+		if(record.getMatnr().length()>18){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"产品编号不能超过18位"); 
+		}
+		
+		TMdMara pro = this.selectProductByCode(record.getMatnr());
+		
+		if(pro!=null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "产品编号为["+pro.getMatnr()+"]的产品信息已存在!!");
+		}
+		
 		//end
 		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		record.setSalesOrg(sysuser.getSalesOrg());

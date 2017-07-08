@@ -45,6 +45,13 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 	public TSysUser findUserByLoginName(String loginName) {
 		return this.sqlSessionTemplate.selectOne("findUserByLoginName", loginName);
 	}
+	
+
+	@Override
+	public TSysUser findUserByLogin(String loginName) {
+		return this.sqlSessionTemplate.selectOne("findUserByLogin", loginName);
+	}
+
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;

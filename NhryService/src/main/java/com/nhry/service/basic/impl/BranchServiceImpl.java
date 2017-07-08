@@ -44,9 +44,19 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 
 	@Override
 	public int addBranch(TMdBranch branch) {
-		//生成奶站编号
-		String branchNo = BranchNoUtil.getBranchNo();
-		branch.setBranchNo(branchNo);
+		
+		if(StringUtils.isBlank(branch.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站编号不能为空"); 
+		}
+		
+		if(branch.getBranchNo().length()>10){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站编号不能超过10位"); 
+		}
+		
+		TMdBranch bran = this.selectBranchByNo(branch.getBranchNo());
+		if(bran!=null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "奶站编号"+branch.getBranchNo()+"的奶站已存在!!");
+		}
 		TSysUser user = userSessionService.getCurrentUser();
 		if(StringUtils.isEmpty(user.getSalesOrg())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前登录人没有绑定销售组织!!!");

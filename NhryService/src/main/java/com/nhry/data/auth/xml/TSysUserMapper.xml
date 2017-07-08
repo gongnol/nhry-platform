@@ -243,6 +243,26 @@
   </select>
   
   
+  
+   <select id="findUserByLogin" parameterType="java.lang.String" resultMap="BaseResultMap">
+	    SELECT
+		u.LOGIN_NAME,
+		u.DISPLAY_NAME,
+		u.GROUP_ID,
+		u.CREATE_ON,
+		u.LAST_MODIFIED,
+		u.BRANCH_NO,
+		(select b.BRANCH_NAME from t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NAME,
+		u.DEALER_ID,
+		u.SALES_ORG,
+		u.LAST_LOGIN
+	FROM
+		t_sys_user u 
+	WHERE
+		 LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+		 
+  </select>
+  
    <select id="findUserPass" parameterType="java.lang.String" resultMap="PassResultMap">
 	    SELECT
 		u.LOGIN_NAME,
