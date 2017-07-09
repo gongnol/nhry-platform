@@ -121,6 +121,7 @@ public class RoleServiceImpl extends BaseService implements RoleService {
 				emp.setMp(sysuser.getMobile());
 				emp.setIdNo(sysuser.getSmartIdcardnumber());
 				emp.setJoinDate(sysuser.getCustomizedJoininworkdate());
+				emp.setStatus("1");
 				empMapper.addBranchEmp(emp);
 				messService.sendMessageForEmpUpt(emp, "add", sysuser);
 				
