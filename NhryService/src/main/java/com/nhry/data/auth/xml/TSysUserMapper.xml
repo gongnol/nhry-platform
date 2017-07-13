@@ -234,7 +234,13 @@
 		(select b.BRANCH_NAME from t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NO,
 		u.DEALER_ID,
 		u.SALES_ORG,
-		u.LAST_LOGIN
+		u.LAST_LOGIN,
+		u.DEPARTMENT_NUMBER,
+		u.CUSTOMIZED_POSITIONID,
+		u.BRANCH_NO BRANCH_NAME,
+		u.MAIL,
+		u.MOBILE
+		
 	FROM
 		t_sys_user u 
 	WHERE

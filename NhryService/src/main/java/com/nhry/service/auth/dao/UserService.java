@@ -72,4 +72,6 @@ public interface UserService {
 	public int updateUserPass(TSysUser user);
 
 	public int addSysUser(TSysUser user);
+
+	public int editUser(TSysUser record);
 }

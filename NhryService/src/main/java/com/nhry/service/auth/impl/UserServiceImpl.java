@@ -204,6 +204,28 @@ public class UserServiceImpl extends BaseService implements UserService {
 		}
 		return 1;
 	}
+	
+	@Override
+	public int editUser(TSysUser record) {
+		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(record.getLoginName())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名登录名不能为空！");
+		}
+		TSysUser user = new TSysUser();
+		user.setLoginName(record.getLoginName());
+		TSysUser oldSysuser = userMapper.login(user);
+		if(oldSysuser == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该用户名对应的用户不存在！");
+		}
+		
+		record.setLastModified(new Date());
+		if("-1".equals(record.getDealerId())){
+			record.setDealerId(null);
+		}
+		userMapper.updateUser(record);
+		
+		return 1;
+	}
 
 	@Override
 	public int deleteUserByLoginName(String uname) {

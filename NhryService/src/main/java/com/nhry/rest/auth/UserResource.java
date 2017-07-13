@@ -89,6 +89,14 @@ public class UserResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL,null,userService.updateUser(user));
 	}
 	
+	@POST
+	@Path("/edit")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/edit", response = ResponseModel.class, notes = "修改用户,不增加branchEmp")
+	public Response editUser(@ApiParam(required = true, name = "user", value = "用户对象") TSysUser user) {
+		return convertToRespModel(MessageCode.NORMAL,null,userService.editUser(user));
+	}
 	
 
 	@POST
