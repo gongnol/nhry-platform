@@ -3,6 +3,8 @@ package com.nhry.data.config.dao;
 import java.util.List;
 
 import com.nhry.data.config.domain.NHSysCodeItem;
+import com.github.pagehelper.PageInfo;
+import com.nhry.model.order.OrderSearchModel;
 
 public interface NHSysCodeItemMapper {
 	/**
@@ -53,5 +55,7 @@ public interface NHSysCodeItemMapper {
      * @return
      */
     public List<NHSysCodeItem> findItemsByParentCode(NHSysCodeItem record);
+
+    public PageInfo searchCodeItemsByPages(OrderSearchModel smodel);
     
 }

@@ -25,6 +25,19 @@
     TYPE_CODE, ITEM_CODE, ITEM_NAME, PARENT, ATTR1, ATTR2, ATTR3, ATTR4, ATTR5, IDX,LEVEL,
     CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
+  
+  <select id="searchCodeItemsByPages" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_sys_code_item
+    where TYPE_CODE = #{orderNo,jdbcType=VARCHAR}
+      
+	    <if test="branchNo != null and branchNo">
+	      	and (ITEM_CODE like '%${branchNo}%' or ITEM_NAME like '%${branchNo}%')
+	    </if>
+   
+  </select>
+  
   <select id="findCodeItenByCode" resultMap="BaseResultMap" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
     select 
     <include refid="Base_Column_List" />

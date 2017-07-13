@@ -2,9 +2,11 @@ package com.nhry.data.config.impl;
 
 import java.util.List;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
+import com.nhry.model.order.OrderSearchModel;
 
 public class NHSysCodeItemMapperImpl implements NHSysCodeItemMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -13,6 +15,12 @@ public class NHSysCodeItemMapperImpl implements NHSysCodeItemMapper {
 	public List<NHSysCodeItem> getCodeItemsByTypeCode(String typecode) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("getCodeItemsByTypeCode", typecode);
+	}
+	
+	@Override
+	public PageInfo searchCodeItemsByPages(OrderSearchModel smodel) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectListByPages("searchCodeItemsByPages", smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {

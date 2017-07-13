@@ -16,7 +16,9 @@ import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.dao.NHSysCodeTypeMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.domain.NHSysCodeType;
+import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.basic.DictionarySearchModel;
+import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.utils.PrimaryKeyUtils;
@@ -34,6 +36,15 @@ public class DictionaryServiceImpl extends BaseService implements DictionaryServ
 		}
 		return codeItemMapper.getCodeItemsByTypeCode(typecode);
 	}
+	
+	@Override
+    public PageInfo<NHSysCodeItem> searchCodeItemsByPages(OrderSearchModel smodel) {
+        if (StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())) {
+            throw new ServiceException(MessageCode.LOGIC_ERROR, "pageNum和pageSize不能为空！");
+        }
+        return codeItemMapper.searchCodeItemsByPages(smodel);
+    }
+	
 
 	public void setCodeItemMapper(NHSysCodeItemMapper codeItemMapper) {
 		this.codeItemMapper = codeItemMapper;

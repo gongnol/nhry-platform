@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.domain.NHSysCodeType;
 import com.nhry.model.basic.DictionarySearchModel;
+import com.nhry.model.order.OrderSearchModel;
 
 public interface DictionaryService {
 	
@@ -99,6 +100,8 @@ public interface DictionaryService {
     * @return
     */
    public List<NHSysCodeType> findAllTypeCodes();
+
+   public PageInfo<NHSysCodeItem> searchCodeItemsByPages(OrderSearchModel smodel);
 
    //public PageInfo findAllTypeCodesByPage(DictionarySearchModel searchModel);
 }

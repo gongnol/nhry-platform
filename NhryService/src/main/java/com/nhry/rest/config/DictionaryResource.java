@@ -14,9 +14,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.domain.NHSysCodeType;
+import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.config.dao.DictionaryService;
@@ -45,6 +47,15 @@ public class DictionaryResource extends BaseResource {
 	@ApiOperation(value = "/items/{typecode}", response = NHSysCodeItem.class, notes = "根据类型编码查找字典代码")
 	public Response getCodeItems(@ApiParam(required=true,name="typecode",value="类型编码")@PathParam("typecode")String typecode){
 		return convertToRespModel(MessageCode.NORMAL, null,  dicService.getCodeItemsByTypeCode(typecode));
+	}
+	
+	@POST
+	@Path("/items/byTypeCodePage")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/items/byTypeCodePage", response = PageInfo.class, notes = "查询码表信息列表(typeCode)")
+	public Response getCodeItemsByPage(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, dicService.searchCodeItemsByPages(smodel));
 	}
 	
 	@POST
