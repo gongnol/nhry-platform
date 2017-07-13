@@ -64,8 +64,8 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	public int addUser(TSysUser user) {
-		if(StringUtils.isEmpty(user.getLoginName()) || StringUtils.isEmpty(user.getDisplayName())){
-			 throw new ServiceException(MessageCode.LOGIC_ERROR, "loginName、displayName属性值不能为空!");
+		if(StringUtils.isEmpty(user.getLoginName()) ||StringUtils.isEmpty(user.getPassword())|| StringUtils.isEmpty(user.getDisplayName())){
+			 throw new ServiceException(MessageCode.LOGIC_ERROR, "登录名称、密码、真实姓名属性值不能为空!");
 		}
 		if(!StringUtils.isEmpty(user.getCustomizedHrregion())){
 			NHSysCodeItem item = new NHSysCodeItem();
