@@ -19,6 +19,7 @@
 		<property name="ecBaseService" ref="ecBaseService"></property>
 		<property name="dealerMapper" ref="dealerMapper"></property>
 		<property name="branchService" ref="branchService"></property>
+		
 	</bean>
 	<!-- 商品信息 -->
 	<bean id="maraMapper" class="com.nhry.data.basic.impl.TMdMaraMapperImpl">
@@ -242,6 +243,7 @@
 		<property name="dealerMapper" ref="dealerMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="branchExMapper" ref="branchExMapper"/>
+		 <property name="codeItemMapper" ref="codeItemMapper"></property>
 	</bean>
 
 	<bean id="tMdResidentialAreaMapper" class="com.nhry.data.basic.impl.TMdResidentialAreaMapperImpl">

@@ -5,6 +5,7 @@ import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
+import com.nhry.data.auth.domain.CompanyQueryModel;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdBranchExMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
@@ -13,14 +14,14 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.data.basic.domain.TMdBranchSendMode;
 import com.nhry.data.basic.domain.TMdDealer;
-import com.nhry.data.promotion.domain.PromotionScopeItem;
+import com.nhry.data.config.dao.NHSysCodeItemMapper;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.basic.BranchExkostlModel;
 import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
-import com.nhry.utils.BranchNoUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,6 +35,9 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	private UserSessionService userSessionService;
 	private TSysUserRoleMapper urMapper;
 	private TMdBranchExMapper branchExMapper;
+	private NHSysCodeItemMapper codeItemMapper;
+	
+	
 	
 
 	@Override
@@ -61,6 +65,15 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		if(StringUtils.isEmpty(user.getSalesOrg())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前登录人没有绑定销售组织!!!");
 		}
+		if("-1".equals(branch.getDealerNo())){
+			branch.setDealerNo("");
+		}
+		CompanyQueryModel model = new CompanyQueryModel();
+		model.setTypeCode("1002");
+		model.setItemCode(user.getSalesOrg());
+		model.setParentTypeCode("1003");
+		NHSysCodeItem item = codeItemMapper.getCompnayCodeItem(model);
+		branch.setCompanyCode(item.getItemCode());
 		branch.initData(user);
 		return branchMapper.addBranch(branch);
 	}
@@ -210,6 +223,11 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"成品中心编码长度过长！");
 		}
 		return branchExMapper.updateBranchKostl(record);
+	}
+
+	
+	public void setCodeItemMapper(NHSysCodeItemMapper codeItemMapper) {
+		this.codeItemMapper = codeItemMapper;
 	}
 
 	@Override

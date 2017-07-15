@@ -1218,9 +1218,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//createRouteChanges(dispOrder.getOrderNo(),date,empNo,dispOrder.getReachTimeType());
 			System.out.println("生成一条路单一共用时"+(System.currentTimeMillis()-oneRouteStart)+"毫秒");
 		}
-
-		OperationLogUtil.saveHistoryOperation("", LogType.ROUTE_ORDER, RouteLogEnum.CREATE_TOUTE,"",null,
-				"","生成",null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
+		if(dispOrder!=null){
+			OperationLogUtil.saveHistoryOperation("", LogType.ROUTE_ORDER, RouteLogEnum.CREATE_TOUTE,"",null,
+					"","生成",null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,dateStr+"  该天没有路单可以生成");
+		}
 
 		System.out.println("该奶站生成今天的所有的路单行数为"+i);
 		System.out.println("生成所有路单一共用时"+(System.currentTimeMillis()-startTime)+"毫秒");

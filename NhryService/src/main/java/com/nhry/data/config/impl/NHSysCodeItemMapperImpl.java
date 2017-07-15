@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
+import com.nhry.data.auth.domain.CompanyQueryModel;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.order.OrderSearchModel;
@@ -61,5 +62,11 @@ public class NHSysCodeItemMapperImpl implements NHSysCodeItemMapper {
 	public List<NHSysCodeItem> findItemsByParentCode(NHSysCodeItem record) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("findItemsByParentCode", record);
+	}
+
+	@Override
+	public NHSysCodeItem getCompnayCodeItem(CompanyQueryModel model) {
+		
+		return this.sqlSessionTemplate.selectOne("getCompnayCodeItem", model);
 	}
 }

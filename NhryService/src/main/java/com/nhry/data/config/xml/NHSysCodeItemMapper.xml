@@ -97,4 +97,17 @@
     <include refid="Base_Column_List" />
      from t_sys_code_item where TYPE_CODE=#{typeCode} and PARENT=#{parent} order by IDX asc
   </select>
+  
+  
+  
+   
+  <select id="getCompnayCodeItem" resultMap="BaseResultMap" parameterType="com.nhry.data.auth.domain.CompanyQueryModel">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_code_item 
+ 	where TYPE_CODE = #{parentTypeCode,jdbcType=VARCHAR}
+    and ITEM_CODE  = (
+	select PARENT from t_sys_code_item where  TYPE_CODE = #{typeCode,jdbcType=VARCHAR} and ITEM_CODE = #{itemCode,jdbcType=VARCHAR}
+	)
+  </select>
 </mapper>
