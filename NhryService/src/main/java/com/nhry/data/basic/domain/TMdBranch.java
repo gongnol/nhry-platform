@@ -2,9 +2,7 @@ package com.nhry.data.basic.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.utils.SysCodeUtil;
 
 
 public class TMdBranch implements Serializable{
