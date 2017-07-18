@@ -1903,11 +1903,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         uuid.append("DH001");
         uuid.append("B");
         uuid.append(branch.getCompanyCode());
-        if (org.apache.commons.lang.StringUtils.isEmpty(branch.getLgort())) {
+        uuid.append(branch.getSalesOrg());
+       /* if (org.apache.commons.lang.StringUtils.isEmpty(branch.getLgort())) {
             uuid.append(branch.getSalesOrg());
         } else {
             uuid.append(branch.getLgort());
-        }
+        }*/
         uuid.append(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         uuid.append((int) ((Math.random() * 90) + 10));
         return uuid.toString();
