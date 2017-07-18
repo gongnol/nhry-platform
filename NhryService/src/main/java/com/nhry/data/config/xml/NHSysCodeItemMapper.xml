@@ -27,10 +27,20 @@
   </sql>
   
   <select id="searchCodeItemsByPages" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel">
-  	select 
-    <include refid="Base_Column_List" />
-    from t_sys_code_item
-    where TYPE_CODE = #{orderNo,jdbcType=VARCHAR}
+  	select a.TYPE_CODE,a.ITEM_CODE,a.ITEM_NAME,a.ATTR1,a.ATTR2,a.ATTR3,a.CREATE_AT,b.ITEM_NAME PARENT from t_sys_code_item a
+	left join t_sys_code_item b on a.PARENT = b.ITEM_CODE
+	where a.TYPE_CODE = '1002'
+	and b.TYPE_CODE = '1003'
+      
+	    <if test="branchNo != null and branchNo">
+	      	and (a.ITEM_CODE like '%${branchNo}%' or a.ITEM_NAME like '%${branchNo}%')
+	    </if>
+   
+  </select>
+  
+  <select id="searchCompanyCodeItemsByPages" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel">
+  	select TYPE_CODE,ITEM_CODE,ITEM_NAME,ATTR1,ATTR2,ATTR3,CREATE_AT,PARENT from t_sys_code_item
+	where TYPE_CODE = '1003'
       
 	    <if test="branchNo != null and branchNo">
 	      	and (ITEM_CODE like '%${branchNo}%' or ITEM_NAME like '%${branchNo}%')

@@ -22,6 +22,12 @@ public class NHSysCodeItemMapperImpl implements NHSysCodeItemMapper {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectListByPages("searchCodeItemsByPages", smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
+	
+	@Override
+	public PageInfo searchCompanyCodeItemsByPages(OrderSearchModel smodel) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectListByPages("searchCompanyCodeItemsByPages", smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;

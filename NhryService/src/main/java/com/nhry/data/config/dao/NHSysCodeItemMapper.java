@@ -57,5 +57,7 @@ public interface NHSysCodeItemMapper {
     public List<NHSysCodeItem> findItemsByParentCode(NHSysCodeItem record);
 
     public PageInfo searchCodeItemsByPages(OrderSearchModel smodel);
+
+    public PageInfo searchCompanyCodeItemsByPages(OrderSearchModel smodel);
     
 }
