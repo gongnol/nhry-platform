@@ -7,6 +7,7 @@ public class UpdateRequiredModel {
     private String orderNo;
     private String matnr;
     private int increQty;
+    private int backQty;
 
     public String getOrderNo() {
         return orderNo;
@@ -31,4 +32,12 @@ public class UpdateRequiredModel {
     public void setIncreQty(int increQty) {
         this.increQty = increQty;
     }
+
+	public int getBackQty() {
+		return backQty;
+	}
+
+	public void setBackQty(int backQty) {
+		this.backQty = backQty;
+	}
 }

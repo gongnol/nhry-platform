@@ -196,6 +196,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 entry.setQty(item.getQty());
                 entry.setFlag(item.getFlag());
                 entry.setIncreQty(item.getIncreQty());
+                entry.setBackQty(item.getBackQty());
                 entries.add(entry);
             }
             orderModel.setEntries(entries);

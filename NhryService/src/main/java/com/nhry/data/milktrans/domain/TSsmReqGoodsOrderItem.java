@@ -17,10 +17,18 @@ public class TSsmReqGoodsOrderItem {
     private boolean hasTmp;
     private String flag;
     private int itemNo;
+    private int backQty;
 
 
+    public int getBackQty() {
+		return backQty;
+	}
 
-    public int getResendQty() {
+	public void setBackQty(int backQty) {
+		this.backQty = backQty;
+	}
+
+	public int getResendQty() {
         return resendQty;
     }
 

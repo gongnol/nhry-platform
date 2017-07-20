@@ -10,9 +10,18 @@ public class OrderRequireItem {
     private Integer increQty;
     private String flag;
     private Integer resendQty;
+    private Integer backQty;
     private boolean hasTmp;
 
-    public Integer getResendQty() {
+    public Integer getBackQty() {
+		return backQty;
+	}
+
+	public void setBackQty(Integer backQty) {
+		this.backQty = backQty;
+	}
+
+	public Integer getResendQty() {
         return resendQty;
     }
 

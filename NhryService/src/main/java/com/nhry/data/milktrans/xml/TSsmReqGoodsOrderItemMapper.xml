@@ -11,9 +11,10 @@
         <result column="RESEND_QTY" property="resendQty" jdbcType="INTEGER" />
         <result column="INCRE_QTY" property="increQty" jdbcType="INTEGER" />
         <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+        <result column="BACK_QTY" property="backQty" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
-        ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,RESEND_QTY,FLAG
+        ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,RESEND_QTY,FLAG,BACK_QTY
     </sql>
 
     <insert id="insertRequireOrderItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem" >
@@ -26,7 +27,7 @@
     </insert>
     <select id="getReqGoodsItemsByOrderNo" resultMap="BaseResultMap" parameterType="String" >
         select
-          ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG,IFNULL(RESEND_QTY,0) RESEND_QTY
+          ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG,IFNULL(RESEND_QTY,0) RESEND_QTY,BACK_QTY
         FROM t_ssm_req_goods_order_item
         WHERE  1=1
         and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
@@ -34,7 +35,7 @@
     </select>
     <select id="getReqGoodsItemsByMatnrAndOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch" >
         select
-        ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,IFNULL(RESEND_QTY,0) RESEND_QTY,FLAG
+        ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,IFNULL(RESEND_QTY,0) RESEND_QTY,FLAG,BACK_QTY
         FROM t_ssm_req_goods_order_item
         WHERE 1=1
         and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
@@ -78,6 +79,9 @@
         update t_ssm_req_goods_order_item
         set
         INCRE_QTY = #{increQty,jdbcType=INTEGER}
+        <if test="backQty != null" >
+            ,BACK_QTY = #{backQty,jdbcType=INTEGER}
+        </if>
         where  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
         and  MATNR = #{matnr,jdbcType=VARCHAR}
     </update>
