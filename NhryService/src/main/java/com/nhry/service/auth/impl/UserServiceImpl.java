@@ -384,4 +384,14 @@ public class UserServiceImpl extends BaseService implements UserService {
 			 throw new ServiceException(MessageCode.LOGIC_ERROR, "用户登录名为"+user.getLoginName()+"的用户已存在!!!");
 		}
 	}
+
+	@Override
+	public int resetPassBylogin(TSysUser user) {
+		TSysUser u = this.userMapper.findUserByLoginName2(user.getLoginName());
+		if(u == null){
+			 throw new ServiceException(MessageCode.LOGIC_ERROR, "用户登录名为"+user.getLoginName()+"的用户不存在!!!");
+		}else{
+			return userMapper.resetPassBylogin(user);
+		}
+	}
 }

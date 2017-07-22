@@ -932,4 +932,11 @@
         set password = #{newPassword,jdbcType=VARCHAR}
         where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
     </update>
+    
+    
+     <update id="resetPassBylogin" parameterType="com.nhry.data.auth.domain.TSysUser">
+        update t_sys_user
+        set password = #{password,jdbcType=VARCHAR}
+        where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+    </update>
 </mapper>

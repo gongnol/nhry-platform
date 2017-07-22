@@ -74,4 +74,6 @@ public interface UserService {
 	public int addSysUser(TSysUser user);
 
 	public int editUser(TSysUser record);
+
+	public int resetPassBylogin(TSysUser user);
 }

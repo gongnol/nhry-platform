@@ -78,4 +78,7 @@ public interface TSysUserMapper {
 	public TSysUser findUserPass(String loginName);
 
 	TSysUser findUserByLogin(String loginName);
+
+
+	public int resetPassBylogin(TSysUser user);
 }
