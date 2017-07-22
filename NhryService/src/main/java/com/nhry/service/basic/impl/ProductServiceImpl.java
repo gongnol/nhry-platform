@@ -163,6 +163,9 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 				notsellListMapper.addBranchNotSell(nl);
 			}
 		}
+		
+		tMdMaraMapper.uptProductByCode(record);
+		
 		if (record.getMaraEx() != null) {
 			this.uptProductExByCode(record.getMatnr(), record.getMaraEx());
 		}

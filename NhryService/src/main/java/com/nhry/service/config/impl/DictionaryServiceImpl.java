@@ -42,6 +42,11 @@ public class DictionaryServiceImpl extends BaseService implements DictionaryServ
         if (StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())) {
             throw new ServiceException(MessageCode.LOGIC_ERROR, "pageNum和pageSize不能为空！");
         }
+        
+        if( "1003".equals(smodel.getOrderNo()) ){
+        	return codeItemMapper.searchCompanyCodeItemsByPages(smodel);
+        }
+        
         return codeItemMapper.searchCodeItemsByPages(smodel);
     }
 	
@@ -150,6 +155,36 @@ public class DictionaryServiceImpl extends BaseService implements DictionaryServ
 		record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return this.codeItemMapper.addCodeItem(record);
 	}
+	
+	@Override
+	public int addSalesOrgCodeItem(NHSysCodeItem record) {
+		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(record.getTypeCode()) || StringUtils.isEmpty(record.getItemName())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "typeCode、itemName对应的属性值不能为空!");
+		}
+		NHSysCodeType codetype = this.findCodeTypeByCode(record.getTypeCode());
+		if(codetype == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "typeCode对应的字典代码类型不存在!");
+		}
+		if(StringUtils.isEmpty(record.getItemCode())){
+			record.setItemCode(PrimaryKeyUtils.generateUuidKey());
+		}
+		if(StringUtils.isEmpty(record.getParent())){
+			record.setParent("-1");
+		}else{
+			NHSysCodeItem codeitem = new NHSysCodeItem();
+			codeitem.setTypeCode("1003");
+			codeitem.setItemCode(record.getParent());
+			NHSysCodeItem _codeitem= this.findCodeItenByCode(codeitem);
+			if(_codeitem == null){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "parent属性对应的字典代码行项目父节点不存在!");
+			}
+		}
+		record.setCreateAt(new Date());
+		record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
+		record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
+		return this.codeItemMapper.addCodeItem(record);
+	}
 
 	@Override
 	public NHSysCodeItem findCodeItenByCode(NHSysCodeItem codeitem) {
@@ -214,7 +249,16 @@ public class DictionaryServiceImpl extends BaseService implements DictionaryServ
 		}
 		return this.codeItemMapper.findItemsByParentCode(record);
 	}
-
+	
+	@Override
+	public NHSysCodeItem findItemsByItemNameAndLevel(NHSysCodeItem record) {
+		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(record.getTypeCode()) || StringUtils.isEmpty(record.getItemName())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "typeCode、level,ItemName属性值不能为空！");
+		}
+		return this.codeItemMapper.findItemsByItemNameAndLevel(record);
+	}
+	
 	@Override
 	public List<NHSysCodeType> findAllTypeCodes()
 	{

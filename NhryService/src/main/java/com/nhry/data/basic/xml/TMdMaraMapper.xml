@@ -258,6 +258,30 @@
 			<if test="matnrTxt != null">
 				MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
 			</if>
+			<if test="firstCat != null">
+				FIRST_CAT = #{firstCat,jdbcType=VARCHAR},
+			</if>
+			<if test="secCate != null">
+				SEC_CATE = #{secCate,jdbcType=VARCHAR},
+			</if>
+			<if test="brand != null">
+				BRAND = #{brand,jdbcType=VARCHAR},
+			</if>
+			<if test="weight != null">
+				WEIGHT = #{weight,jdbcType=VARCHAR},
+			</if>
+			<if test="weightUnit != null">
+				WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="importantPrdFlag != null">
+				IMPORTANT_PRD_FLAG = #{importantPrdFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="spec != null">
+				SPEC = #{spec,jdbcType=VARCHAR},
+			</if>
+			<if test="zbotCode != null">
+				ZBOT_CODE = #{zbotCode,jdbcType=VARCHAR},
+			</if>
 		</set>
 		where MATNR = #{matnr,jdbcType=VARCHAR}
 	</update>

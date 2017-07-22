@@ -3,6 +3,7 @@ package com.nhry.rest.basic;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.domain.*;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.data.order.domain.TPromotion;
@@ -15,6 +16,7 @@ import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.*;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.bill.dao.CustomerBillService;
+import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.utils.ExcelUtil;
@@ -46,6 +48,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,6 +85,9 @@ public class ImportTableResource extends BaseResource {
     private TMdOrgPriceService tMdOrgPriceService;
     @Autowired
     private YearcardPriceService yearcardPriceService;
+    @Autowired
+    private DictionaryService dictionaryService;
+    
     @POST
     @Path("/importResidentialArea")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -463,6 +469,371 @@ public class ImportTableResource extends BaseResource {
                     customerBillService.customerPayment(cModel);
                 }
             }
+        }
+        return convertToRespModel(MessageCode.NORMAL, "上传成功！", null);
+    }
+    
+    @POST
+    @Path("/importEccPreorder")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/importEccPreorder", response = ResponseModel.class, notes = "导入订单、行项目数据")
+    public Response importEccPreorder(FormDataMultiPart form, @Context HttpServletRequest request) throws IOException {
+        List<OrderCreateModel> OrderModels = new ArrayList<OrderCreateModel>();//订单
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+        FormDataBodyPart filePart = form.getField("file");
+        InputStream fileInputStream = filePart.getValueAs(InputStream.class);
+        FormDataContentDisposition formDataContentDisposition = filePart.getFormDataContentDisposition();
+        String source = formDataContentDisposition.getFileName();
+        if (!source.endsWith("xlsx")) {
+            return convertToRespModel(MessageCode.LOGIC_ERROR, "文件类型错误，请使用正规模板！,文件后缀名应为xlsx的EXCEL模版文件", "");
+        }
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(fileInputStream));
+            XSSFSheet sheet = workbook.getSheetAt(0);//模版上sheet1页面
+            //XSSFSheet sheet1 = workbook.getSheetAt(1);//模版上sheet2页面
+            int rowNum = sheet.getLastRowNum();
+            //int rowNum1 = sheet1.getLastRowNum();
+
+            //循环sheet1获取页面值
+            for (int i = 1; i <= rowNum; i++) {
+                OrderCreateModel OrderModel = new OrderCreateModel();
+                TPreOrder order = new TPreOrder();
+                TMdAddress address = new TMdAddress(); 
+                OrderModel.setAddress(address);
+                int j = 2;
+                XSSFRow row = sheet.getRow(i);
+                if (row == null) {
+                    break;
+                }
+                
+                //订单编号
+                XSSFCell cell = row.getCell(j++);
+                if(cell!=null && StringUtils.isNotEmpty(cell.toString())){
+                    order.setOrderNo(cell.toString());
+                }else{
+                    throw new ServiceException("第" + (row.getRowNum() + 1) + "行,订单编号为空，请检查！");
+                }
+                
+                //订单创建日期
+                cell = row.getCell(j++);
+                if(cell!=null && StringUtils.isNotEmpty(cell.toString())){
+                	try {
+						order.setOrderDate(format2.parse(cell.toString()));
+					} catch (ParseException e) {
+						throw new ServiceException("第" + (row.getRowNum() + 1) + "创建日期格式有问题，请检查！");
+					}
+                }else{
+                    throw new ServiceException("第" + (row.getRowNum() + 1) + "行,创建日期为空，请检查！");
+                }
+                
+                //装箱状态
+                j++;
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                order.setMilkboxStat(ExcelUtil.getCellValue(cell, row));
+                
+                //都是先付款,已付款
+                order.setPaymentmethod("20");
+                order.setPaymentStat("20");
+                
+                //付款标志
+                j++;j++;
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                order.setIsPaid("Y");
+                
+                //付款日期
+                cell = row.getCell(j++);
+                if(cell!=null && StringUtils.isNotEmpty(cell.toString())){
+                	try {
+						order.setPayDate( format2.parse( cell.toString()));
+						order.setPayDateStr( format.format(format2.parse( cell.toString()) ) );
+					} catch (ParseException e) {
+						throw new ServiceException("第" + (row.getRowNum() + 1) + "付款日期格式有问题，请检查！");
+					}
+                }else{
+                    throw new ServiceException("第" + (row.getRowNum() + 1) + "行,付款日期为空，请检查！");
+                }
+                
+                //顾客,地址信息
+                j++;j++;j++;j++;
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                OrderModel.getAddress().setRecvName(ExcelUtil.getCellValue(cell, row));
+                
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                OrderModel.getAddress().setMp(ExcelUtil.getCellValue(cell, row));
+                
+                j++;//电话没有
+                
+                NHSysCodeItem codeitem = new NHSysCodeItem();
+                codeitem.setTypeCode("1001");
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                codeitem.setItemName(ExcelUtil.getCellValue(cell, row));
+                OrderModel.getAddress().setProvince(dictionaryService.findItemsByItemNameAndLevel(codeitem).getItemCode());
+                
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                codeitem.setItemName(ExcelUtil.getCellValue(cell, row));
+                OrderModel.getAddress().setCity(dictionaryService.findItemsByItemNameAndLevel(codeitem).getItemCode());
+                
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                codeitem.setItemName(ExcelUtil.getCellValue(cell, row));
+                OrderModel.getAddress().setCounty(dictionaryService.findItemsByItemNameAndLevel(codeitem).getItemCode());
+                
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                OrderModel.getAddress().setAddressTxt(ExcelUtil.getCellValue(cell, row));
+                
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                OrderModel.getAddress().setResidentialArea(ExcelUtil.getCellValue(cell, row));
+                
+                //备注
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                order.setMemoTxt(ExcelUtil.getCellValue(cell, row));
+                
+                //配送方式,配送
+                order.setDeliveryType("20");
+                
+//                奶站编号
+//                String branchNo = cell.toString();
+//                order.setBranchNo(cell.toString());
+//                TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
+//                if (branch == null) {
+//                    throw new ServiceException("第" + (row.getRowNum() + 1) + "行,第" + (cell.getColumnIndex() + 1) + "列奶站编码为" + cell.toString() + "奶站不存在！请重新校验数据！");
+//                }
+//                String salesOrg = branch.getSalesOrg();
+                
+//                cell = row.getCell(j++);
+//                ExcelUtil.isNullCell(cell, row, j);
+//                //订户编码规则是
+//                String vipCustNo = ExcelUtil.getCellValue(cell, row);
+//                String vipCust = branchNo.substring(branchNo.length()-6).concat(vipCustNo);
+//                //订户编号
+//                order.setMilkmemberNo(vipCust);
+//                //根据订户编号，查询订户会员编号，如果有，则赋值给订单对应的会员字段
+//                TVipCustInfo vci = tVipCustInfoService.findVipCustByNoForUpt(vipCust);
+//                if(vci!=null){
+//                    order.setMemberNo(vci.getVipCustNoSap());
+//                }
+//                //通过订户查询到地址信息，并写入到订单里
+//                TMdAddress tMdAddress = tVipCustInfoService.findAddressByCustNoISDefault(vipCust);
+//                if (tMdAddress == null) {
+//                    throw new ServiceException("第" + (row.getRowNum() + 1) + "行,第" + (cell.getColumnIndex() + 1) + "列" + cell.toString() + "的订户编码没有对应的地址信息，请校验数据是否正确！");
+//                }
+//                order.setAdressNo(tMdAddress.getAddressId());
+//                cell = row.getCell(j++);
+//                ExcelUtil.isNullCell(cell, row, j);
+//                
+//                //付款方式
+//                order.setPaymentStat(ExcelUtil.getCellValue(cell, row));
+//
+//                cell = row.getCell(j++);
+//                //送奶员
+//                order.setEmpNo(ExcelUtil.getCellValue(cell, row));
+//
+//                order.setPreorderStat("10");
+//                cell = row.getCell(j++);
+//                if (cell != null && StringUtils.isNotEmpty(cell.toString())) {
+//                    order.setMemoTxt(cell.toString());
+//                }
+                
+                //在订
+                order.setPayMethod("10");//收款类型
+                order.setSign("10");
+                order.setOrderType("10");//线上
+                order.setPreorderSource("20");//电商
+                order.setPreorderStat("20");//电商
+                OrderModel.setOrder(order);
+
+//////////////////////////////////////////////////订单行项目/////////////////////////////////////////////////////
+                ArrayList<TPlanOrderItem> entries = new ArrayList<TPlanOrderItem>();
+//                for (int s = 1; s <= rowNum1; s++) {
+                    TPlanOrderItem entrie = new TPlanOrderItem();
+                    XSSFCell cell1 = cell;
+                    XSSFRow row1 = row;
+                    int t = j;
+                      //判断订单号码是否一致，如果一致放到一个事物里
+//                    if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
+//                        if (cell1.toString().equals(order.getOrderNo())) {
+                            
+                            //产品编码
+                            cell1 = row1.getCell(t++);
+                            entrie.setMatnr( "0000000000".concat(ExcelUtil.getCellValue(cell1, row1)) );
+                            
+                            //总数
+                            cell1 = row1.getCell(t++);
+                            entrie.setDispTotal(Double.valueOf(cell1.toString()).intValue());
+                            
+                            //总金额
+                            cell1 = row1.getCell(t++);
+                            ExcelUtil.isNullCell(cell1, row, t);
+                            entrie.setItemamount(new BigDecimal(ExcelUtil.getCellValue(cell1, row)));
+                            order.setInitAmt(entrie.getItemamount());
+                            
+                            //配送规律,每天送
+                            entrie.setGapDays(0);
+                            entrie.setRuleType("10");
+                            
+                            //每天个数
+                            t++;
+                            cell1 = row1.getCell(t++);
+                            entrie.setQty(Double.valueOf(cell1.toString()).intValue());
+                            
+                            //开始时间
+                            cell1 = row1.getCell(t++);
+                            ExcelUtil.isNullCell(cell1, row, t);
+                            if(cell1!=null && StringUtils.isNotEmpty(cell.toString())){
+                            	try {
+									entrie.setStartDispDate( format2.parse( cell1.toString()));
+								} catch (ParseException e) {
+									throw new ServiceException("第" + (row.getRowNum() + 1) + "配送开始日期格式有问题，请检查！");
+								}
+                            }else{
+                                throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,配送开始日期为空，请检查！");
+                            }
+                            
+                            //送达时段
+                            t++;
+                            cell1 = row1.getCell(t++);
+                            ExcelUtil.isNullCell(cell1, row, t);
+                            entrie.setReachTimeType(ExcelUtil.getCellValue(cell1, row));
+                            
+                            //销售组织
+                            t++;t++;
+                            cell1 = row1.getCell(t++);
+                            if( cell1 == null || StringUtils.isEmpty(cell1.toString())){
+                            	throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,销售组织为空，请检查！");
+                            }
+                            ExcelUtil.isNullCell(cell1, row, t);
+                            order.setSalesOrg(ExcelUtil.getCellValue(cell1, row));
+                            
+                            //奶站号
+                            cell1 = row1.getCell(t++);
+                            if( cell1 != null && StringUtils.isNotEmpty(cell1.toString())){
+                            	order.setBranchNo(ExcelUtil.getCellValue(cell1, row));
+                            }
+                            
+//                            cell1 = row1.getCell(t++);
+//                            if (cell1 != null && StringUtils.isNotBlank(cell1.toString())) {
+//                                if (entrie.getRuleType().equals("10")) {
+//                                    entrie.setGapDays(Integer.valueOf(ExcelUtil.getCellValue(cell1, row1)));
+//                                } else {
+//                                    throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,第" + (cell1.getColumnIndex() + 1) + "列,配送规律为星期配送，间隔天数不需要填写！");
+//                                }
+//                            } else {
+//                                if (entrie.getRuleType().equals("10")) {
+//                                    throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,配送规律为周期配送，间隔天数不能为空！");
+//                                }
+//                            }
+//
+//                            cell1 = row1.getCell(t++);
+//                            if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
+//                                if (entrie.getRuleType().equals("20")) {
+//                                    entrie.setRuleTxt(cell1.toString());
+//                                } else {
+//                                    throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,第" + (cell1.getColumnIndex() + 1) + "列,配送规律为星期配送，配送规则不需要填写！");
+//                                }
+//                            } else {
+//                                if (entrie.getRuleType().equals("20")) {
+//                                    throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,配送规律为星期配送，配送规则不能为空！");
+//                                }
+//                            }
+//                            cell1 = row1.getCell(t++);
+//                            ExcelUtil.isNullCell(cell1, row, t);
+//                            entrie.setReachTimeType(ExcelUtil.getCellValue(cell1, row1));
+//                            cell1 = row1.getCell(t++);
+//                            try {
+//                                format.parse(cell1.toString());
+//                                entrie.setStartDispDate(format.parse(cell1.toString()));
+//                            } catch (Exception e) {
+//                                throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行，第" + cell1.getColumnIndex() + "列,日期格式有误");
+//                            }
+//                            entrie.setStartDispDateStr(cell1.toString());
+//                            cell1 = row1.getCell(t++);
+//                            try {
+//                                format.parse(cell1.toString());
+//                                entrie.setEndDispDate(format.parse(cell1.toString()));
+//                            } catch (Exception e) {
+//                                throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行，第" + cell1.getColumnIndex() + "列,日期格式有误");
+//                            }
+//                            entrie.setEndDispDateStr(cell1.toString());
+//                            if (entrie.getEndDispDate().before(entrie.getStartDispDate())) {
+//                                throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行,结束时间大于开始时间，请校验");
+//                            }
+//
+//
+//                            float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entrie.getMatnr(), order.getDeliveryType(), salesOrg);
+//                            if (price <= 0)
+//                                throw new ServiceException("产品价格小于0,请检查传入的商品号，奶站和配送方式!信息：" + "奶站：" + order.getBranchNo() + "商品号：" + entrie.getMatnr() + "配送方式：" + order.getDeliveryType() + "销售组织：" + salesOrg);
+//                            entrie.setSalesPrice(new BigDecimal(String.valueOf(price)));
+//                            entries.add(entrie);
+//                        }
+//                    }
+//                }
+                OrderModel.setEntries(entries);
+                OrderModels.add(OrderModel);
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return convertToRespModel(MessageCode.LOGIC_ERROR, e.getMessage(), "");
+        }
+        if(OrderModels.size()>0) {
+            for (OrderCreateModel orderModel : OrderModels) {
+                TPreOrder order = orderModel.getOrder();
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getPaymentStat())) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择付款方式!");
+                }
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getMilkboxStat())) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择装箱状态!");
+                }
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getEmpNo())) {
+                    if (!"10".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())) {
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择送奶员!");
+                    }
+                }
+                if (orderModel.getEntries() == null || orderModel.getEntries().size() == 0) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择商品行!");
+                }
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getMilkmemberNo())) {
+                    if (!"10".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())) {//电商不交验订户
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择订户!");
+                    }
+                }
+//                if (org.apache.commons.lang3.StringUtils.isBlank(order.getAdressNo())) {
+//                    if (orderModel.getAddress() == null) {
+//                        throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择或输入地址!");
+//                    }
+//                }
+                for (TPlanOrderItem e : orderModel.getEntries()) {
+                    if (org.apache.commons.lang3.StringUtils.isBlank(e.getRuleType())) {
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "商品行必须要有配送规律!");
+                    }
+                }
+            }
+
+            orderService.createOrders(OrderModels);
+//            for (int om = 0; om < OrderModels.size(); om++) {
+//                OrderCreateModel ocm = OrderModels.get(om);
+//                if ("20".equals(ocm.getOrder().getPaymentmethod())
+//                        && "20".equals(ocm.getOrder().getPaymentStat())
+//                        &&!"10".equals(ocm.getOrder().getMilkboxStat())) {
+//                    customerBillService.createRecBillByOrderNo(ocm.getOrder().getOrderNo());
+//                    CustomerPayMentModel cModel = new CustomerPayMentModel();
+//                    cModel.setOrderNo(ocm.getOrder().getOrderNo());
+//                    cModel.setAmt(ocm.getOrder().getCurAmt().toString());
+//                    cModel.setPaymentType(ocm.getOrder().getPayMethod());
+//                    cModel.setEmpNo(ocm.getOrder().getEmpNo());
+//                    customerBillService.customerPayment(cModel);
+//                }
+//            }
         }
         return convertToRespModel(MessageCode.NORMAL, "上传成功！", null);
     }

@@ -50,7 +50,7 @@ public class DictionaryResource extends BaseResource {
 	}
 	
 	@POST
-	@Path("/items/byTypeCodePage")
+	@Path("/byTypeCodePage")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/items/byTypeCodePage", response = PageInfo.class, notes = "查询码表信息列表(typeCode)")
@@ -115,6 +115,15 @@ public class DictionaryResource extends BaseResource {
 	@ApiOperation(value = "/add/codeitem", response = ResponseModel.class, notes = "修改字典代码行项目")
 	public Response addCodeItem(@ApiParam(required=true,name="record",value="字典代码行项目对象")NHSysCodeItem record){
 		return convertToRespModel(MessageCode.NORMAL, null,  dicService.addCodeItem(record));
+	}
+	
+	@POST
+	@Path("/add/salesorgcodeitem")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/add/salesorgcodeitem", response = ResponseModel.class, notes = "新增销售组织字典代码行项目")
+	public Response addSalesCodeItem(@ApiParam(required=true,name="record",value="字典代码行项目对象")NHSysCodeItem record){
+		return convertToRespModel(MessageCode.NORMAL, null,  dicService.addSalesOrgCodeItem(record));
 	}
 	
 	@POST

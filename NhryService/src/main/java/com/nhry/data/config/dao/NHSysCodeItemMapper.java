@@ -59,6 +59,10 @@ public interface NHSysCodeItemMapper {
 
     public PageInfo searchCodeItemsByPages(OrderSearchModel smodel);
 
+    public PageInfo searchCompanyCodeItemsByPages(OrderSearchModel smodel);
+    
 	NHSysCodeItem getCompnayCodeItem(CompanyQueryModel model);
+
+	public NHSysCodeItem findItemsByItemNameAndLevel(NHSysCodeItem codeitem);
     
 }
