@@ -666,7 +666,7 @@ public class ImportTableResource extends BaseResource {
                             
                             //产品编码
                             cell1 = row1.getCell(t++);
-                            entrie.setMatnr(ExcelUtil.getCellValue(cell1, row1));
+                            entrie.setMatnr( "0000000000".concat(ExcelUtil.getCellValue(cell1, row1)) );
                             
                             //总数
                             cell1 = row1.getCell(t++);
