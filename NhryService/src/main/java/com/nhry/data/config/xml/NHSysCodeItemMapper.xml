@@ -108,7 +108,11 @@
      from t_sys_code_item where TYPE_CODE=#{typeCode} and PARENT=#{parent} order by IDX asc
   </select>
   
-  
+  <select id="findItemsByItemNameAndLevel"  resultMap="BaseResultMap" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
+      select 
+    <include refid="Base_Column_List" />
+     from t_sys_code_item where TYPE_CODE=#{typeCode} and ITEM_NAME = #{itemName}
+  </select>
   
    
   <select id="getCompnayCodeItem" resultMap="BaseResultMap" parameterType="com.nhry.data.auth.domain.CompanyQueryModel">

@@ -249,7 +249,16 @@ public class DictionaryServiceImpl extends BaseService implements DictionaryServ
 		}
 		return this.codeItemMapper.findItemsByParentCode(record);
 	}
-
+	
+	@Override
+	public NHSysCodeItem findItemsByItemNameAndLevel(NHSysCodeItem record) {
+		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(record.getTypeCode()) || StringUtils.isEmpty(record.getItemName())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "typeCode、level,ItemName属性值不能为空！");
+		}
+		return this.codeItemMapper.findItemsByItemNameAndLevel(record);
+	}
+	
 	@Override
 	public List<NHSysCodeType> findAllTypeCodes()
 	{

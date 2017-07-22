@@ -3529,7 +3529,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         for (TPlanOrderItem entry : record.getEntries()) {
             //非奶站订单要重新计算金额
             if ("10".equals(order.getPreorderSource())
-                    || "40".equals(order.getPreorderSource())) {
+                    || "40".equals(order.getPreorderSource())
+                    || "20".equals(order.getPreorderSource())) {
                 entry.setOnlineInitAmt(entry.getItemamount());
                 BigDecimal onlineInitAmt = entry.getOnlineInitAmt();
                 BigDecimal salesTotal = new BigDecimal(String.valueOf(entry.getDispTotal()));

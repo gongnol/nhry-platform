@@ -69,6 +69,12 @@ public class NHSysCodeItemMapperImpl implements NHSysCodeItemMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("findItemsByParentCode", record);
 	}
+	
+	@Override
+	public NHSysCodeItem findItemsByItemNameAndLevel(NHSysCodeItem codeitem) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("findItemsByItemNameAndLevel", codeitem);
+	}
 
 	@Override
 	public NHSysCodeItem getCompnayCodeItem(CompanyQueryModel model) {

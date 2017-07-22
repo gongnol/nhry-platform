@@ -105,5 +105,7 @@ public interface DictionaryService {
 
    public int addSalesOrgCodeItem(NHSysCodeItem record);
 
+   public NHSysCodeItem findItemsByItemNameAndLevel(NHSysCodeItem record);
+
    //public PageInfo findAllTypeCodesByPage(DictionarySearchModel searchModel);
 }
