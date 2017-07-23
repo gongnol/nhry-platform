@@ -351,6 +351,9 @@ public class ImportTableResource extends BaseResource {
                             
                             //补足到18位
                     		String matnr = ExcelUtil.getCellValue(cell1, row1);
+                    		if( cell1 != null && matnr.startsWith("0")){
+                            	throw new ServiceException("第" + (row1.getRowNum() + 1) + "行，产品编码不能以0开头，请检查！");
+                            }
                     		while (matnr.length() < 18)matnr = "0".concat(matnr);
                     		
                             entrie.setMatnr(matnr);
@@ -672,6 +675,9 @@ public class ImportTableResource extends BaseResource {
                             //产品编码
                             cell1 = row1.getCell(t++);
                             String matnr = ExcelUtil.getCellValue(cell1, row1);
+                            if( cell1 != null && matnr.startsWith("0")){
+                            	throw new ServiceException("第" + (row1.getRowNum() + 1) + "行，产品编码不能以0开头，请检查！");
+                            }
                     		while (matnr.length() < 18)matnr = "0".concat(matnr);
                             entrie.setMatnr(matnr);
                             

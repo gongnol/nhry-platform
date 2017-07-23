@@ -110,6 +110,9 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		
 		//补足到18位
 		String matnr = record.getMatnr();
+		if(matnr !=null && matnr.startsWith("0")){
+        	throw new ServiceException(MessageCode.LOGIC_ERROR, "新加入的产品编码不能以0开头！");
+        }
 		while (matnr.length() < 18)matnr = "0".concat(matnr);
 		record.setMatnr(matnr);
 		
