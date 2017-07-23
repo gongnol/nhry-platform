@@ -111,6 +111,16 @@ public class UserResource extends BaseResource {
 	
 	
 	@POST
+	@Path("/resetPass")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/updatePass", response = ResponseModel.class, notes = "重置用户密码")
+	public Response resetPass(@ApiParam(required = true, name = "user", value = "用户对象") TSysUser user) {
+		return convertToRespModel(MessageCode.NORMAL,null,userService.resetPassBylogin(user));
+	}
+	
+	
+	@POST
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/login", response = ResponseModel.class, notes = "用户登录")

@@ -122,7 +122,6 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 
 	@Override
 	public List<TMdBranch> findBranchListByOrg() {
-		// TODO Auto-generated method stub
 		TSysUser user = userSessionService.getCurrentUser();
 		BranchSalesOrgModel bModel = new BranchSalesOrgModel();
 		bModel.setSalesOrg(user.getSalesOrg());

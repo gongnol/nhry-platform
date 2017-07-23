@@ -123,4 +123,11 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 	public TSysUser findUserPass(String loginName) {
 		return this.sqlSessionTemplate.selectOne("findUserPass", loginName);
 	}
+
+
+
+	@Override
+	public int resetPassBylogin(TSysUser user) {
+		return this.sqlSessionTemplate.update("resetPassBylogin", user);
+	}
 }

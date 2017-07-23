@@ -75,7 +75,10 @@
 			) COMPANY_NAME,
 			b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO,d.DEALER_NAME, b.ADDRESS,
            b.PROVINCE,  b.CITY, b.COUNTY,
-		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE_NAME,
+		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE_NAME,
+		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY_NAME,
+		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY_NAME,
+		  
           (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
          (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ATTR1 = b.LGORT and i.PARENT = b.WERKS) LGORT,
           b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT,b.REMARK
@@ -155,6 +158,9 @@
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      OPEN_BANK = #{openBank,jdbcType=VARCHAR},
+      PAYEE = #{payee,jdbcType=VARCHAR},
+      BANK_ACCOUNT = #{bankAccount,jdbcType=VARCHAR},
       IS_VALID = #{isValid,jdbcType=VARCHAR},
       ONLINE_DATE = #{onlineDate,jdbcType=DATE},
       TARGET_PRESON = #{targetPerson,jdbcType=VARCHAR}

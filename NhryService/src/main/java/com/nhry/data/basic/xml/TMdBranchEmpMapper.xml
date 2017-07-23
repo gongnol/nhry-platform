@@ -60,7 +60,7 @@
 
   <select id="selectBranchEmpByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
    select emp.EMP_NO,emp.HR_EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME,branch.BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,
-          emp.MP,emp.BASE_SALARY,emp.SALARY_MET,emp.JOIN_DATE,emp.WEBCHAT,emp.ID_NO,emp.STATUS,
+          emp.MP,emp.BASE_SALARY,emp.SALARY_MET,emp.JOIN_DATE,emp.WEBCHAT,emp.ID_NO,emp.STATUS,emp.LEAVE_DATE,emp.ID_NO,
      (
 		SELECT
 			group_concat(role.ROLE_NAME)
@@ -180,10 +180,14 @@
         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
       <if test="leaveDate != null">
-         LEAVE_DATE = #{leaveDate,jdbcType=DATE}
+         LEAVE_DATE = #{leaveDate,jdbcType=DATE},
+      </if>
+      
+       <if test="joinDate != null">
+         JOIN_DATE = #{joinDate,jdbcType=DATE},
       </if>
       <if test="sapcode != null">
-        SAPCODE = #{sapcode,jdbcType=VARCHAR}
+        SAPCODE = #{sapcode,jdbcType=VARCHAR},
       </if>
     </set>
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
@@ -264,7 +268,7 @@
   </update>
   <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.EmpQueryModel">
     select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER,
-    emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.ID_NO,emp.STATUS
+    emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.ID_NO,emp.STATUS,emp.SAPCODE
     from t_md_branch_emp emp
     LEFT JOIN  t_md_branch branch on emp.BRANCH_NO = branch.BRANCH_NO
     LEFT JOIN t_sys_user_role erole on emp.HR_EMP_NO = erole.LOGIN_NAME
