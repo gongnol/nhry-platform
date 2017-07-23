@@ -349,11 +349,11 @@ public class ImportTableResource extends BaseResource {
                             entrie.setOrderNo(cell1.toString());
                             cell1 = row1.getCell(t++);
                             
-                            if(ExcelUtil.getCellValue(cell1, row1).length() != 8){
-                            	throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,录入产品编号必须是8位有效数字"); 
-                            }
-                            
-                            entrie.setMatnr("0000000000".concat(ExcelUtil.getCellValue(cell1, row1)));//补齐产品编码z
+                            //补足到18位
+                    		String matnr = ExcelUtil.getCellValue(cell1, row1);
+                    		while (matnr.length() < 18)matnr = "0".concat(matnr);
+                    		
+                            entrie.setMatnr(matnr);
                             cell1 = row1.getCell(t++);
                             ExcelUtil.isNullCell(cell1, row, t);
                             entrie.setRuleType(ExcelUtil.getCellValue(cell1, row));
@@ -671,12 +671,9 @@ public class ImportTableResource extends BaseResource {
                             
                             //产品编码
                             cell1 = row1.getCell(t++);
-                            
-                            if(ExcelUtil.getCellValue(cell1, row1).length() != 8){
-                            	throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,录入产品编号必须是8位有效数字"); 
-                            }
-                            
-                            entrie.setMatnr( "0000000000".concat(ExcelUtil.getCellValue(cell1, row1)) );
+                            String matnr = ExcelUtil.getCellValue(cell1, row1);
+                    		while (matnr.length() < 18)matnr = "0".concat(matnr);
+                            entrie.setMatnr(matnr);
                             
                             //总数
                             cell1 = row1.getCell(t++);

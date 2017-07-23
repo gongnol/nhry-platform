@@ -88,13 +88,9 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站编号不能为空"); 
 		}
 		
-		if(record.getMatnr().length() != 8){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"录入产品编号必须是8位有效数字"); 
+		if(record.getMatnr().length()>18){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"产品编号不能超过18位"); 
 		}
-		
-//		if(record.getMatnr().length()>18){
-//			throw new ServiceException(MessageCode.LOGIC_ERROR,"产品编号不能超过18位"); 
-//		}
 		
 		TMdMara pro = this.selectProductByCode(record.getMatnr());
 		
@@ -112,7 +108,11 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		record.getMaraEx().setSalesOrg(sysuser.getSalesOrg());
 		//add
 		
-		record.setMatnr( "0000000000".concat(record.getMatnr()) );
+		//补足到18位
+		String matnr = record.getMatnr();
+		while (matnr.length() < 18)matnr = "0".concat(matnr);
+		record.setMatnr(matnr);
+		
 		tMdMaraMapper.addProduct(record);
 		tMdMaraExMapper.addMaraEx(record.getMaraEx());
 		
