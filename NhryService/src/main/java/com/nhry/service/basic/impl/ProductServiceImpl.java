@@ -98,6 +98,14 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "产品编号为["+pro.getMatnr()+"]的产品信息已存在!!");
 		}
 		
+		//补足到18位
+		String matnr = record.getMatnr();
+		if(matnr !=null && matnr.startsWith("0")){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "新加入的产品编码不能以0开头！");
+		}
+		while (matnr.length() < 18)matnr = "0".concat(matnr);
+		record.setMatnr(matnr);
+		
 		//end
 		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		record.setSalesOrg(sysuser.getSalesOrg());
@@ -106,15 +114,6 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		record.setCreateAt(new Date());
 		record.getMaraEx().setMatnr(record.getMatnr());
 		record.getMaraEx().setSalesOrg(sysuser.getSalesOrg());
-		//add
-		
-		//补足到18位
-		String matnr = record.getMatnr();
-		if(matnr !=null && matnr.startsWith("0")){
-        	throw new ServiceException(MessageCode.LOGIC_ERROR, "新加入的产品编码不能以0开头！");
-        }
-		while (matnr.length() < 18)matnr = "0".concat(matnr);
-		record.setMatnr(matnr);
 		
 		tMdMaraMapper.addProduct(record);
 		tMdMaraExMapper.addMaraEx(record.getMaraEx());
