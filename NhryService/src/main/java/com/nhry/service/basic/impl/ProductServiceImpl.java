@@ -106,6 +106,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		while (matnr.length() < 18)matnr = "0".concat(matnr);
 		record.setMatnr(matnr);
 		
+		if(selectProductByCode(record.getMatnr())!= null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"产品编号已经存在!"); 
+		}
+		
 		//end
 		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		record.setSalesOrg(sysuser.getSalesOrg());

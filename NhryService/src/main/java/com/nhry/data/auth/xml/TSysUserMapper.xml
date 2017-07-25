@@ -690,7 +690,7 @@
         u.DEPARTMENT_NAME,
         u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,de.DEALER_NAME,b.BRANCH_NAME,it.ITEM_NAME SALE_NAME,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
-        (t_sys_user group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
+        (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM t_sys_user u
         JOIN t_sys_user_role r
         ON u.LOGIN_NAME = r.LOGIN_NAME
