@@ -96,7 +96,7 @@
       ADDRESS, PROVINCE, CITY, 
       COUNTY, WERKS, LGORT, 
       CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,COMPANY_CODE,IS_VALID
+      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,COMPANY_CODE,IS_VALID,ONLINE_DATE
       )
     values (#{branchNo,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
       #{salesCha,jdbcType=VARCHAR}, #{branchGroup,jdbcType=VARCHAR}, #{branchLevel,jdbcType=VARCHAR}, 
@@ -105,7 +105,7 @@
       #{county,jdbcType=VARCHAR}, #{werks,jdbcType=VARCHAR}, #{lgort,jdbcType=VARCHAR}, 
       #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
       #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR},#{companyCode,jdbcType=VARCHAR},
-      #{isValid,jdbcType=VARCHAR}
+      #{isValid,jdbcType=VARCHAR},#{onlineDate,jdbcType=DATE}
       )
   </insert>
 

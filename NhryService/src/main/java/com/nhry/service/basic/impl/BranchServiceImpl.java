@@ -22,6 +22,7 @@ import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
+import com.nhry.utils.date.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BranchServiceImpl extends BaseService implements BranchService {
+	private static final String BRANCH_VALIED = "10";
+	
     private TMdBranchMapper branchMapper;
 	private TMdDealerMapper dealerMapper;
 	private UserSessionService userSessionService;
@@ -75,6 +78,9 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		NHSysCodeItem item = codeItemMapper.getCompnayCodeItem(model);
 		branch.setCompanyCode(item.getItemCode());
 		branch.initData(user);
+		if(BRANCH_VALIED.equals(branch.getIsValid())){
+			branch.setOnlineDate(new Date());
+		}
 		return branchMapper.addBranch(branch);
 	}
 
