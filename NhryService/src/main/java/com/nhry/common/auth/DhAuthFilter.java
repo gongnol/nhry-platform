@@ -34,7 +34,7 @@ public class DhAuthFilter extends AuthFilter {
 		String userName = CookieUtil.getCookieValue(this.request, UserSessionService.uname);
 		//未登录
 		if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
-			if(!whiteUriList.contains(uri)){
+			if(!isExsitUri(request.getMethod(),uri)){
 				Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 	            throw new WebApplicationException(response); 
 			}

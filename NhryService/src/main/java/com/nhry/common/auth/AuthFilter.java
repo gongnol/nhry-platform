@@ -128,7 +128,7 @@ public class AuthFilter implements ContainerRequestFilter {
 		return Response.ok(rsmodel,MediaType.APPLICATION_JSON).status(statusCode).build();
 	}
 	
-	private boolean isExsitUri(String type,String uri){
+	protected boolean isExsitUri(String type,String uri){
 		for(String u : whiteUriList){
 			String _type = u.split(";")[0];
 			String _uri = u.split(";")[1];
