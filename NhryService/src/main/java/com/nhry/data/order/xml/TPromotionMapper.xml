@@ -513,7 +513,7 @@
         from t_promotion p
         left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
         left join t_promotion_con_item ci on p.PROM_NO = ci.PROM_NO and  ci.ITEM_NO = oi.ITEM_NO
-        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO  and  gi.ITEM_NO = oi.ITEM_NO
         left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
         LEFT JOIN t_md_mara_ex a1 ON oi.GOOD_NO = a1.MATNR AND p.SALES_ORG = a1.SALES_ORG
         LEFT JOIN t_md_mara_ex a2 ON gi.GIFT_NO = a2.MATNR AND p.SALES_ORG = a2.SALES_ORG
@@ -541,7 +541,7 @@
         from t_promotion p
         left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
         left join t_promotion_con_item ci on p.PROM_NO = ci.PROM_NO  and ci.ITEM_NO = oi.ITEM_NO
-        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO and  gi.ITEM_NO = oi.ITEM_NO
         left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
         LEFT JOIN t_md_mara_ex a on oi.GOOD_NO = a.MATNR  and p.SALES_ORG = a.SALES_ORG
         where 1 = 1
@@ -570,9 +570,9 @@
             ) ITEM_DESCRIBE
         FROM
             t_promotion p
-        LEFT JOIN t_promotion_orig_item oi ON p.PROM_NO = oi.PROM_NO
+        LEFT JOIN t_promotion_orig_item oi ON p.PROM_NO = oi.PROM_NO  
         LEFT JOIN t_promotion_con_item ci ON ci.PROM_NO = oi.PROM_NO  AND ci.ITEM_NO = oi.ITEM_NO
-        LEFT JOIN t_prom_scope_item si ON p.PROM_NO = si.PROM_NO
+        LEFT JOIN t_prom_scope_item si ON p.PROM_NO = si.PROM_NO   
         where 1 = 1
         and p.PROM_SUB_TYPE = 'Z016'
         and ci.LOW &lt;= #{lowAmt,jdbcType=DECIMAL}
