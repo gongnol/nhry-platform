@@ -8773,6 +8773,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         //删除数量为0的日计划,并重新生成新加的日计划
         Map<String, Date> dateMap = new HashMap<String, Date>();//存放每个订单行的最后配送时间（截止日期）
         for (TOrderDaliyPlanItem plan : daliyPlans) {
+        	if (plan.getGiftQty() != null) continue;
             if (plan.getQty() > 0 || "20".equals(plan.getStatus())) {
                 if (dateMap.containsKey(plan.getItemNo())) {
                     Date lastDate = DateUtil.dateBefore(dateMap.get(plan.getItemNo()), plan.getDispDate()) ? plan.getDispDate() : dateMap.get(plan.getItemNo());

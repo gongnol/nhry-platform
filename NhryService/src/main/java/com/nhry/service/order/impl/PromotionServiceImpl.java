@@ -42,6 +42,7 @@ import com.nhry.rest.basic.PromtionAddModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.impl.BranchServiceImpl;
 import com.nhry.service.order.dao.PromotionService;
+import com.nhry.utils.CodeGeneratorUtil;
 import com.nhry.utils.DateUtil;
 import com.nhry.utils.PromNoUtil;
 
@@ -654,10 +655,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 	
 	public String createPromNo(){
 		StringBuffer promNo = new StringBuffer("T-");
-		String str = PromNoUtil.getPromNo();
-		if(StringUtils.isBlank(str)){
-			return "";
-		}
+		String str = CodeGeneratorUtil.getCode();
 		promNo.append(str);
 		return promNo.toString();
 		
